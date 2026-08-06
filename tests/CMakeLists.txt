@@ -18,4 +18,8 @@ add_executable(diverter_test diverter_test.cpp)
 target_link_libraries(diverter_test PRIVATE psm_core)
 add_test(NAME diverter_test COMMAND diverter_test)
 
+add_executable(belt_motor_test belt_motor_test.cpp)
+target_link_libraries(belt_motor_test PRIVATE psm_core)
+add_test(NAME belt_motor_test COMMAND belt_motor_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
