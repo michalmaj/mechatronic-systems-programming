@@ -7,9 +7,9 @@ int main() {
     psmCheck(psm::classify(500) == psm::WeightClass::Heavy, "500g (at threshold) classifies as Heavy");
     psmCheck(psm::classify(999) == psm::WeightClass::Heavy, "999g classifies as Heavy");
 
-    psmCheck(psm::toDiverterPosition(psm::WeightClass::Light) == psm::DiverterPosition::Straight,
-             "Light maps to Straight");
-    psmCheck(psm::toDiverterPosition(psm::WeightClass::Heavy) == psm::DiverterPosition::Diverted,
-             "Heavy maps to Diverted");
+    psmCheck(psm::toDiverterCommand(psm::WeightClass::Light) == psm::DiverterCommand::HoldStraight,
+             "Light maps to HoldStraight");
+    psmCheck(psm::toDiverterCommand(psm::WeightClass::Heavy) == psm::DiverterCommand::Divert,
+             "Heavy maps to Divert");
     return 0;
 }

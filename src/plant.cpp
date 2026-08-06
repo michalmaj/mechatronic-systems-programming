@@ -10,7 +10,7 @@ void Plant::spawnItem(Item item) {
     item_ = item;
 }
 
-void Plant::advance(DiverterPosition diverter) {
+void Plant::advance(const Diverter& diverter) {
     if (!item_.has_value()) {
         return;
     }
@@ -25,9 +25,14 @@ void Plant::advance(DiverterPosition diverter) {
         case Zone::Weighing:
             item_->zone = Zone::Diverting;
             break;
-        case Zone::Diverting:
-            item_->zone = (diverter == DiverterPosition::Straight) ? Zone::OutputLight : Zone::OutputHeavy;
+        case Zone::Diverting: {
+            const DiverterPosition position = diverter.actualPosition();
+            if (position == DiverterPosition::Moving) {
+                break;  // diverter has not settled yet — wait here
+            }
+            item_->zone = (position == DiverterPosition::Straight) ? Zone::OutputLight : Zone::OutputHeavy;
             break;
+        }
         case Zone::OutputLight:
         case Zone::OutputHeavy:
             item_.reset();
