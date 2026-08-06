@@ -7,4 +7,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 enable_testing()
 
+add_subdirectory(src)
 add_subdirectory(apps/simulator_cli)
+add_subdirectory(tests)
