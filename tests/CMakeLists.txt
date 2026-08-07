@@ -30,4 +30,8 @@ add_executable(engine_test engine_test.cpp)
 target_link_libraries(engine_test PRIVATE psm_core)
 add_test(NAME engine_test COMMAND engine_test)
 
+add_executable(estop_latch_test estop_latch_test.cpp)
+target_link_libraries(estop_latch_test PRIVATE psm_core)
+add_test(NAME estop_latch_test COMMAND estop_latch_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
