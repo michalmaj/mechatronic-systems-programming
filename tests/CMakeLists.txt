@@ -22,4 +22,12 @@ add_executable(belt_motor_test belt_motor_test.cpp)
 target_link_libraries(belt_motor_test PRIVATE psm_core)
 add_test(NAME belt_motor_test COMMAND belt_motor_test)
 
+add_executable(tick_result_test tick_result_test.cpp)
+target_link_libraries(tick_result_test PRIVATE psm_core)
+add_test(NAME tick_result_test COMMAND tick_result_test)
+
+add_executable(engine_test engine_test.cpp)
+target_link_libraries(engine_test PRIVATE psm_core)
+add_test(NAME engine_test COMMAND engine_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
