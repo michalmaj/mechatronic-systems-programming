@@ -70,4 +70,8 @@ add_executable(engine_fault_test engine_fault_test.cpp)
 target_link_libraries(engine_fault_test PRIVATE psm_core)
 add_test(NAME engine_fault_test COMMAND engine_fault_test)
 
+add_executable(system_event_test system_event_test.cpp)
+target_link_libraries(system_event_test PRIVATE psm_core)
+add_test(NAME system_event_test COMMAND system_event_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
