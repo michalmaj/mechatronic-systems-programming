@@ -16,10 +16,15 @@
     }
   ],
   "buildPresets": [
-    { "name": "dev", "configurePreset": "dev" },
-    { "name": "release", "configurePreset": "release" }
+    { "name": "dev", "configurePreset": "dev", "configuration": "Debug" },
+    { "name": "release", "configurePreset": "release", "configuration": "Release" }
   ],
   "testPresets": [
-    { "name": "test", "configurePreset": "dev", "output": { "outputOnFailure": true } }
+    {
+      "name": "test",
+      "configurePreset": "dev",
+      "configuration": "Debug",
+      "output": { "outputOnFailure": true }
+    }
   ]
 }
