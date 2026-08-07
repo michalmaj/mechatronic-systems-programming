@@ -48,13 +48,16 @@ TickResult Engine::step() {
     }
 
     latch_ = nextEStopLatchState(latch_, pressed, released, resetRequested);
-    mode_ = modeStep(mode_, ModeInputs{latch_, startRequested, stopRequested, resetRequested});
 
     if (checkEmergencyOverride(latch_).overrideActive) {
         beltMotor_.forceStop();
     }
 
-    plant_.advance(diverter_, beltMotor_);
+    const auto diverterFault = activeFault(FaultTarget::Diverter, tick_, faultScript_);
+    const auto event = plant_.advance(diverter_, beltMotor_);
+
+    mode_ = modeStep(mode_, ModeInputs{latch_, startRequested, stopRequested, resetRequested,
+                                        event == SystemEventKind::RoutingDeadlineMissed});
 
     const auto presenceFault = activeFault(FaultTarget::PresenceSensor, tick_, faultScript_);
     const auto weightFault = activeFault(FaultTarget::WeightSensor, tick_, faultScript_);
@@ -65,7 +68,7 @@ TickResult Engine::step() {
         if (auto weightClass = decideClassification(presence, weight)) {
             diverter_.setCommand(toDiverterCommand(*weightClass));
         }
-        diverter_.resolve();
+        diverter_.resolve(diverterFault);
     }
 
     beltMotor_.setCommand(filterRoutineBeltCommand(BeltMotorCommand::Run, mode_));
@@ -73,7 +76,7 @@ TickResult Engine::step() {
 
     SensorSnapshot sensors{tick_, presence, weight};
     TickResult result{tick_, plant_.currentItem(), diverter_.actualPosition(), mode_,
-                       beltMotor_.actualState(), sensors};
+                       beltMotor_.actualState(), sensors, event};
     ++tick_;
     return result;
 }
