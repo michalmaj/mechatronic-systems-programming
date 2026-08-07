@@ -9,5 +9,10 @@ int main() {
     psmCheck(psm::SystemEventKind::DiverterNotReady != psm::SystemEventKind::RoutingDeadlineMissed,
              "SystemEventKind values are distinct");
 
+    psmCheck(psm::toString(psm::SystemEventKind::DiverterNotReady) == "DiverterNotReady",
+             "DiverterNotReady prints as DiverterNotReady");
+    psmCheck(psm::toString(psm::SystemEventKind::RoutingDeadlineMissed) == "RoutingDeadlineMissed",
+             "RoutingDeadlineMissed prints as RoutingDeadlineMissed");
+
     return 0;
 }
