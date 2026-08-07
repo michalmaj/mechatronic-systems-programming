@@ -10,9 +10,12 @@ void Plant::spawnItem(Item item) {
     item_ = item;
 }
 
-void Plant::advance(const Diverter& diverter) {
+void Plant::advance(const Diverter& diverter, const BeltMotor& beltMotor) {
     if (!item_.has_value()) {
         return;
+    }
+    if (beltMotor.actualState() != BeltMotorState::Running) {
+        return;  // belt not running -- nothing moves
     }
 
     switch (item_->zone) {
