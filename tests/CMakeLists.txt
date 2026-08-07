@@ -50,4 +50,20 @@ add_executable(engine_estop_test engine_estop_test.cpp)
 target_link_libraries(engine_estop_test PRIVATE psm_core)
 add_test(NAME engine_estop_test COMMAND engine_estop_test)
 
+add_executable(sensor_snapshot_test sensor_snapshot_test.cpp)
+target_link_libraries(sensor_snapshot_test PRIVATE psm_core)
+add_test(NAME sensor_snapshot_test COMMAND sensor_snapshot_test)
+
+add_executable(scripted_fault_test scripted_fault_test.cpp)
+target_link_libraries(scripted_fault_test PRIVATE psm_core)
+add_test(NAME scripted_fault_test COMMAND scripted_fault_test)
+
+add_executable(presence_sensor_test presence_sensor_test.cpp)
+target_link_libraries(presence_sensor_test PRIVATE psm_core)
+add_test(NAME presence_sensor_test COMMAND presence_sensor_test)
+
+add_executable(weight_sensor_test weight_sensor_test.cpp)
+target_link_libraries(weight_sensor_test PRIVATE psm_core)
+add_test(NAME weight_sensor_test COMMAND weight_sensor_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
