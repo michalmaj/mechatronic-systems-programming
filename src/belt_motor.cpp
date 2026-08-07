@@ -30,6 +30,11 @@ void BeltMotor::resolve() {
     }
 }
 
+void BeltMotor::forceStop() {
+    command_ = BeltMotorCommand::Stop;
+    actual_ = BeltMotorState::Stopped;
+}
+
 BeltMotorState BeltMotor::actualState() const {
     return actual_;
 }

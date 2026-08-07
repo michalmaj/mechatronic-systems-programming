@@ -42,4 +42,8 @@ add_executable(scenario_input_test scenario_input_test.cpp)
 target_link_libraries(scenario_input_test PRIVATE psm_core)
 add_test(NAME scenario_input_test COMMAND scenario_input_test)
 
+add_executable(safety_supervisor_test safety_supervisor_test.cpp)
+target_link_libraries(safety_supervisor_test PRIVATE psm_core)
+add_test(NAME safety_supervisor_test COMMAND safety_supervisor_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
