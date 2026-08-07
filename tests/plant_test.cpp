@@ -2,10 +2,24 @@
 #include <psm/diverter.hpp>
 #include <psm/plant.hpp>
 
+namespace {
+
+psm::BeltMotor runningBeltMotor() {
+    psm::BeltMotor motor;
+    motor.setCommand(psm::BeltMotorCommand::Run);
+    motor.resolve();
+    motor.resolve();
+    return motor;
+}
+
+}  // namespace
+
 int main() {
-    // -- Original R0 sequence, now driven through a Diverter commanded early enough to settle --
+    // -- Original R0 sequence, now driven through a Diverter commanded early enough to settle,
+    //    with the belt running throughout --
     psm::Plant plant;
     psm::Diverter diverter;
+    psm::BeltMotor belt = runningBeltMotor();
     psmCheck(!plant.currentItem().has_value(), "plant starts empty");
 
     plant.spawnItem(psm::Item{1, psm::Zone::Infeed, 750});
@@ -15,57 +29,72 @@ int main() {
     plant.spawnItem(psm::Item{2, psm::Zone::Infeed, 100});
     psmCheck(plant.currentItem()->id == 1, "spawning while occupied is ignored in R0");
 
-    diverter.setCommand(psm::DiverterCommand::Divert);  // decided early, well before Diverting
+    diverter.setCommand(psm::DiverterCommand::Divert);
 
-    plant.advance(diverter);
+    plant.advance(diverter, belt);
     psmCheck(plant.currentItem()->zone == psm::Zone::PresenceCheck, "advances to PresenceCheck");
-    diverter.resolve();  // Straight -> Moving
+    diverter.resolve();
 
-    plant.advance(diverter);
+    plant.advance(diverter, belt);
     psmCheck(plant.currentItem()->zone == psm::Zone::Weighing, "advances to Weighing");
-    diverter.resolve();  // Moving -> Diverted (settled with a tick to spare)
+    diverter.resolve();
 
-    plant.advance(diverter);
+    plant.advance(diverter, belt);
     psmCheck(plant.currentItem()->zone == psm::Zone::Diverting, "advances to Diverting");
-    diverter.resolve();  // already at target, no-op
+    diverter.resolve();
 
-    plant.advance(diverter);
+    plant.advance(diverter, belt);
     psmCheck(plant.currentItem()->zone == psm::Zone::OutputHeavy,
              "settled Diverted position routes to OutputHeavy");
 
-    plant.advance(diverter);
+    plant.advance(diverter, belt);
     psmCheck(!plant.currentItem().has_value(), "item clears one tick after reaching an output zone");
 
-    // -- New R1 scenario: command issued late, diverter still Moving when the item arrives --
+    // -- Late-command scenario from R1, still valid with the belt running --
     psm::Plant lateePlant;
     psm::Diverter lateDiverter;
+    psm::BeltMotor lateBelt = runningBeltMotor();
     lateePlant.spawnItem(psm::Item{3, psm::Zone::Infeed, 750});
 
-    lateePlant.advance(lateDiverter);
+    lateePlant.advance(lateDiverter, lateBelt);
     lateDiverter.resolve();
     psmCheck(lateePlant.currentItem()->zone == psm::Zone::PresenceCheck, "late scenario: reaches PresenceCheck");
 
-    lateePlant.advance(lateDiverter);
+    lateePlant.advance(lateDiverter, lateBelt);
     lateDiverter.resolve();
     psmCheck(lateePlant.currentItem()->zone == psm::Zone::Weighing, "late scenario: reaches Weighing");
 
-    lateDiverter.setCommand(psm::DiverterCommand::Divert);  // decided late, right as item leaves Weighing
-    lateePlant.advance(lateDiverter);
+    lateDiverter.setCommand(psm::DiverterCommand::Divert);
+    lateePlant.advance(lateDiverter, lateBelt);
     psmCheck(lateePlant.currentItem()->zone == psm::Zone::Diverting, "late scenario: reaches Diverting");
     lateDiverter.resolve();
     psmCheck(lateDiverter.actualPosition() == psm::DiverterPosition::Moving,
              "late scenario: diverter begins moving toward Diverted");
 
-    lateePlant.advance(lateDiverter);
+    lateePlant.advance(lateDiverter, lateBelt);
     psmCheck(lateePlant.currentItem()->zone == psm::Zone::Diverting,
              "late scenario: item waits at Diverting while diverter is Moving");
     lateDiverter.resolve();
     psmCheck(lateDiverter.actualPosition() == psm::DiverterPosition::Diverted,
              "late scenario: diverter arrives at Diverted");
 
-    lateePlant.advance(lateDiverter);
+    lateePlant.advance(lateDiverter, lateBelt);
     psmCheck(lateePlant.currentItem()->zone == psm::Zone::OutputHeavy,
              "late scenario: item routes once diverter finally settles");
+
+    // -- New R3b scenario: belt not running means nothing moves, regardless of diverter state --
+    psm::Plant stoppedPlant;
+    psm::Diverter stoppedDiverter;
+    psm::BeltMotor stoppedBelt;  // default-constructed: Stopped
+    stoppedPlant.spawnItem(psm::Item{4, psm::Zone::Infeed, 100});
+
+    stoppedPlant.advance(stoppedDiverter, stoppedBelt);
+    psmCheck(stoppedPlant.currentItem()->zone == psm::Zone::Infeed,
+             "item does not move while the belt is Stopped");
+
+    stoppedPlant.advance(stoppedDiverter, stoppedBelt);
+    psmCheck(stoppedPlant.currentItem()->zone == psm::Zone::Infeed,
+             "item still does not move on a second tick with the belt Stopped");
 
     return 0;
 }

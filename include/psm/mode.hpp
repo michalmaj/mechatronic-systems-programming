@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string_view>
+
 #include <psm/estop_latch.hpp>
 
 namespace psm {
@@ -14,5 +16,6 @@ struct ModeInputs {
 };
 
 Mode modeStep(Mode previous, ModeInputs inputs);
+std::string_view toString(Mode mode);
 
 }  // namespace psm

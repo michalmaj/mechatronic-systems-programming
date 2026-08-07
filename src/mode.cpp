@@ -21,4 +21,15 @@ Mode modeStep(Mode previous, ModeInputs inputs) {
     return previous;
 }
 
+std::string_view toString(Mode mode) {
+    switch (mode) {
+        case Mode::Idle: return "Idle";
+        case Mode::Running: return "Running";
+        case Mode::Fault: return "Fault";
+        case Mode::EStopped: return "EStopped";
+        case Mode::Maintenance: return "Maintenance";
+    }
+    return "Unknown";
+}
+
 }  // namespace psm
