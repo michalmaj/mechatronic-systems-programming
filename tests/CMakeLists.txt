@@ -38,4 +38,8 @@ add_executable(mode_test mode_test.cpp)
 target_link_libraries(mode_test PRIVATE psm_core)
 add_test(NAME mode_test COMMAND mode_test)
 
+add_executable(scenario_input_test scenario_input_test.cpp)
+target_link_libraries(scenario_input_test PRIVATE psm_core)
+add_test(NAME scenario_input_test COMMAND scenario_input_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
