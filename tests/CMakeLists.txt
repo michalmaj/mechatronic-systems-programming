@@ -79,3 +79,4 @@ target_link_libraries(engine_routing_deadline_test PRIVATE psm_core)
 add_test(NAME engine_routing_deadline_test COMMAND engine_routing_deadline_test)
 
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
+add_test(NAME toolchain_check_smoke COMMAND toolchain_check)
