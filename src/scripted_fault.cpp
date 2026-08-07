@@ -11,6 +11,8 @@ bool isAllowed(FaultTarget target, FaultKind kind) {
         case FaultTarget::WeightSensor:
             return kind == FaultKind::Missing || kind == FaultKind::Stale ||
                    kind == FaultKind::OutOfRange || kind == FaultKind::Noisy;
+        case FaultTarget::Diverter:
+            return kind == FaultKind::Blocked;
     }
     return false;
 }

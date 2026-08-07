@@ -27,6 +27,11 @@ int main() {
     psmCheck(isValidFaultScript({{0, 10, FaultTarget::WeightSensor, FaultKind::Noisy}}),
              "Noisy is allowed on WeightSensor");
 
+    psmCheck(isValidFaultScript({{0, 10, FaultTarget::Diverter, FaultKind::Blocked}}),
+             "Blocked is allowed on Diverter");
+    psmCheck(!isValidFaultScript({{0, 10, FaultTarget::Diverter, FaultKind::Missing}}),
+             "Missing is not allowed on Diverter");
+
     psmCheck(!isValidFaultScript({
                   {0, 10, FaultTarget::PresenceSensor, FaultKind::Missing},
                   {5, 8, FaultTarget::PresenceSensor, FaultKind::Noisy},
