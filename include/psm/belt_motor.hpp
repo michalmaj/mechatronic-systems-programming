@@ -9,6 +9,7 @@ class BeltMotor {
 public:
     void setCommand(BeltMotorCommand command);
     void resolve();
+    void forceStop();
     BeltMotorState actualState() const;
 
 private:

@@ -30,4 +30,20 @@ add_executable(engine_test engine_test.cpp)
 target_link_libraries(engine_test PRIVATE psm_core)
 add_test(NAME engine_test COMMAND engine_test)
 
+add_executable(estop_latch_test estop_latch_test.cpp)
+target_link_libraries(estop_latch_test PRIVATE psm_core)
+add_test(NAME estop_latch_test COMMAND estop_latch_test)
+
+add_executable(mode_test mode_test.cpp)
+target_link_libraries(mode_test PRIVATE psm_core)
+add_test(NAME mode_test COMMAND mode_test)
+
+add_executable(scenario_input_test scenario_input_test.cpp)
+target_link_libraries(scenario_input_test PRIVATE psm_core)
+add_test(NAME scenario_input_test COMMAND scenario_input_test)
+
+add_executable(safety_supervisor_test safety_supervisor_test.cpp)
+target_link_libraries(safety_supervisor_test PRIVATE psm_core)
+add_test(NAME safety_supervisor_test COMMAND safety_supervisor_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
