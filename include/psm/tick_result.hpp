@@ -7,6 +7,7 @@
 #include <psm/item.hpp>
 #include <psm/mode.hpp>
 #include <psm/sensor_snapshot.hpp>
+#include <psm/system_event.hpp>
 #include <psm/tick.hpp>
 
 namespace psm {
@@ -18,6 +19,7 @@ struct TickResult {
     Mode mode;
     BeltMotorState beltActual;
     SensorSnapshot sensors;
+    std::optional<SystemEventKind> event;
 };
 
 }  // namespace psm
