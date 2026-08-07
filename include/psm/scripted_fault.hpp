@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <vector>
 
 #include <psm/tick.hpp>
@@ -17,5 +18,6 @@ struct ScriptedFault {
 };
 
 bool isValidFaultScript(const std::vector<ScriptedFault>& faults);
+std::optional<FaultKind> activeFault(FaultTarget target, Tick now, const std::vector<ScriptedFault>& faults);
 
 }  // namespace psm

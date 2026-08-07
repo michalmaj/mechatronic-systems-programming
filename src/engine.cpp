@@ -7,8 +7,10 @@
 
 namespace psm {
 
-Engine::Engine(std::vector<ScenarioInput> script) : script_(std::move(script)) {
+Engine::Engine(std::vector<ScenarioInput> script, std::vector<ScriptedFault> faultScript)
+    : script_(std::move(script)), faultScript_(std::move(faultScript)) {
     assert(isValidScenario(script_));
+    assert(isValidFaultScript(faultScript_));
 }
 
 void Engine::spawnItem(Item item) {
@@ -54,9 +56,14 @@ TickResult Engine::step() {
 
     plant_.advance(diverter_, beltMotor_);
 
+    const auto presenceFault = activeFault(FaultTarget::PresenceSensor, tick_, faultScript_);
+    const auto weightFault = activeFault(FaultTarget::WeightSensor, tick_, faultScript_);
+    const PresenceReading presence = presenceSensor_.read(plant_.currentItem(), presenceFault);
+    const WeightReading weight = weightSensor_.read(plant_.currentItem(), weightFault);
+
     if (diverterMayMove(mode_)) {
-        if (const auto& item = plant_.currentItem(); item.has_value()) {
-            diverter_.setCommand(toDiverterCommand(classify(item->mass)));
+        if (auto weightClass = decideClassification(presence, weight)) {
+            diverter_.setCommand(toDiverterCommand(*weightClass));
         }
         diverter_.resolve();
     }
@@ -64,7 +71,9 @@ TickResult Engine::step() {
     beltMotor_.setCommand(filterRoutineBeltCommand(BeltMotorCommand::Run, mode_));
     beltMotor_.resolve();
 
-    TickResult result{tick_, plant_.currentItem(), diverter_.actualPosition(), mode_, beltMotor_.actualState()};
+    SensorSnapshot sensors{tick_, presence, weight};
+    TickResult result{tick_, plant_.currentItem(), diverter_.actualPosition(), mode_,
+                       beltMotor_.actualState(), sensors};
     ++tick_;
     return result;
 }

@@ -15,5 +15,10 @@ int main() {
     psmCheck(snapshot.presence.occupied, "SensorSnapshot stores the presence reading");
     psmCheck(snapshot.weight.grams == 500, "SensorSnapshot stores the weight reading");
 
+    psmCheck(psm::toString(psm::ReadingStatus::Ok) == "Ok", "Ok prints as Ok");
+    psmCheck(psm::toString(psm::ReadingStatus::Missing) == "Missing", "Missing prints as Missing");
+    psmCheck(psm::toString(psm::ReadingStatus::Stale) == "Stale", "Stale prints as Stale");
+    psmCheck(psm::toString(psm::ReadingStatus::OutOfRange) == "OutOfRange", "OutOfRange prints as OutOfRange");
+
     return 0;
 }
