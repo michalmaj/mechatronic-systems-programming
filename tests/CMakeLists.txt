@@ -50,4 +50,8 @@ add_executable(engine_estop_test engine_estop_test.cpp)
 target_link_libraries(engine_estop_test PRIVATE psm_core)
 add_test(NAME engine_estop_test COMMAND engine_estop_test)
 
+add_executable(sensor_snapshot_test sensor_snapshot_test.cpp)
+target_link_libraries(sensor_snapshot_test PRIVATE psm_core)
+add_test(NAME sensor_snapshot_test COMMAND sensor_snapshot_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
