@@ -34,5 +34,14 @@ int main() {
     psmCheck(modeStep(Mode::Maintenance, ModeInputs{EStopLatchState::Released, true, true, true}) == Mode::Maintenance,
              "Maintenance is unaffected by any input (no transition into or out of it exists yet)");
 
+    psmCheck(modeStep(Mode::Running, ModeInputs{EStopLatchState::Released, false, false, false, true}) == Mode::Fault,
+             "Running -> Fault when routingDeadlineMissed");
+
+    psmCheck(modeStep(Mode::Idle, ModeInputs{EStopLatchState::Released, false, false, false, true}) == Mode::Idle,
+             "routingDeadlineMissed has no effect outside Running -- nothing is in flight to miss a deadline on");
+
+    psmCheck(modeStep(Mode::Fault, ModeInputs{EStopLatchState::Released, false, false, true, false}) == Mode::Idle,
+             "Fault still clears to Idle via resetRequested, unaffected by the new field");
+
     return 0;
 }

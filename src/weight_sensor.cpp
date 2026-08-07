@@ -24,6 +24,8 @@ WeightReading WeightSensor::read(const std::optional<Item>& item, std::optional<
             return WeightReading{ReadingStatus::OutOfRange, kOutOfRangeGrams};
         case FaultKind::Noisy:
             return WeightReading{ReadingStatus::Ok, static_cast<Grams>(groundTruth + kNoisyOffsetGrams)};
+        case FaultKind::Blocked:
+            break;  // not a valid WeightSensor fault per isValidFaultScript -- unreachable in practice
     }
     return WeightReading{ReadingStatus::Ok, groundTruth};
 }

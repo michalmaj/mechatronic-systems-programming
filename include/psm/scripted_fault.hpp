@@ -7,8 +7,8 @@
 
 namespace psm {
 
-enum class FaultTarget { PresenceSensor, WeightSensor };
-enum class FaultKind { Missing, Stale, OutOfRange, Noisy };
+enum class FaultTarget { PresenceSensor, WeightSensor, Diverter };
+enum class FaultKind { Missing, Stale, OutOfRange, Noisy, Blocked };
 
 struct ScriptedFault {
     Tick from;

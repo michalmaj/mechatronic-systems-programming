@@ -13,6 +13,7 @@ struct ModeInputs {
     bool startRequested;
     bool stopRequested;
     bool resetRequested;
+    bool routingDeadlineMissed = false;
 };
 
 Mode modeStep(Mode previous, ModeInputs inputs);

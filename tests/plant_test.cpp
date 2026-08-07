@@ -96,5 +96,34 @@ int main() {
     psmCheck(stoppedPlant.currentItem()->zone == psm::Zone::Infeed,
              "item still does not move on a second tick with the belt Stopped");
 
+    // -- New R5a scenario: a Blocked diverter causes DiverterNotReady then RoutingDeadlineMissed --
+    psm::Plant blockedPlant;
+    psm::Diverter blockedDiverter;
+    psm::BeltMotor blockedBelt = runningBeltMotor();
+    blockedPlant.spawnItem(psm::Item{5, psm::Zone::Infeed, 750});
+    blockedDiverter.setCommand(psm::DiverterCommand::Divert);
+
+    blockedPlant.advance(blockedDiverter, blockedBelt);  // Infeed -> PresenceCheck
+    blockedDiverter.resolve(psm::FaultKind::Blocked);
+
+    blockedPlant.advance(blockedDiverter, blockedBelt);  // PresenceCheck -> Weighing
+    blockedDiverter.resolve(psm::FaultKind::Blocked);
+
+    auto event = blockedPlant.advance(blockedDiverter, blockedBelt);  // Weighing -> Diverting
+    psmCheck(!event.has_value(), "entering Diverting for the first time reports no event yet");
+    blockedDiverter.resolve(psm::FaultKind::Blocked);
+
+    event = blockedPlant.advance(blockedDiverter, blockedBelt);
+    psmCheck(event == psm::SystemEventKind::DiverterNotReady,
+             "first tick waiting on a blocked diverter is DiverterNotReady, not yet a deadline miss");
+    psmCheck(blockedPlant.currentItem()->zone == psm::Zone::Diverting, "item still waits at Diverting");
+    blockedDiverter.resolve(psm::FaultKind::Blocked);
+
+    event = blockedPlant.advance(blockedDiverter, blockedBelt);
+    psmCheck(event == psm::SystemEventKind::RoutingDeadlineMissed,
+             "a second consecutive blocked tick exceeds the one-tick grace period");
+    psmCheck(blockedPlant.currentItem()->zone == psm::Zone::Diverting,
+             "Plant does not route the item anyway -- it stays stuck");
+
     return 0;
 }

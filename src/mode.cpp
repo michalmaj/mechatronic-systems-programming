@@ -12,6 +12,9 @@ Mode modeStep(Mode previous, ModeInputs inputs) {
     if (previous == Mode::Fault && inputs.resetRequested) {
         return Mode::Idle;
     }
+    if (previous == Mode::Running && inputs.routingDeadlineMissed) {
+        return Mode::Fault;
+    }
     if (previous == Mode::Idle && inputs.startRequested) {
         return Mode::Running;
     }
