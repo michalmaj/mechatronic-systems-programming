@@ -62,4 +62,8 @@ add_executable(presence_sensor_test presence_sensor_test.cpp)
 target_link_libraries(presence_sensor_test PRIVATE psm_core)
 add_test(NAME presence_sensor_test COMMAND presence_sensor_test)
 
+add_executable(weight_sensor_test weight_sensor_test.cpp)
+target_link_libraries(weight_sensor_test PRIVATE psm_core)
+add_test(NAME weight_sensor_test COMMAND weight_sensor_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
