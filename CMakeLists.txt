@@ -9,4 +9,5 @@ enable_testing()
 
 add_subdirectory(src)
 add_subdirectory(apps/simulator_cli)
+add_subdirectory(apps/toolchain_check)
 add_subdirectory(tests)
