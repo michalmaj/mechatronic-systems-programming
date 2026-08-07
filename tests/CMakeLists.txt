@@ -74,4 +74,8 @@ add_executable(system_event_test system_event_test.cpp)
 target_link_libraries(system_event_test PRIVATE psm_core)
 add_test(NAME system_event_test COMMAND system_event_test)
 
+add_executable(engine_routing_deadline_test engine_routing_deadline_test.cpp)
+target_link_libraries(engine_routing_deadline_test PRIVATE psm_core)
+add_test(NAME engine_routing_deadline_test COMMAND engine_routing_deadline_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
