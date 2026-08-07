@@ -46,4 +46,8 @@ add_executable(safety_supervisor_test safety_supervisor_test.cpp)
 target_link_libraries(safety_supervisor_test PRIVATE psm_core)
 add_test(NAME safety_supervisor_test COMMAND safety_supervisor_test)
 
+add_executable(engine_estop_test engine_estop_test.cpp)
+target_link_libraries(engine_estop_test PRIVATE psm_core)
+add_test(NAME engine_estop_test COMMAND engine_estop_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
