@@ -54,4 +54,8 @@ add_executable(sensor_snapshot_test sensor_snapshot_test.cpp)
 target_link_libraries(sensor_snapshot_test PRIVATE psm_core)
 add_test(NAME sensor_snapshot_test COMMAND sensor_snapshot_test)
 
+add_executable(scripted_fault_test scripted_fault_test.cpp)
+target_link_libraries(scripted_fault_test PRIVATE psm_core)
+add_test(NAME scripted_fault_test COMMAND scripted_fault_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
