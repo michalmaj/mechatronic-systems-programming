@@ -66,4 +66,8 @@ add_executable(weight_sensor_test weight_sensor_test.cpp)
 target_link_libraries(weight_sensor_test PRIVATE psm_core)
 add_test(NAME weight_sensor_test COMMAND weight_sensor_test)
 
+add_executable(engine_fault_test engine_fault_test.cpp)
+target_link_libraries(engine_fault_test PRIVATE psm_core)
+add_test(NAME engine_fault_test COMMAND engine_fault_test)
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
