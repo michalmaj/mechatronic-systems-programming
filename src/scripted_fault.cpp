@@ -26,4 +26,13 @@ bool isValidFaultScript(const std::vector<ScriptedFault>& faults) {
     return true;
 }
 
+std::optional<FaultKind> activeFault(FaultTarget target, Tick now, const std::vector<ScriptedFault>& faults) {
+    for (const auto& fault : faults) {
+        if (fault.target == target && fault.from <= now && now < fault.until) {
+            return fault.kind;
+        }
+    }
+    return std::nullopt;
+}
+
 }  // namespace psm

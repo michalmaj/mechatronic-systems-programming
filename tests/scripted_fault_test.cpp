@@ -33,5 +33,18 @@ int main() {
               }),
              "a script is invalid if any single fault in it uses a disallowed kind for its target");
 
+    using psm::activeFault;
+
+    psmCheck(!activeFault(FaultTarget::WeightSensor, 0, {}).has_value(), "no faults scripted: never active");
+
+    const std::vector<ScriptedFault> faults = {{2, 5, FaultTarget::WeightSensor, FaultKind::Missing}};
+    psmCheck(!activeFault(FaultTarget::WeightSensor, 1, faults).has_value(), "before the window: not active");
+    psmCheck(activeFault(FaultTarget::WeightSensor, 2, faults) == FaultKind::Missing,
+             "at the start of the window: active");
+    psmCheck(activeFault(FaultTarget::WeightSensor, 4, faults) == FaultKind::Missing, "inside the window: active");
+    psmCheck(!activeFault(FaultTarget::WeightSensor, 5, faults).has_value(),
+             "at the end tick: no longer active (until is exclusive)");
+    psmCheck(!activeFault(FaultTarget::PresenceSensor, 3, faults).has_value(), "different target: not active");
+
     return 0;
 }
