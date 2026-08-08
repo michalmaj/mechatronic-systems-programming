@@ -2,26 +2,17 @@
 
 namespace psm {
 
-namespace {
-constexpr Grams kHeavyThresholdGrams = 500;
-}  // namespace
-
 WeightClass classify(Grams mass) {
-    return mass < kHeavyThresholdGrams ? WeightClass::Light : WeightClass::Heavy;
+    // TODO (Misja 4: decyzja_sortowania): porównaj mass z progiem (500g) i zwróć
+    // WeightClass::Light albo WeightClass::Heavy.
+    (void)mass;
+    return WeightClass::Light;
 }
 
-DiverterCommand toDiverterCommand(WeightClass weightClass) {
-    return weightClass == WeightClass::Light ? DiverterCommand::HoldStraight : DiverterCommand::Divert;
-}
-
-std::optional<WeightClass> decideClassification(PresenceReading presence, WeightReading weight) {
-    if (presence.status != ReadingStatus::Ok || !presence.occupied) {
-        return std::nullopt;
-    }
-    if (weight.status != ReadingStatus::Ok) {
-        return std::nullopt;
-    }
-    return classify(weight.grams);
+DiverterPosition toDiverterPosition(WeightClass weightClass) {
+    // TODO (Misja 4: decyzja_sortowania): zmapuj Light -> Straight, Heavy -> Diverted.
+    (void)weightClass;
+    return DiverterPosition::Straight;
 }
 
 }  // namespace psm

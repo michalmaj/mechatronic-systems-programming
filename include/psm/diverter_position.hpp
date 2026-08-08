@@ -2,6 +2,6 @@
 
 namespace psm {
 
-enum class DiverterPosition { Straight, Diverted, Moving };
+enum class DiverterPosition { Straight, Diverted };
 
 }  // namespace psm
