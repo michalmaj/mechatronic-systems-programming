@@ -3,10 +3,14 @@
 namespace psm {
 
 void advanceZone(Item& item) {
-    // TODO (Misja 2: ruch_paczki): przesuń item.zone o jedną strefę do przodu
-    // (Infeed -> PresenceCheck -> Weighing -> Diverting). Na Diverting zatrzymaj się --
-    // co dalej, to już Misja 4.
-    (void)item;
+    switch (item.zone) {
+        case Zone::Infeed: item.zone = Zone::PresenceCheck; break;
+        case Zone::PresenceCheck: item.zone = Zone::Weighing; break;
+        case Zone::Weighing: item.zone = Zone::Diverting; break;
+        case Zone::Diverting: break;
+        case Zone::OutputLight: break;
+        case Zone::OutputHeavy: break;
+    }
 }
 
 }  // namespace psm
