@@ -23,10 +23,11 @@ void advance(Plant& plant, const Diverter& diverter) {
             advanceZone(*plant.item);
             return;
         case Zone::Diverting:
-            // TODO (Misja 9: przenosnik_czeka_na_dywerter): jeśli !diverter.isSettled(), paczka
-            // czeka (nic nie rób -- zostaje w Diverting). Jeśli diverter.isSettled(), skieruj
-            // paczkę do OutputLight albo OutputHeavy na podstawie diverter.actualPosition().
-            (void)diverter;
+            if (!diverter.isSettled()) {
+                return;
+            }
+            plant.item->zone =
+                (diverter.actualPosition() == DiverterPosition::Straight) ? Zone::OutputLight : Zone::OutputHeavy;
             return;
         case Zone::OutputLight:
         case Zone::OutputHeavy:

@@ -11,9 +11,7 @@ WeightClass classify(Grams mass) {
 }
 
 DiverterCommand toDiverterCommand(WeightClass weightClass) {
-    // TODO (Misja 7: polecenie_a_rzeczywistosc): zmapuj Light -> HoldStraight, Heavy -> Divert.
-    (void)weightClass;
-    return DiverterCommand::HoldStraight;
+    return weightClass == WeightClass::Light ? DiverterCommand::HoldStraight : DiverterCommand::Divert;
 }
 
 }  // namespace psm

@@ -6,10 +6,23 @@
 #include <psm/zone.hpp>
 
 int main() {
-    // TODO (Misja 9: przenosnik_czeka_na_dywerter):
-    // 1) stwórz Plant i Diverter, dodaj jedną paczkę przez spawnItem,
-    // 2) w pętli (np. 8 ticków): policz WeightClass/DiverterCommand tak jak w runTicks,
-    //    diverter.setCommand(...), diverter.resolve(), advance(plant, diverter), i wypisz numer
-    //    ticku, strefę paczki (psm::toString) oraz diverter.actualPosition().
+    psm::Plant plant;
+    psm::Diverter diverter;
+    psm::spawnItem(plant, psm::Item{1, psm::Zone::Infeed, 750});
+
+    for (int tick = 0; tick < 8; ++tick) {
+        if (plant.item.has_value()) {
+            diverter.setCommand(psm::toDiverterCommand(psm::classify(plant.item->mass)));
+        }
+        diverter.resolve();
+        psm::advance(plant, diverter);
+
+        if (plant.item.has_value()) {
+            std::cout << "tick " << tick << ": zone=" << psm::toString(plant.item->zone) << '\n';
+        } else {
+            std::cout << "tick " << tick << ": empty\n";
+        }
+    }
+
     return 0;
 }

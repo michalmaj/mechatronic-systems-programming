@@ -3,24 +3,30 @@
 namespace psm {
 
 void Diverter::setCommand(DiverterCommand command) {
-    // TODO (Misja 8: dywerter_jako_klasa): zapisz command w polu command_.
-    (void)command;
+    command_ = command;
 }
 
 void Diverter::resolve() {
-    // TODO (Misja 8: dywerter_jako_klasa): zgodnie z tabelą przejść z treści misji, przesuń
-    // actual_ o jeden krok w stronę pozycji docelowej wyznaczonej przez command_.
+    const DiverterPosition target =
+        (command_ == DiverterCommand::HoldStraight) ? DiverterPosition::Straight : DiverterPosition::Diverted;
+    if (actual_ == target) {
+        return;
+    }
+    if (actual_ == DiverterPosition::Moving) {
+        actual_ = target;
+        return;
+    }
+    actual_ = DiverterPosition::Moving;
 }
 
 DiverterPosition Diverter::actualPosition() const {
-    // TODO (Misja 8: dywerter_jako_klasa): zwróć actual_.
-    return DiverterPosition::Straight;
+    return actual_;
 }
 
 bool Diverter::isSettled() const {
-    // TODO (Misja 8: dywerter_jako_klasa): zwróć, czy actual_ odpowiada aktualnej pozycji
-    // docelowej wyznaczonej przez command_ -- żywe porównanie, nie zapamiętany wynik.
-    return true;
+    const DiverterPosition target =
+        (command_ == DiverterCommand::HoldStraight) ? DiverterPosition::Straight : DiverterPosition::Diverted;
+    return actual_ == target;
 }
 
 }  // namespace psm
