@@ -10,8 +10,10 @@ WeightClass classify(Grams mass) {
     return mass < kHeavyThresholdGrams ? WeightClass::Light : WeightClass::Heavy;
 }
 
-DiverterPosition toDiverterPosition(WeightClass weightClass) {
-    return weightClass == WeightClass::Light ? DiverterPosition::Straight : DiverterPosition::Diverted;
+DiverterCommand toDiverterCommand(WeightClass weightClass) {
+    // TODO (Misja 7: polecenie_a_rzeczywistosc): zmapuj Light -> HoldStraight, Heavy -> Divert.
+    (void)weightClass;
+    return DiverterCommand::HoldStraight;
 }
 
 }  // namespace psm

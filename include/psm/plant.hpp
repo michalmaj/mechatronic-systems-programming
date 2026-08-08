@@ -2,7 +2,7 @@
 
 #include <optional>
 
-#include <psm/diverter_position.hpp>
+#include <psm/diverter.hpp>
 #include <psm/item.hpp>
 
 namespace psm {
@@ -12,6 +12,6 @@ struct Plant {
 };
 
 void spawnItem(Plant& plant, Item item);
-void advance(Plant& plant, DiverterPosition diverterPosition);
+void advance(Plant& plant, const Diverter& diverter);
 
 }  // namespace psm
