@@ -33,6 +33,16 @@ target_link_libraries(plant_diverter_test PRIVATE psm_core)
 add_test(NAME plant_diverter_test COMMAND plant_diverter_test)
 set_tests_properties(plant_diverter_test PROPERTIES LABELS "misja-9")
 
+add_executable(tick_result_test tick_result_test.cpp)
+target_link_libraries(tick_result_test PRIVATE psm_core)
+add_test(NAME tick_result_test COMMAND tick_result_test)
+set_tests_properties(tick_result_test PROPERTIES LABELS "misja-10")
+
+add_executable(engine_test engine_test.cpp)
+target_link_libraries(engine_test PRIVATE psm_core)
+add_test(NAME engine_test COMMAND engine_test)
+set_tests_properties(engine_test PROPERTIES LABELS "misja-11")
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
 set_tests_properties(simulator_cli_smoke PROPERTIES LABELS "misja-6")
 
