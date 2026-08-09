@@ -1,13 +1,15 @@
 #include <psm/tick_result.hpp>
 
+#include <psm/zone.hpp>
+
 namespace psm {
 
 std::string describe(const TickResult& result) {
-    // TODO (Misja 10: tick_i_wynik): zbuduj czytelny opis jednego ticku, np.
-    // "tick 3: item 1 in zone Diverting" (gdy result.item ma wartość, użyj psm::toString(Zone)
-    // z Modułu 1 dla strefy) albo "tick 5: empty" (gdy result.item nie ma wartości).
-    (void)result;
-    return "TODO";
+    if (!result.item.has_value()) {
+        return "tick " + std::to_string(result.tick) + ": empty";
+    }
+    return "tick " + std::to_string(result.tick) + ": item " + std::to_string(result.item->id) +
+           " in zone " + std::string(psm::toString(result.item->zone));
 }
 
 }  // namespace psm
