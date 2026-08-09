@@ -3,18 +3,34 @@
 namespace psm {
 
 void BeltMotor::setCommand(BeltMotorCommand command) {
-    // TODO (Misja 13: silnik_przenosnika): zapisz command w polu command_.
-    (void)command;
+    command_ = command;
 }
 
 void BeltMotor::resolve() {
-    // TODO (Misja 13: silnik_przenosnika): zgodnie z regułą z treści misji, przesuń actual_
-    // o jeden krok w stronę stanu wyznaczonego przez command_.
+    const BeltMotorState target =
+        (command_ == BeltMotorCommand::Run) ? BeltMotorState::Running : BeltMotorState::Stopped;
+    switch (actual_) {
+        case BeltMotorState::Stopped:
+            if (target == BeltMotorState::Running) {
+                actual_ = BeltMotorState::RampingUp;
+            }
+            break;
+        case BeltMotorState::RampingUp:
+            actual_ = (target == BeltMotorState::Running) ? BeltMotorState::Running : BeltMotorState::RampingDown;
+            break;
+        case BeltMotorState::Running:
+            if (target == BeltMotorState::Stopped) {
+                actual_ = BeltMotorState::RampingDown;
+            }
+            break;
+        case BeltMotorState::RampingDown:
+            actual_ = (target == BeltMotorState::Stopped) ? BeltMotorState::Stopped : BeltMotorState::RampingUp;
+            break;
+    }
 }
 
 BeltMotorState BeltMotor::actualState() const {
-    // TODO (Misja 13: silnik_przenosnika): zwróć actual_.
-    return BeltMotorState::Stopped;
+    return actual_;
 }
 
 }  // namespace psm
