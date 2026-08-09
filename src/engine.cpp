@@ -10,6 +10,14 @@ void Engine::spawnItem(Item item) {
     psm::spawnItem(plant_, item);
 }
 
+void Engine::requestStart() {
+    // TODO (Misja 15: przenosnik_pod_kontrola_trybu): ustaw startRequested_ na true.
+}
+
+void Engine::requestStop() {
+    // TODO (Misja 15: przenosnik_pod_kontrola_trybu): ustaw stopRequested_ na true.
+}
+
 TickResult Engine::step() {
     DiverterCommand diverterCommand = DiverterCommand::HoldStraight;
     if (plant_.item.has_value()) {

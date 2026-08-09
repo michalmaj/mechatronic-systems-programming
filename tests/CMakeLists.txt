@@ -43,6 +43,21 @@ target_link_libraries(engine_test PRIVATE psm_core)
 add_test(NAME engine_test COMMAND engine_test)
 set_tests_properties(engine_test PROPERTIES LABELS "misja-11")
 
+add_executable(belt_motor_test belt_motor_test.cpp)
+target_link_libraries(belt_motor_test PRIVATE psm_core)
+add_test(NAME belt_motor_test COMMAND belt_motor_test)
+set_tests_properties(belt_motor_test PROPERTIES LABELS "misja-13")
+
+add_executable(mode_test mode_test.cpp)
+target_link_libraries(mode_test PRIVATE psm_core)
+add_test(NAME mode_test COMMAND mode_test)
+set_tests_properties(mode_test PROPERTIES LABELS "misja-14")
+
+add_executable(belt_gated_engine_test belt_gated_engine_test.cpp)
+target_link_libraries(belt_gated_engine_test PRIVATE psm_core)
+add_test(NAME belt_gated_engine_test COMMAND belt_gated_engine_test)
+set_tests_properties(belt_gated_engine_test PROPERTIES LABELS "misja-15")
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
 set_tests_properties(simulator_cli_smoke PROPERTIES LABELS "misja-6")
 
