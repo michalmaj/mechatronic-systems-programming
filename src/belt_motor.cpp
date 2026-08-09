@@ -29,6 +29,11 @@ void BeltMotor::resolve() {
     }
 }
 
+void BeltMotor::forceStop() {
+    // TODO (Misja 18: dwie_niezalezne_sciezki): ustaw command_ na Stop ORAZ actual_ na Stopped,
+    // w tym samym wywołaniu -- to jedyna metoda tej klasy, która celowo pomija rampowanie.
+}
+
 BeltMotorState BeltMotor::actualState() const {
     return actual_;
 }

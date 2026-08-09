@@ -11,6 +11,7 @@ const char* modeName(psm::Mode mode) {
     switch (mode) {
         case psm::Mode::Idle: return "Idle";
         case psm::Mode::Running: return "Running";
+        case psm::Mode::EStopped: return "EStopped";
     }
     return "Unknown";
 }

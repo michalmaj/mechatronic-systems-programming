@@ -18,6 +18,18 @@ void Engine::requestStop() {
     stopRequested_ = true;
 }
 
+void Engine::requestEStop() {
+    // TODO (Misja 19: silnik_pod_ochrona): ustaw eStopPressed_ na true.
+}
+
+void Engine::releaseEStop() {
+    // TODO (Misja 19: silnik_pod_ochrona): ustaw eStopReleased_ na true.
+}
+
+void Engine::requestReset() {
+    // TODO (Misja 19: silnik_pod_ochrona): ustaw resetRequested_ na true.
+}
+
 TickResult Engine::step() {
     const bool startRequested = startRequested_;
     const bool stopRequested = stopRequested_;

@@ -58,6 +58,26 @@ target_link_libraries(belt_gated_engine_test PRIVATE psm_core)
 add_test(NAME belt_gated_engine_test COMMAND belt_gated_engine_test)
 set_tests_properties(belt_gated_engine_test PROPERTIES LABELS "misja-15")
 
+add_executable(estop_latch_test estop_latch_test.cpp)
+target_link_libraries(estop_latch_test PRIVATE psm_core)
+add_test(NAME estop_latch_test COMMAND estop_latch_test)
+set_tests_properties(estop_latch_test PROPERTIES LABELS "misja-16")
+
+add_executable(estop_mode_test estop_mode_test.cpp)
+target_link_libraries(estop_mode_test PRIVATE psm_core)
+add_test(NAME estop_mode_test COMMAND estop_mode_test)
+set_tests_properties(estop_mode_test PROPERTIES LABELS "misja-17")
+
+add_executable(safety_supervisor_test safety_supervisor_test.cpp)
+target_link_libraries(safety_supervisor_test PRIVATE psm_core)
+add_test(NAME safety_supervisor_test COMMAND safety_supervisor_test)
+set_tests_properties(safety_supervisor_test PROPERTIES LABELS "misja-18")
+
+add_executable(estop_engine_test estop_engine_test.cpp)
+target_link_libraries(estop_engine_test PRIVATE psm_core)
+add_test(NAME estop_engine_test COMMAND estop_engine_test)
+set_tests_properties(estop_engine_test PROPERTIES LABELS "misja-19")
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
 set_tests_properties(simulator_cli_smoke PROPERTIES LABELS "misja-6")
 
