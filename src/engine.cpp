@@ -32,16 +32,25 @@ void Engine::requestReset() {
 }
 
 void Engine::injectFault(FaultTarget target, FaultKind kind) {
-    // TODO (Misja 24: silnik_z_czujnikami): zapisz kind do presenceFault_ albo weightFault_,
-    // zależnie od target.
-    (void)target;
-    (void)kind;
+    switch (target) {
+        case FaultTarget::Presence:
+            presenceFault_ = kind;
+            return;
+        case FaultTarget::Weight:
+            weightFault_ = kind;
+            return;
+    }
 }
 
 void Engine::clearFault(FaultTarget target) {
-    // TODO (Misja 24: silnik_z_czujnikami): wyczyść (std::nullopt) presenceFault_ albo
-    // weightFault_, zależnie od target.
-    (void)target;
+    switch (target) {
+        case FaultTarget::Presence:
+            presenceFault_ = std::nullopt;
+            return;
+        case FaultTarget::Weight:
+            weightFault_ = std::nullopt;
+            return;
+    }
 }
 
 TickResult Engine::step() {
@@ -60,6 +69,22 @@ TickResult Engine::step() {
     const SafetyDecision decision = checkEmergencyOverride(latch_);
     mode_ = modeStep(mode_, startRequested, stopRequested, latch_);
 
+    const PresenceReading presence = presenceSensor_.read(plant_.item, presenceFault_);
+    const WeightReading weight = weightSensor_.read(plant_.item, weightFault_);
+    updateControllerState(controllerState_, plant_.item, presence, weight);
+
+    const bool routingReady = !decision.overrideActive && diverterMayMove(mode_)
+                               && controllerState_.classification.has_value();
+
+    DiverterCommand diverterCommand = DiverterCommand::HoldStraight;
+    if (!decision.overrideActive && diverterMayMove(mode_)) {
+        if (controllerState_.classification.has_value()) {
+            diverterCommand = toDiverterCommand(*controllerState_.classification);
+        }
+        diverter_.setCommand(diverterCommand);
+        diverter_.resolve();
+    }
+
     if (decision.overrideActive) {
         beltMotor_.forceStop();
     } else {
@@ -67,21 +92,13 @@ TickResult Engine::step() {
         beltMotor_.resolve();
     }
 
-    DiverterCommand diverterCommand = DiverterCommand::HoldStraight;
-    if (!decision.overrideActive && diverterMayMove(mode_)) {
-        if (plant_.item.has_value()) {
-            diverterCommand = toDiverterCommand(classify(plant_.item->mass));
-        }
-        diverter_.setCommand(diverterCommand);
-        diverter_.resolve();
-    }
-
     if (beltMotor_.actualState() == BeltMotorState::Running) {
-        psm::advance(plant_, diverter_);
+        psm::advance(plant_, diverter_, routingReady);
     }
 
+    SensorSnapshot sensors{tick_, presence, weight};
     TickResult result{tick_,  plant_.item,          diverterCommand,          diverter_.actualPosition(),
-                       mode_, beltMotor_.actualState(), latch_};
+                       mode_, beltMotor_.actualState(), latch_, sensors};
     ++tick_;
     return result;
 }

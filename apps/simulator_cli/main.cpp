@@ -44,26 +44,51 @@ void printTick(const psm::TickResult& result) {
 }  // namespace
 
 int main() {
-    psm::Engine engine;
-    engine.spawnItem(psm::Item{1, psm::Zone::Infeed, 750});
-    engine.requestStart();
+    std::cout << "-- E-stop recovery trace --\n";
+    {
+        psm::Engine engine;
+        engine.spawnItem(psm::Item{1, psm::Zone::Infeed, 750});
+        engine.requestStart();
 
-    for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
+            printTick(engine.step());
+        }
+
+        engine.requestEStop();
         printTick(engine.step());
+
+        engine.releaseEStop();
+        printTick(engine.step());
+
+        engine.requestReset();
+        printTick(engine.step());
+
+        engine.requestStart();
+        for (int i = 0; i < 5; ++i) {
+            printTick(engine.step());
+        }
     }
 
-    engine.requestEStop();
-    printTick(engine.step());
+    std::cout << "\n-- Sensor fault trace: a Stale weight reading is never mistaken for a trusted one --\n";
+    {
+        psm::Engine engine;
+        engine.spawnItem(psm::Item{1, psm::Zone::Infeed, 750});
+        engine.requestStart();
 
-    engine.releaseEStop();
-    printTick(engine.step());
+        bool firstGone = false;
+        for (int i = 0; i < 10 && !firstGone; ++i) {
+            auto result = engine.step();
+            printTick(result);
+            if (!result.item.has_value()) {
+                firstGone = true;
+            }
+        }
 
-    engine.requestReset();
-    printTick(engine.step());
-
-    engine.requestStart();
-    for (int i = 0; i < 5; ++i) {
-        printTick(engine.step());
+        engine.injectFault(psm::FaultTarget::Weight, psm::FaultKind::Stale);
+        engine.spawnItem(psm::Item{2, psm::Zone::Infeed, 750});
+        for (int i = 0; i < 8; ++i) {
+            printTick(engine.step());
+        }
     }
 
     return 0;

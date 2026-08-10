@@ -1,15 +1,26 @@
 #include <psm/presence_sensor.hpp>
 
+#include <psm/zone.hpp>
+
 namespace psm {
 
 PresenceReading PresenceSensor::read(const std::optional<Item>& item, std::optional<FaultKind> fault) {
-    // TODO (Misja 20: czujnik_obecnosci): ground truth to item.has_value() && item->zone ==
-    // Zone::PresenceCheck. Bez usterki: zapisz do lastKnownOccupied_ i zwróć {Ok, ground truth}.
-    // Missing: zwróć {Missing, false}, nie dotykaj pamięci. Stale: jeśli lastKnownOccupied_ ma
-    // wartość, zwróć {Stale, *lastKnownOccupied_}; w przeciwnym razie zwróć {Missing, false}
-    // (nigdy nie było czego powtórzyć).
-    (void)item;
-    (void)fault;
+    const bool groundTruthOccupied = item.has_value() && item->zone == Zone::PresenceCheck;
+
+    if (!fault.has_value()) {
+        if (groundTruthOccupied) {
+            lastKnownOccupied_ = true;
+        }
+        return PresenceReading{ReadingStatus::Ok, groundTruthOccupied};
+    }
+
+    if (*fault == FaultKind::Missing) {
+        return PresenceReading{ReadingStatus::Missing, false};
+    }
+
+    if (lastKnownOccupied_.has_value()) {
+        return PresenceReading{ReadingStatus::Stale, *lastKnownOccupied_};
+    }
     return PresenceReading{ReadingStatus::Missing, false};
 }
 

@@ -13,7 +13,6 @@ void spawnItem(Plant& plant, Item item) {
 }
 
 void advance(Plant& plant, const Diverter& diverter, bool routingReady) {
-    (void)routingReady;
     if (!plant.item.has_value()) {
         return;
     }
@@ -24,7 +23,7 @@ void advance(Plant& plant, const Diverter& diverter, bool routingReady) {
             advanceZone(*plant.item);
             return;
         case Zone::Diverting:
-            if (!diverter.isSettled()) {
+            if (!routingReady || !diverter.isSettled()) {
                 return;
             }
             plant.item->zone =

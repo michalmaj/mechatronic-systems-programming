@@ -15,10 +15,10 @@ DiverterCommand toDiverterCommand(WeightClass weightClass) {
 }
 
 std::optional<WeightClass> decideClassification(WeightReading weight) {
-    // TODO (Misja 22: klasyfikacja_odporna_na_awarie): zwróć nullopt, chyba że
-    // weight.status == ReadingStatus::Ok; w przeciwnym razie classify(weight.grams).
-    (void)weight;
-    return std::nullopt;
+    if (weight.status != ReadingStatus::Ok) {
+        return std::nullopt;
+    }
+    return classify(weight.grams);
 }
 
 }  // namespace psm
