@@ -12,7 +12,8 @@ void spawnItem(Plant& plant, Item item) {
     plant.item = item;
 }
 
-void advance(Plant& plant, const Diverter& diverter) {
+void advance(Plant& plant, const Diverter& diverter, bool routingReady) {
+    (void)routingReady;
     if (!plant.item.has_value()) {
         return;
     }

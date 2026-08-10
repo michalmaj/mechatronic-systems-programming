@@ -12,6 +12,6 @@ struct Plant {
 };
 
 void spawnItem(Plant& plant, Item item);
-void advance(Plant& plant, const Diverter& diverter);
+void advance(Plant& plant, const Diverter& diverter, bool routingReady = true);
 
 }  // namespace psm

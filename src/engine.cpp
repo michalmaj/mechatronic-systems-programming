@@ -31,6 +31,19 @@ void Engine::requestReset() {
     resetRequested_ = true;
 }
 
+void Engine::injectFault(FaultTarget target, FaultKind kind) {
+    // TODO (Misja 24: silnik_z_czujnikami): zapisz kind do presenceFault_ albo weightFault_,
+    // zależnie od target.
+    (void)target;
+    (void)kind;
+}
+
+void Engine::clearFault(FaultTarget target) {
+    // TODO (Misja 24: silnik_z_czujnikami): wyczyść (std::nullopt) presenceFault_ albo
+    // weightFault_, zależnie od target.
+    (void)target;
+}
+
 TickResult Engine::step() {
     const bool startRequested = startRequested_;
     const bool stopRequested = stopRequested_;

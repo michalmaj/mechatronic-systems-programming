@@ -78,6 +78,31 @@ target_link_libraries(estop_engine_test PRIVATE psm_core)
 add_test(NAME estop_engine_test COMMAND estop_engine_test)
 set_tests_properties(estop_engine_test PROPERTIES LABELS "misja-19")
 
+add_executable(presence_sensor_test presence_sensor_test.cpp)
+target_link_libraries(presence_sensor_test PRIVATE psm_core)
+add_test(NAME presence_sensor_test COMMAND presence_sensor_test)
+set_tests_properties(presence_sensor_test PROPERTIES LABELS "misja-20")
+
+add_executable(weight_sensor_test weight_sensor_test.cpp)
+target_link_libraries(weight_sensor_test PRIVATE psm_core)
+add_test(NAME weight_sensor_test COMMAND weight_sensor_test)
+set_tests_properties(weight_sensor_test PROPERTIES LABELS "misja-21")
+
+add_executable(decide_classification_test decide_classification_test.cpp)
+target_link_libraries(decide_classification_test PRIVATE psm_core)
+add_test(NAME decide_classification_test COMMAND decide_classification_test)
+set_tests_properties(decide_classification_test PROPERTIES LABELS "misja-22")
+
+add_executable(controller_state_test controller_state_test.cpp)
+target_link_libraries(controller_state_test PRIVATE psm_core)
+add_test(NAME controller_state_test COMMAND controller_state_test)
+set_tests_properties(controller_state_test PROPERTIES LABELS "misja-23")
+
+add_executable(sensors_engine_test sensors_engine_test.cpp)
+target_link_libraries(sensors_engine_test PRIVATE psm_core)
+add_test(NAME sensors_engine_test COMMAND sensors_engine_test)
+set_tests_properties(sensors_engine_test PROPERTIES LABELS "misja-24")
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
 set_tests_properties(simulator_cli_smoke PROPERTIES LABELS "misja-6")
 
