@@ -3,14 +3,16 @@
 namespace psm {
 
 EStopLatchState nextEStopLatchState(EStopLatchState previous, bool pressed, bool released, bool resetRequested) {
-    // TODO (Misja 16: przycisk_awaryjny): pressed zawsze wygrywa -> Engaged. Z Engaged: released
-    // przechodzi do Armed. Z Armed: dopiero resetRequested wraca do Released (jeśli released i
-    // resetRequested są prawdziwe naraz, na razie tylko released się liczy -- reset dotyczy
-    // wyłącznie stanu Armed, nie Engaged).
-    (void)pressed;
-    (void)released;
-    (void)resetRequested;
-    return previous;
+    if (pressed) {
+        return EStopLatchState::Engaged;
+    }
+    if (previous == EStopLatchState::Engaged) {
+        return released ? EStopLatchState::Armed : EStopLatchState::Engaged;
+    }
+    if (previous == EStopLatchState::Armed) {
+        return resetRequested ? EStopLatchState::Released : EStopLatchState::Armed;
+    }
+    return EStopLatchState::Released;
 }
 
 }  // namespace psm

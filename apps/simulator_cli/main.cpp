@@ -26,6 +26,21 @@ const char* beltStateName(psm::BeltMotorState state) {
     return "Unknown";
 }
 
+const char* latchName(psm::EStopLatchState latch) {
+    switch (latch) {
+        case psm::EStopLatchState::Released: return "Released";
+        case psm::EStopLatchState::Engaged: return "Engaged";
+        case psm::EStopLatchState::Armed: return "Armed";
+    }
+    return "Unknown";
+}
+
+void printTick(const psm::TickResult& result) {
+    std::cout << psm::describe(result) << ", mode=" << modeName(result.mode)
+              << ", belt=" << beltStateName(result.beltActual) << ", latch=" << latchName(result.latch)
+              << '\n';
+}
+
 }  // namespace
 
 int main() {
@@ -33,10 +48,22 @@ int main() {
     engine.spawnItem(psm::Item{1, psm::Zone::Infeed, 750});
     engine.requestStart();
 
-    for (int i = 0; i < 8; ++i) {
-        const psm::TickResult result = engine.step();
-        std::cout << psm::describe(result) << ", mode=" << modeName(result.mode)
-                  << ", belt=" << beltStateName(result.beltActual) << '\n';
+    for (int i = 0; i < 3; ++i) {
+        printTick(engine.step());
+    }
+
+    engine.requestEStop();
+    printTick(engine.step());
+
+    engine.releaseEStop();
+    printTick(engine.step());
+
+    engine.requestReset();
+    printTick(engine.step());
+
+    engine.requestStart();
+    for (int i = 0; i < 5; ++i) {
+        printTick(engine.step());
     }
 
     return 0;
