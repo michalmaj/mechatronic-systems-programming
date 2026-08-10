@@ -2,6 +2,6 @@
 
 namespace psm {
 
-enum class FaultKind { Missing, Stale };
+enum class DiverterFaultKind { Blocked };
 
 }  // namespace psm

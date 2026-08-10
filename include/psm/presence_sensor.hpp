@@ -2,15 +2,15 @@
 
 #include <optional>
 
-#include <psm/fault_kind.hpp>
 #include <psm/item.hpp>
+#include <psm/sensor_fault_kind.hpp>
 #include <psm/sensor_snapshot.hpp>
 
 namespace psm {
 
 class PresenceSensor {
 public:
-    PresenceReading read(const std::optional<Item>& item, std::optional<FaultKind> fault);
+    PresenceReading read(const std::optional<Item>& item, std::optional<SensorFaultKind> fault);
 
 private:
     std::optional<bool> lastKnownOccupied_;

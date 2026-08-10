@@ -12,6 +12,7 @@ const char* modeName(psm::Mode mode) {
         case psm::Mode::Idle: return "Idle";
         case psm::Mode::Running: return "Running";
         case psm::Mode::EStopped: return "EStopped";
+        case psm::Mode::Fault: return "Fault";
     }
     return "Unknown";
 }
@@ -84,7 +85,7 @@ int main() {
             }
         }
 
-        engine.injectFault(psm::FaultTarget::Weight, psm::FaultKind::Stale);
+        engine.injectSensorFault(psm::SensorTarget::Weight, psm::SensorFaultKind::Stale);
         engine.spawnItem(psm::Item{2, psm::Zone::Infeed, 750});
         for (int i = 0; i < 8; ++i) {
             printTick(engine.step());

@@ -1,6 +1,9 @@
 #pragma once
 
+#include <optional>
+
 #include <psm/diverter_command.hpp>
+#include <psm/diverter_fault_kind.hpp>
 #include <psm/diverter_position.hpp>
 
 namespace psm {
@@ -8,7 +11,7 @@ namespace psm {
 class Diverter {
 public:
     void setCommand(DiverterCommand command);
-    void resolve();
+    void resolve(std::optional<DiverterFaultKind> fault = std::nullopt);
     DiverterPosition actualPosition() const;
     bool isSettled() const;
 

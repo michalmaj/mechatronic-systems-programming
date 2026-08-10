@@ -5,12 +5,13 @@
 #include <psm/belt_motor.hpp>
 #include <psm/controller_state.hpp>
 #include <psm/diverter.hpp>
+#include <psm/diverter_fault_kind.hpp>
 #include <psm/estop_latch.hpp>
-#include <psm/fault_kind.hpp>
-#include <psm/fault_target.hpp>
 #include <psm/mode.hpp>
 #include <psm/plant.hpp>
 #include <psm/presence_sensor.hpp>
+#include <psm/sensor_fault_kind.hpp>
+#include <psm/sensor_target.hpp>
 #include <psm/tick_result.hpp>
 #include <psm/weight_sensor.hpp>
 
@@ -24,8 +25,10 @@ public:
     void requestEStop();
     void releaseEStop();
     void requestReset();
-    void injectFault(FaultTarget target, FaultKind kind);
-    void clearFault(FaultTarget target);
+    void injectSensorFault(SensorTarget target, SensorFaultKind kind);
+    void clearSensorFault(SensorTarget target);
+    void injectDiverterFault(DiverterFaultKind kind);
+    void clearDiverterFault();
     TickResult step();
 
 private:
@@ -38,8 +41,9 @@ private:
     PresenceSensor presenceSensor_;
     WeightSensor weightSensor_;
     ControllerState controllerState_;
-    std::optional<FaultKind> presenceFault_;
-    std::optional<FaultKind> weightFault_;
+    std::optional<SensorFaultKind> presenceFault_;
+    std::optional<SensorFaultKind> weightFault_;
+    std::optional<DiverterFaultKind> diverterFault_;
     bool startRequested_ = false;
     bool stopRequested_ = false;
     bool eStopPressed_ = false;

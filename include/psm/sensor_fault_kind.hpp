@@ -2,6 +2,6 @@
 
 namespace psm {
 
-enum class FaultTarget { Presence, Weight };
+enum class SensorFaultKind { Missing, Stale };
 
 }  // namespace psm

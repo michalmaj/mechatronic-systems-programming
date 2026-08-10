@@ -4,7 +4,7 @@
 
 namespace psm {
 
-WeightReading WeightSensor::read(const std::optional<Item>& item, std::optional<FaultKind> fault) {
+WeightReading WeightSensor::read(const std::optional<Item>& item, std::optional<SensorFaultKind> fault) {
     const bool onScale = item.has_value() && item->zone == Zone::Weighing;
     const Grams groundTruthMass = onScale ? item->mass : 0;
 
@@ -15,7 +15,7 @@ WeightReading WeightSensor::read(const std::optional<Item>& item, std::optional<
         return WeightReading{ReadingStatus::Ok, groundTruthMass};
     }
 
-    if (*fault == FaultKind::Missing) {
+    if (*fault == SensorFaultKind::Missing) {
         return WeightReading{ReadingStatus::Missing, 0};
     }
 

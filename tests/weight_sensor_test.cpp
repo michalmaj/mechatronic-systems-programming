@@ -2,7 +2,7 @@
 #include <psm/weight_sensor.hpp>
 
 int main() {
-    using psm::FaultKind;
+    using psm::SensorFaultKind;
     using psm::Item;
     using psm::ReadingStatus;
     using psm::WeightSensor;
@@ -24,16 +24,16 @@ int main() {
     psmCheck(reading.status == ReadingStatus::Ok, "item elsewhere: status is still Ok");
     psmCheck(reading.grams == 0, "item at Diverting (not Weighing): nothing on the scale, reads zero");
 
-    reading = sensor.read(atDiverting, FaultKind::Stale);
+    reading = sensor.read(atDiverting, SensorFaultKind::Stale);
     psmCheck(reading.status == ReadingStatus::Stale, "Stale fault reports Stale status");
     psmCheck(reading.grams == 750,
              "Stale still repeats the Weighing reading -- the 'elsewhere' read never touched memory");
 
-    reading = sensor.read(atWeighing, FaultKind::Missing);
+    reading = sensor.read(atWeighing, SensorFaultKind::Missing);
     psmCheck(reading.status == ReadingStatus::Missing, "Missing fault reports Missing status");
 
     WeightSensor freshSensor;
-    reading = freshSensor.read(atWeighing, FaultKind::Stale);
+    reading = freshSensor.read(atWeighing, SensorFaultKind::Stale);
     psmCheck(reading.status == ReadingStatus::Missing,
              "Stale with no prior trusted reading degrades to Missing");
 

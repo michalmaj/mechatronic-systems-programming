@@ -25,7 +25,7 @@ int main() {
         psm::Engine engine;
         engine.spawnItem(psm::Item{1, psm::Zone::Infeed, 750});
         engine.requestStart();
-        engine.injectFault(psm::FaultTarget::Weight, psm::FaultKind::Stale);
+        engine.injectSensorFault(psm::SensorTarget::Weight, psm::SensorFaultKind::Stale);
 
         psm::Zone lastZone = psm::Zone::Infeed;
         for (int i = 0; i < 8; ++i) {

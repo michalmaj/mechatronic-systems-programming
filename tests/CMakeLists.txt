@@ -103,6 +103,26 @@ target_link_libraries(sensors_engine_test PRIVATE psm_core)
 add_test(NAME sensors_engine_test COMMAND sensors_engine_test)
 set_tests_properties(sensors_engine_test PROPERTIES LABELS "misja-24")
 
+add_executable(diverter_fault_test diverter_fault_test.cpp)
+target_link_libraries(diverter_fault_test PRIVATE psm_core)
+add_test(NAME diverter_fault_test COMMAND diverter_fault_test)
+set_tests_properties(diverter_fault_test PROPERTIES LABELS "misja-25")
+
+add_executable(plant_deadline_test plant_deadline_test.cpp)
+target_link_libraries(plant_deadline_test PRIVATE psm_core)
+add_test(NAME plant_deadline_test COMMAND plant_deadline_test)
+set_tests_properties(plant_deadline_test PROPERTIES LABELS "misja-26")
+
+add_executable(mode_fault_test mode_fault_test.cpp)
+target_link_libraries(mode_fault_test PRIVATE psm_core)
+add_test(NAME mode_fault_test COMMAND mode_fault_test)
+set_tests_properties(mode_fault_test PROPERTIES LABELS "misja-27")
+
+add_executable(fault_engine_test fault_engine_test.cpp)
+target_link_libraries(fault_engine_test PRIVATE psm_core)
+add_test(NAME fault_engine_test COMMAND fault_engine_test)
+set_tests_properties(fault_engine_test PROPERTIES LABELS "misja-28")
+
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
 set_tests_properties(simulator_cli_smoke PROPERTIES LABELS "misja-6")
 

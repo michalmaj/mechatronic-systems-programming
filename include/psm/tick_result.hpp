@@ -10,6 +10,7 @@
 #include <psm/item.hpp>
 #include <psm/mode.hpp>
 #include <psm/sensor_snapshot.hpp>
+#include <psm/system_event_kind.hpp>
 #include <psm/tick.hpp>
 
 namespace psm {
@@ -23,6 +24,7 @@ struct TickResult {
     BeltMotorState beltActual = BeltMotorState::Stopped;
     EStopLatchState latch = EStopLatchState::Released;
     SensorSnapshot sensors{0, PresenceReading{ReadingStatus::Ok, false}, WeightReading{ReadingStatus::Ok, 0}};
+    std::optional<SystemEventKind> event;
 };
 
 std::string describe(const TickResult& result);

@@ -31,26 +31,35 @@ void Engine::requestReset() {
     resetRequested_ = true;
 }
 
-void Engine::injectFault(FaultTarget target, FaultKind kind) {
+void Engine::injectSensorFault(SensorTarget target, SensorFaultKind kind) {
     switch (target) {
-        case FaultTarget::Presence:
+        case SensorTarget::Presence:
             presenceFault_ = kind;
             return;
-        case FaultTarget::Weight:
+        case SensorTarget::Weight:
             weightFault_ = kind;
             return;
     }
 }
 
-void Engine::clearFault(FaultTarget target) {
+void Engine::clearSensorFault(SensorTarget target) {
     switch (target) {
-        case FaultTarget::Presence:
+        case SensorTarget::Presence:
             presenceFault_ = std::nullopt;
             return;
-        case FaultTarget::Weight:
+        case SensorTarget::Weight:
             weightFault_ = std::nullopt;
             return;
     }
+}
+
+void Engine::injectDiverterFault(DiverterFaultKind kind) {
+    // TODO (Misja 28: silnik_z_wykrywaniem_awarii): zapisz kind do diverterFault_.
+    (void)kind;
+}
+
+void Engine::clearDiverterFault() {
+    // TODO (Misja 28: silnik_z_wykrywaniem_awarii): wyczyść diverterFault_ (std::nullopt).
 }
 
 TickResult Engine::step() {

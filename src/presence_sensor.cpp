@@ -4,7 +4,7 @@
 
 namespace psm {
 
-PresenceReading PresenceSensor::read(const std::optional<Item>& item, std::optional<FaultKind> fault) {
+PresenceReading PresenceSensor::read(const std::optional<Item>& item, std::optional<SensorFaultKind> fault) {
     const bool groundTruthOccupied = item.has_value() && item->zone == Zone::PresenceCheck;
 
     if (!fault.has_value()) {
@@ -14,7 +14,7 @@ PresenceReading PresenceSensor::read(const std::optional<Item>& item, std::optio
         return PresenceReading{ReadingStatus::Ok, groundTruthOccupied};
     }
 
-    if (*fault == FaultKind::Missing) {
+    if (*fault == SensorFaultKind::Missing) {
         return PresenceReading{ReadingStatus::Missing, false};
     }
 

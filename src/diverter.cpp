@@ -6,7 +6,11 @@ void Diverter::setCommand(DiverterCommand command) {
     command_ = command;
 }
 
-void Diverter::resolve() {
+void Diverter::resolve(std::optional<DiverterFaultKind> fault) {
+    // TODO (Misja 25: zablokowany_dywerter): jeśli fault == DiverterFaultKind::Blocked, ta funkcja
+    // powinna być całkowitym no-opem -- actual_ nie zmienia się wcale, nawet w stronę Moving.
+    // W przeciwnym razie zachowanie jest identyczne jak dotychczas (logika poniżej, bez zmian).
+    (void)fault;
     const DiverterPosition target =
         (command_ == DiverterCommand::HoldStraight) ? DiverterPosition::Straight : DiverterPosition::Diverted;
     if (actual_ == target) {
