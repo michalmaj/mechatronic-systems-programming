@@ -26,15 +26,18 @@ std::optional<SystemEventKind> advance(Plant& plant, const Diverter& diverter, b
             plant.divertingWaitTicks = 0;
             return std::nullopt;
         case Zone::Diverting:
-            // TODO (Misja 26: termin_rutowania): !routingReady musi zerować divertingWaitTicks
-            // (nie zamrażać go) i zwracać nullopt; routingReady && !isSettled() zwiększa licznik i
-            // zwraca DiverterNotReady (licznik <= 1) albo RoutingDeadlineMissed (licznik > 1);
-            // settled rutuje normalnie i zeruje licznik.
-            if (!routingReady || !diverter.isSettled()) {
+            if (!routingReady) {
+                plant.divertingWaitTicks = 0;
                 return std::nullopt;
+            }
+            if (!diverter.isSettled()) {
+                ++plant.divertingWaitTicks;
+                return plant.divertingWaitTicks <= 1 ? SystemEventKind::DiverterNotReady
+                                                      : SystemEventKind::RoutingDeadlineMissed;
             }
             plant.item->zone =
                 (diverter.actualPosition() == DiverterPosition::Straight) ? Zone::OutputLight : Zone::OutputHeavy;
+            plant.divertingWaitTicks = 0;
             return std::nullopt;
         case Zone::OutputLight:
         case Zone::OutputHeavy:

@@ -54,12 +54,11 @@ void Engine::clearSensorFault(SensorTarget target) {
 }
 
 void Engine::injectDiverterFault(DiverterFaultKind kind) {
-    // TODO (Misja 28: silnik_z_wykrywaniem_awarii): zapisz kind do diverterFault_.
-    (void)kind;
+    diverterFault_ = kind;
 }
 
 void Engine::clearDiverterFault() {
-    // TODO (Misja 28: silnik_z_wykrywaniem_awarii): wyczyść diverterFault_ (std::nullopt).
+    diverterFault_ = std::nullopt;
 }
 
 TickResult Engine::step() {
@@ -76,38 +75,41 @@ TickResult Engine::step() {
 
     latch_ = nextEStopLatchState(latch_, pressed, released, resetRequested);
     const SafetyDecision decision = checkEmergencyOverride(latch_);
-    mode_ = modeStep(mode_, startRequested, stopRequested, latch_);
+    const Mode modeForTick = modeStep(mode_, startRequested, stopRequested, latch_, resetRequested);
 
     const PresenceReading presence = presenceSensor_.read(plant_.item, presenceFault_);
     const WeightReading weight = weightSensor_.read(plant_.item, weightFault_);
     updateControllerState(controllerState_, plant_.item, presence, weight);
 
-    const bool routingReady = !decision.overrideActive && diverterMayMove(mode_)
+    const bool routingReady = !decision.overrideActive && diverterMayMove(modeForTick)
                                && controllerState_.classification.has_value();
 
     DiverterCommand diverterCommand = DiverterCommand::HoldStraight;
-    if (!decision.overrideActive && diverterMayMove(mode_)) {
+    if (!decision.overrideActive && diverterMayMove(modeForTick)) {
         if (controllerState_.classification.has_value()) {
             diverterCommand = toDiverterCommand(*controllerState_.classification);
         }
         diverter_.setCommand(diverterCommand);
-        diverter_.resolve();
+        diverter_.resolve(diverterFault_);
     }
 
     if (decision.overrideActive) {
         beltMotor_.forceStop();
     } else {
-        beltMotor_.setCommand(mode_ == Mode::Running ? BeltMotorCommand::Run : BeltMotorCommand::Stop);
+        beltMotor_.setCommand(modeForTick == Mode::Running ? BeltMotorCommand::Run : BeltMotorCommand::Stop);
         beltMotor_.resolve();
     }
 
+    std::optional<SystemEventKind> event;
     if (beltMotor_.actualState() == BeltMotorState::Running) {
-        psm::advance(plant_, diverter_, routingReady);
+        event = psm::advance(plant_, diverter_, routingReady);
     }
+
+    mode_ = reactToSystemEvent(modeForTick, event);
 
     SensorSnapshot sensors{tick_, presence, weight};
     TickResult result{tick_,  plant_.item,          diverterCommand,          diverter_.actualPosition(),
-                       mode_, beltMotor_.actualState(), latch_, sensors};
+                       mode_, beltMotor_.actualState(), latch_, sensors, event};
     ++tick_;
     return result;
 }

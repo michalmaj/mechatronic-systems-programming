@@ -9,9 +9,9 @@ Mode modeStep(Mode current, bool startRequested, bool stopRequested, EStopLatchS
     if (current == Mode::EStopped) {
         return Mode::Idle;
     }
-    // TODO (Misja 27: tryb_awarii): current == Fault musi być pełnym "wyłapywaczem", sprawdzanym
-    // TU -- przed stopRequested/startRequested poniżej -- resetRequested ? Idle : Fault.
-    (void)resetRequested;
+    if (current == Mode::Fault) {
+        return resetRequested ? Mode::Idle : Mode::Fault;
+    }
     if (stopRequested) {
         return Mode::Idle;
     }
@@ -22,9 +22,9 @@ Mode modeStep(Mode current, bool startRequested, bool stopRequested, EStopLatchS
 }
 
 Mode reactToSystemEvent(Mode modeForTick, std::optional<SystemEventKind> event) {
-    // TODO (Misja 27: tryb_awarii): jeśli modeForTick == Running i event == RoutingDeadlineMissed,
-    // zwróć Fault. W przeciwnym razie zwróć modeForTick bez zmian. To cała reguła.
-    (void)event;
+    if (modeForTick == Mode::Running && event.has_value() && *event == SystemEventKind::RoutingDeadlineMissed) {
+        return Mode::Fault;
+    }
     return modeForTick;
 }
 

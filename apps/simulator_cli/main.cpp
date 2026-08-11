@@ -92,5 +92,27 @@ int main() {
         }
     }
 
+    std::cout << "\n-- Diverter fault recovery trace --\n";
+    {
+        psm::Engine engine;
+        engine.spawnItem(psm::Item{1, psm::Zone::Infeed, 750});
+        engine.requestStart();
+        engine.injectDiverterFault(psm::DiverterFaultKind::Blocked);
+
+        for (int i = 0; i < 8; ++i) {
+            printTick(engine.step());
+        }
+
+        engine.clearDiverterFault();
+        printTick(engine.step());
+
+        engine.requestReset();
+        printTick(engine.step());
+
+        engine.requestStart();
+        printTick(engine.step());
+        printTick(engine.step());
+    }
+
     return 0;
 }
