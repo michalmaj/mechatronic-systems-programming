@@ -5,34 +5,35 @@ int main() {
     using psm::DiverterFaultKind;
     using psm::Mode;
     using psm::SystemEventKind;
-    using psm::Zone;
 
     psm::Engine engine;
-    engine.spawnItem(psm::Item{1, Zone::Infeed, 750});
+    engine.spawnItem(1, 750);
     engine.requestStart();
     engine.injectDiverterFault(DiverterFaultKind::Blocked);
 
     auto result = engine.step();
     psmCheck(result.mode == Mode::Running, "requestStart takes effect the very next step, same as every prior module");
     psmCheck(result.beltActual == psm::BeltMotorState::RampingUp, "belt begins ramping up on that same step");
-    psmCheck(result.item->zone == Zone::Infeed, "item still waits -- belt is not Running yet");
+    psmCheck(result.infeed.has_value() && result.infeed->id == 1, "item still waits -- belt is not Running yet");
 
     result = engine.step();
     psmCheck(result.beltActual == psm::BeltMotorState::Running, "belt finishes ramping up");
-    psmCheck(result.item->zone == Zone::PresenceCheck, "belt is now Running: the item advances exactly one step");
+    psmCheck(result.presenceCheck.has_value() && result.presenceCheck->id == 1,
+             "belt is now Running: the item advances exactly one step");
 
     result = engine.step();
-    psmCheck(result.item->zone == Zone::Weighing, "next step: PresenceCheck -> Weighing");
+    psmCheck(result.weighing.has_value() && result.weighing->id == 1, "next step: presenceCheck -> weighing");
 
     result = engine.step();
-    psmCheck(result.item->zone == Zone::Diverting, "next step: Weighing -> Diverting, classification now cached");
-    psmCheck(!result.event.has_value(), "arriving at Diverting is not itself an event");
+    psmCheck(result.diverting.has_value() && result.diverting->id == 1,
+             "next step: weighing -> diverting, classification now cached on the item");
+    psmCheck(!result.event.has_value(), "arriving at diverting is not itself an event");
 
     result = engine.step();
     psmCheck(result.event.has_value() && *result.event == SystemEventKind::DiverterNotReady,
              "first active routing attempt against a Blocked diverter: DiverterNotReady");
     psmCheck(result.mode == Mode::Running, "not a deadline miss yet: mode stays Running");
-    psmCheck(result.item->zone == Zone::Diverting, "item still waits");
+    psmCheck(result.diverting.has_value(), "item still waits");
 
     result = engine.step();
     psmCheck(result.event.has_value() && *result.event == SystemEventKind::RoutingDeadlineMissed,
@@ -59,14 +60,15 @@ int main() {
     engine.requestReset();
     result = engine.step();
     psmCheck(result.mode == Mode::Idle, "requestReset() now clears the latch: Fault -> Idle");
-    psmCheck(result.item->zone == Zone::Diverting, "the parcel is still exactly where it was frozen");
+    psmCheck(result.diverting.has_value() && result.diverting->id == 1,
+             "the parcel is still exactly where it was frozen");
 
     engine.requestStart();
     result = engine.step();
     psmCheck(result.mode == Mode::Running, "requestStart() resumes -- recovery always goes through Idle first");
     psmCheck(result.beltActual == psm::BeltMotorState::RampingUp,
              "the belt was fully Stopped during Fault, so it needs to ramp up again from scratch");
-    psmCheck(result.item->zone == Zone::Diverting,
+    psmCheck(result.diverting.has_value(),
              "the item still waits -- the belt is not Running yet, so advance() has not run this tick");
 
     result = engine.step();
@@ -74,8 +76,9 @@ int main() {
     psmCheck(!result.event.has_value(),
              "by the time advance() runs again, the diverter (fault cleared, moving since the previous "
              "step) has already settled -- no event at all, straight to a routed parcel");
-    psmCheck(result.item->zone == Zone::OutputHeavy,
+    psmCheck(result.departure.has_value() && result.departure->id == 1,
              "and the very same parcel that was stuck finally routes -- full recovery");
+    psmCheck(!result.diverting.has_value(), "diverting is empty immediately after departure");
 
     return 0;
 }

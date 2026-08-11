@@ -5,37 +5,35 @@ int main() {
     // -- Scenario 1: no fault ever injected -- the parcel is eventually classified and routed.
     {
         psm::Engine engine;
-        engine.spawnItem(psm::Item{1, psm::Zone::Infeed, 750});
+        engine.spawnItem(1, 750);
         engine.requestStart();
 
-        bool reachedOutputHeavy = false;
-        for (int i = 0; i < 10 && !reachedOutputHeavy; ++i) {
+        bool departed = false;
+        for (int i = 0; i < 10 && !departed; ++i) {
             auto result = engine.step();
-            if (result.item.has_value() && result.item->zone == psm::Zone::OutputHeavy) {
-                reachedOutputHeavy = true;
+            if (result.departure.has_value() && result.departure->id == 1) {
+                departed = true;
             }
         }
-        psmCheck(reachedOutputHeavy, "with no fault, a 750g parcel eventually reaches OutputHeavy");
+        psmCheck(departed, "with no fault, a 750g parcel eventually departs, routed to OutputHeavy");
     }
 
     // -- Scenario 2: the weight sensor is faulted (Stale, from before the parcel ever reaches
     // Weighing) throughout the run. Classification never succeeds for this parcel -- it reaches
-    // Diverting and waits there, frozen, never routed.
+    // diverting and waits there, frozen, never routed.
     {
         psm::Engine engine;
-        engine.spawnItem(psm::Item{1, psm::Zone::Infeed, 750});
+        engine.spawnItem(1, 750);
         engine.requestStart();
         engine.injectSensorFault(psm::SensorTarget::Weight, psm::SensorFaultKind::Stale);
 
-        psm::Zone lastZone = psm::Zone::Infeed;
+        bool stillWaitingAtEnd = false;
         for (int i = 0; i < 8; ++i) {
             auto result = engine.step();
-            if (result.item.has_value()) {
-                lastZone = result.item->zone;
-            }
+            stillWaitingAtEnd = result.diverting.has_value() && result.diverting->id == 1;
         }
-        psmCheck(lastZone == psm::Zone::Diverting,
-                 "with the weight sensor faulted the whole time, the parcel reaches Diverting and waits "
+        psmCheck(stillWaitingAtEnd,
+                 "with the weight sensor faulted the whole time, the parcel reaches diverting and waits "
                  "there -- never routed, because no trusted classification was ever produced for it");
     }
 

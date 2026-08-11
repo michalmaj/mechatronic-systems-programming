@@ -3,7 +3,6 @@
 #include <optional>
 
 #include <psm/belt_motor.hpp>
-#include <psm/controller_state.hpp>
 #include <psm/diverter.hpp>
 #include <psm/diverter_fault_kind.hpp>
 #include <psm/estop_latch.hpp>
@@ -19,7 +18,7 @@ namespace psm {
 
 class Engine {
 public:
-    void spawnItem(Item item);
+    bool spawnItem(ItemId id, Grams mass);
     void requestStart();
     void requestStop();
     void requestEStop();
@@ -40,7 +39,6 @@ private:
     EStopLatchState latch_ = EStopLatchState::Released;
     PresenceSensor presenceSensor_;
     WeightSensor weightSensor_;
-    ControllerState controllerState_;
     std::optional<SensorFaultKind> presenceFault_;
     std::optional<SensorFaultKind> weightFault_;
     std::optional<DiverterFaultKind> diverterFault_;

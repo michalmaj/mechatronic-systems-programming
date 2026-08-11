@@ -1,50 +1,24 @@
 #include <psm/plant.hpp>
 
-#include <psm/item_motion.hpp>
-
 namespace psm {
 
-void spawnItem(Plant& plant, Item item) {
-    if (plant.item.has_value()) {
-        return;
-    }
-    item.zone = Zone::Infeed;
-    plant.item = item;
+bool spawnItem(Plant& plant, ItemId id, Grams mass) {
+    // TODO (Misja 29: partie_i_paczki): odrzuć (zwróć false), jeśli infeed jest zajęty LUB id
+    // koliduje z dowolnym innym aktualnie obecnym parcelem (presenceCheck/weighing/diverting).
+    // W przeciwnym razie umieść nowy Item{id, mass} w infeed i zwróć true.
+    (void)plant;
+    (void)id;
+    (void)mass;
+    return false;
 }
 
-std::optional<SystemEventKind> advance(Plant& plant, const Diverter& diverter, bool routingReady) {
-    if (!plant.item.has_value()) {
-        return std::nullopt;
-    }
-    switch (plant.item->zone) {
-        case Zone::Infeed:
-        case Zone::PresenceCheck:
-            advanceZone(*plant.item);
-            return std::nullopt;
-        case Zone::Weighing:
-            advanceZone(*plant.item);
-            plant.divertingWaitTicks = 0;
-            return std::nullopt;
-        case Zone::Diverting:
-            if (!routingReady) {
-                plant.divertingWaitTicks = 0;
-                return std::nullopt;
-            }
-            if (!diverter.isSettled()) {
-                ++plant.divertingWaitTicks;
-                return plant.divertingWaitTicks <= 1 ? SystemEventKind::DiverterNotReady
-                                                      : SystemEventKind::RoutingDeadlineMissed;
-            }
-            plant.item->zone =
-                (diverter.actualPosition() == DiverterPosition::Straight) ? Zone::OutputLight : Zone::OutputHeavy;
-            plant.divertingWaitTicks = 0;
-            return std::nullopt;
-        case Zone::OutputLight:
-        case Zone::OutputHeavy:
-            plant.item.reset();
-            return std::nullopt;
-    }
-    return std::nullopt;
+AdvanceResult advance(Plant& plant, const Diverter& diverter, bool routingReady) {
+    // TODO (Misja 30: przesuwanie_partii): pełny algorytm downstream-to-upstream -- patrz
+    // materiały misji. Ten stub celowo nic nie przesuwa i nigdy nic nie zwraca.
+    (void)plant;
+    (void)diverter;
+    (void)routingReady;
+    return AdvanceResult{};
 }
 
 }  // namespace psm

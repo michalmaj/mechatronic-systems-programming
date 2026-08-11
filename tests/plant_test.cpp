@@ -1,25 +1,28 @@
 #include "support/check.hpp"
-#include <psm/diverter.hpp>
 #include <psm/plant.hpp>
 
 int main() {
     psm::Plant plant;
-    psm::Diverter diverter;
-    psmCheck(!plant.item.has_value(), "plant starts empty");
+    psmCheck(!plant.infeed.has_value(), "plant starts with an empty infeed");
+    psmCheck(!plant.presenceCheck.has_value(), "plant starts with an empty presenceCheck");
+    psmCheck(!plant.weighing.has_value(), "plant starts with an empty weighing");
+    psmCheck(!plant.diverting.has_value(), "plant starts with an empty diverting");
 
-    psm::spawnItem(plant, psm::Item{1, psm::Zone::Infeed, 750});
-    psmCheck(plant.item.has_value(), "item present after spawnItem");
-    psmCheck(plant.item->zone == psm::Zone::Infeed, "spawned item starts at Infeed");
+    psmCheck(psm::spawnItem(plant, 1, 750), "spawnItem succeeds into an empty infeed");
+    psmCheck(plant.infeed.has_value() && plant.infeed->id == 1 && plant.infeed->mass == 750,
+             "spawned item lands in infeed with the given id and mass");
 
-    psm::spawnItem(plant, psm::Item{2, psm::Zone::Infeed, 100});
-    psmCheck(plant.item->id == 1, "spawnItem while occupied is ignored");
+    psmCheck(!psm::spawnItem(plant, 2, 100), "spawnItem fails while infeed is still occupied");
+    psmCheck(plant.infeed->id == 1, "the occupying item is unchanged after the rejected spawn");
 
-    psm::advance(plant, diverter);
-    psmCheck(plant.item->zone == psm::Zone::PresenceCheck, "advance moves the item forward");
+    plant.presenceCheck = plant.infeed;
+    plant.infeed.reset();
+    psmCheck(!psm::spawnItem(plant, 1, 500),
+             "spawnItem fails when id collides with a parcel resident elsewhere in the plant");
 
-    psm::advance(plant, diverter);
-    psm::advance(plant, diverter);
-    psmCheck(plant.item->zone == psm::Zone::Diverting, "advance reaches Diverting after three calls");
+    psmCheck(psm::spawnItem(plant, 2, 500),
+             "a distinct id spawns successfully even while another parcel is resident");
+    psmCheck(plant.infeed.has_value() && plant.infeed->id == 2, "the new parcel lands in infeed");
 
     return 0;
 }

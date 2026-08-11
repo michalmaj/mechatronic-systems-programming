@@ -13,4 +13,7 @@ WeightClass classify(Grams mass);
 DiverterCommand toDiverterCommand(WeightClass weightClass);
 std::optional<WeightClass> decideClassification(WeightReading weight);
 
+void updatePresenceConfirmation(Item& itemAtPresenceCheck, PresenceReading presence);
+void updateClassification(Item& itemAtWeighing, WeightReading weight);
+
 }  // namespace psm
