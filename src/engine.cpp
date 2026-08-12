@@ -62,16 +62,6 @@ void Engine::clearDiverterFault() {
 }
 
 TickResult Engine::step() {
-    // TODO (Misja 32: silnik_z_wieloma_paczkami): to jest tymczasowy, kompilowalny placeholder --
-    // NIE ostateczna logika. Zastąp go pełną integracją: odczyty czujników z
-    // plant_.presenceCheck/plant_.weighing, updatePresenceConfirmation/updateClassification
-    // wywoływane tylko gdy odpowiedni slot jest zajęty, polecenie dywertera wyliczane WYŁĄCZNIE z
-    // plant_.diverting (nigdy z tego, co właśnie sklasyfikowano w weighing w tym samym ticku,
-    // ponieważ ta paczka nie mogła jeszcze dotrzeć do diverting), wywołanie psm::advance(...) pod
-    // bramką beltMotor_.actualState() == BeltMotorState::Running, i TickResult zbudowany z
-    // rzeczywistych czterech slotów oraz korelacji presenceObservedItemId/weightObservedItemId/
-    // diverterCommandItemId. Zachowaj bez zmian: flagi wejściowe, latch_, decision, modeForTick,
-    // bramkowanie pasa przez modeForTick, reactToSystemEvent na końcu.
     const bool startRequested = startRequested_;
     const bool stopRequested = stopRequested_;
     const bool pressed = eStopPressed_;
@@ -87,6 +77,31 @@ TickResult Engine::step() {
     const SafetyDecision decision = checkEmergencyOverride(latch_);
     const Mode modeForTick = modeStep(mode_, startRequested, stopRequested, latch_, resetRequested);
 
+    const PresenceReading presence = presenceSensor_.read(plant_.presenceCheck, presenceFault_);
+    if (plant_.presenceCheck.has_value()) {
+        updatePresenceConfirmation(*plant_.presenceCheck, presence);
+    }
+    const WeightReading weight = weightSensor_.read(plant_.weighing, weightFault_);
+    if (plant_.weighing.has_value()) {
+        updateClassification(*plant_.weighing, weight);
+    }
+
+    const bool diverterAllowedToMove = !decision.overrideActive && diverterMayMove(modeForTick);
+
+    DiverterCommand diverterCommand = DiverterCommand::HoldStraight;
+    std::optional<ItemId> diverterCommandItemId;
+    if (plant_.diverting.has_value() && plant_.diverting->classification.has_value()) {
+        diverterCommand = toDiverterCommand(*plant_.diverting->classification);
+        diverterCommandItemId = plant_.diverting->id;
+    }
+    if (diverterAllowedToMove) {
+        diverter_.setCommand(diverterCommand);
+        diverter_.resolve(diverterFault_);
+    }
+
+    const bool routingReady = diverterAllowedToMove && plant_.diverting.has_value()
+                               && plant_.diverting->classification.has_value();
+
     if (decision.overrideActive) {
         beltMotor_.forceStop();
     } else {
@@ -94,24 +109,37 @@ TickResult Engine::step() {
         beltMotor_.resolve();
     }
 
-    mode_ = reactToSystemEvent(modeForTick, std::nullopt);
+    AdvanceResult advanceResult;
+    if (beltMotor_.actualState() == BeltMotorState::Running) {
+        advanceResult = psm::advance(plant_, diverter_, routingReady);
+    }
 
-    SensorSnapshot sensors{tick_, PresenceReading{ReadingStatus::Ok, false}, std::nullopt,
-                            WeightReading{ReadingStatus::Ok, 0}, std::nullopt};
+    mode_ = reactToSystemEvent(modeForTick, advanceResult.event);
+
+    const std::optional<ItemId> presenceObservedItemId =
+        (presence.status == ReadingStatus::Ok && plant_.presenceCheck.has_value())
+            ? std::optional<ItemId>{plant_.presenceCheck->id}
+            : std::nullopt;
+    const std::optional<ItemId> weightObservedItemId =
+        (weight.status == ReadingStatus::Ok && plant_.weighing.has_value())
+            ? std::optional<ItemId>{plant_.weighing->id}
+            : std::nullopt;
+
+    SensorSnapshot sensors{tick_, presence, presenceObservedItemId, weight, weightObservedItemId};
     TickResult result{tick_,
                        plant_.infeed,
                        plant_.presenceCheck,
                        plant_.weighing,
                        plant_.diverting,
-                       std::nullopt,
-                       DiverterCommand::HoldStraight,
-                       std::nullopt,
+                       advanceResult.departure,
+                       diverterCommand,
+                       diverterCommandItemId,
                        diverter_.actualPosition(),
                        mode_,
                        beltMotor_.actualState(),
                        latch_,
                        sensors,
-                       std::nullopt};
+                       advanceResult.event};
     ++tick_;
     return result;
 }

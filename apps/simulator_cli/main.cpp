@@ -1,15 +1,37 @@
 #include <iostream>
+#include <vector>
 
 #include <psm/engine.hpp>
+#include <psm/item.hpp>
+#include <psm/tick_result.hpp>
 
 int main() {
-    // TODO (Misja 32: silnik_z_wieloma_paczkami): zaimplementuj demonstrację co najmniej trzech
-    // paczek o różnych klasyfikacjach jednocześnie w locie (np. Light/Heavy/Light -- patrz
-    // materiały misji), z co najmniej jednym tickiem pokazującym "same-tick chain shift": odjazd
-    // jednej paczki i wejście kolejnej do właśnie zwolnionego slotu w tym samym ticku. Użyj
-    // psm::describe() do wypisania każdego ticku.
+    std::cout << "-- Multiple parcels in flight: Light/Heavy/Light --\n";
+
     psm::Engine engine;
-    (void)engine;
-    std::cout << "TODO: multi-parcel simulator_cli demonstration (Misja 32)\n";
+    engine.requestStart();
+
+    struct Pending {
+        psm::ItemId id;
+        psm::Grams mass;
+    };
+    std::vector<Pending> toSpawn{{1, 100}, {2, 800}, {3, 150}};
+    std::size_t nextToSpawn = 0;
+    int departed = 0;
+
+    for (int tick = 0; tick < 30 && departed < 3; ++tick) {
+        if (nextToSpawn < toSpawn.size()) {
+            const auto& next = toSpawn[nextToSpawn];
+            if (engine.spawnItem(next.id, next.mass)) {
+                ++nextToSpawn;
+            }
+        }
+        auto result = engine.step();
+        std::cout << psm::describe(result) << '\n';
+        if (result.departure.has_value()) {
+            ++departed;
+        }
+    }
+
     return 0;
 }

@@ -22,19 +22,15 @@ std::optional<WeightClass> decideClassification(WeightReading weight) {
 }
 
 void updatePresenceConfirmation(Item& itemAtPresenceCheck, PresenceReading presence) {
-    // TODO (Misja 31: korelacja_per_paczka): jeśli presence.status == ReadingStatus::Ok i
-    // presence.occupied, ustaw itemAtPresenceCheck.presenceConfirmed = true. W przeciwnym razie
-    // nic nie rób.
-    (void)itemAtPresenceCheck;
-    (void)presence;
+    if (presence.status == ReadingStatus::Ok && presence.occupied) {
+        itemAtPresenceCheck.presenceConfirmed = true;
+    }
 }
 
 void updateClassification(Item& itemAtWeighing, WeightReading weight) {
-    // TODO (Misja 31: korelacja_per_paczka): jeśli itemAtWeighing.presenceConfirmed i
-    // weight.status == ReadingStatus::Ok, ustaw itemAtWeighing.classification =
-    // decideClassification(weight). W przeciwnym razie nic nie rób.
-    (void)itemAtWeighing;
-    (void)weight;
+    if (itemAtWeighing.presenceConfirmed && weight.status == ReadingStatus::Ok) {
+        itemAtWeighing.classification = decideClassification(weight);
+    }
 }
 
 }  // namespace psm
