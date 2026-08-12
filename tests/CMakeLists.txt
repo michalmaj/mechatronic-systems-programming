@@ -113,6 +113,16 @@ target_link_libraries(fault_engine_test PRIVATE psm_core)
 add_test(NAME fault_engine_test COMMAND fault_engine_test)
 set_tests_properties(fault_engine_test PROPERTIES LABELS "misja-28;misja-32")
 
+add_executable(scenario_validation_test scenario_validation_test.cpp)
+target_link_libraries(scenario_validation_test PRIVATE psm_core)
+add_test(NAME scenario_validation_test COMMAND scenario_validation_test)
+set_tests_properties(scenario_validation_test PROPERTIES LABELS "misja-33")
+
+add_executable(run_scenario_test run_scenario_test.cpp)
+target_link_libraries(run_scenario_test PRIVATE psm_core)
+add_test(NAME run_scenario_test COMMAND run_scenario_test)
+set_tests_properties(run_scenario_test PROPERTIES LABELS "misja-34")
+
 add_executable(item_correlation_test item_correlation_test.cpp)
 target_link_libraries(item_correlation_test PRIVATE psm_core)
 add_test(NAME item_correlation_test COMMAND item_correlation_test)
@@ -125,5 +135,8 @@ set_tests_properties(multiple_items_engine_test PROPERTIES LABELS "misja-32")
 
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
 set_tests_properties(simulator_cli_smoke PROPERTIES LABELS "misja-6")
+
+add_test(NAME simulator_cli_scenario_smoke COMMAND simulator_cli)
+set_tests_properties(simulator_cli_scenario_smoke PROPERTIES LABELS "misja-35")
 
 add_test(NAME toolchain_check_smoke COMMAND toolchain_check)
