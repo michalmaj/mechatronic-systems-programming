@@ -38,9 +38,9 @@ Wypełnij `runTicks` tak, żeby dla każdego z `tickCount` "ticków" wykonać:
 
 1. jeśli `plant.item` ma wartość — policz `WeightClass` przez `classify(plant.item->mass)`, a
    następnie `DiverterPosition` przez `toDiverterPosition(...)` na tym wyniku,
-2. wywołaj `advance(plant, tenDiverterPosition)` (użyj tej właśnie policzonej pozycji — jeśli
-   `plant.item` jest puste, `advance` i tak nic nie zrobi, więc możesz podać dowolną wartość, np.
-   `DiverterPosition::Straight`, gdy paczki nie ma).
+2. wywołaj `advance(plant, diverterPosition)`, gdzie `diverterPosition` to ta właśnie policzona
+   wartość (jeśli `plant.item` jest puste, `advance` i tak nic nie zrobi, więc możesz podać
+   dowolną wartość, np. `DiverterPosition::Straight`, gdy paczki nie ma).
 
 Innymi słowy: `runTicks` **spina w jedną całość** to, co wcześniej testowałeś osobno — Controller i
 `Plant::advance` — i robi to `tickCount` razy z rzędu.
