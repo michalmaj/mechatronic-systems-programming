@@ -5,6 +5,19 @@
 #include <psm/plant.hpp>
 #include <psm/zone.hpp>
 
+namespace {
+
+const char* diverterPositionName(psm::DiverterPosition position) {
+    switch (position) {
+        case psm::DiverterPosition::Straight: return "Straight";
+        case psm::DiverterPosition::Diverted: return "Diverted";
+        case psm::DiverterPosition::Moving: return "Moving";
+    }
+    return "Unknown";
+}
+
+}  // namespace
+
 int main() {
     psm::Plant plant;
     psm::Diverter diverter;
@@ -18,7 +31,8 @@ int main() {
         psm::advance(plant, diverter);
 
         if (plant.item.has_value()) {
-            std::cout << "tick " << tick << ": zone=" << psm::toString(plant.item->zone) << '\n';
+            std::cout << "tick " << tick << ": zone=" << psm::toString(plant.item->zone)
+                      << ", diverter=" << diverterPositionName(diverter.actualPosition()) << '\n';
         } else {
             std::cout << "tick " << tick << ": empty\n";
         }
