@@ -51,7 +51,7 @@ Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test celowo zawi
 ## Pytanie do zastanowienia
 
 Dlaczego ta misja nie przyjmuje jeszcze `PresenceReading` jako drugiego argumentu, skoro realny
-problem (Misja 24) będzie potrzebował obu czujników? Co konkretnie poszłoby nie tak, gdybyśmy
+problem (Misja 23) będzie potrzebował obu czujników? Co konkretnie poszłoby nie tak, gdybyśmy
 spróbowali połączyć oba czujniki w tej samej funkcji, wywoływanej w jednym ticku?
 
 **Dalej:** [Misja 23: pamięć decyzji sterownika](./04_pamiec_decyzji_sterownika.md).
