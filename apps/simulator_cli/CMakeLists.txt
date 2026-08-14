@@ -1,2 +1,6 @@
-add_executable(simulator_cli main.cpp scenario_demos.cpp)
-target_link_libraries(simulator_cli PRIVATE psm_core)
+add_library(simulator_cli_scenarios scenario_demos.cpp)
+target_include_directories(simulator_cli_scenarios PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(simulator_cli_scenarios PUBLIC psm_core)
+
+add_executable(simulator_cli main.cpp)
+target_link_libraries(simulator_cli PRIVATE simulator_cli_scenarios)

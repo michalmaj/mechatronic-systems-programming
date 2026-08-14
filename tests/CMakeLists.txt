@@ -136,7 +136,9 @@ set_tests_properties(multiple_items_engine_test PROPERTIES LABELS "misja-32")
 add_test(NAME simulator_cli_smoke COMMAND simulator_cli)
 set_tests_properties(simulator_cli_smoke PROPERTIES LABELS "misja-6")
 
-add_test(NAME simulator_cli_scenario_smoke COMMAND simulator_cli)
-set_tests_properties(simulator_cli_scenario_smoke PROPERTIES LABELS "misja-35")
+add_executable(simulator_cli_scenario_test simulator_cli_scenario_test.cpp)
+target_link_libraries(simulator_cli_scenario_test PRIVATE simulator_cli_scenarios)
+add_test(NAME simulator_cli_scenario_test COMMAND simulator_cli_scenario_test)
+set_tests_properties(simulator_cli_scenario_test PROPERTIES LABELS "misja-35")
 
 add_test(NAME toolchain_check_smoke COMMAND toolchain_check)
