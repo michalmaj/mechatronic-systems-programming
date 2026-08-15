@@ -1,0 +1,50 @@
+name: "Course content issue / Problem w materiale"
+description: "Unclear instructions, a factual error, a typo, a wrong mission number, a broken link, PL/EN inconsistency, or material that no longer matches the code/tests. / Niejasna instrukcja, błąd merytoryczny, literówka, zły numer misji, broken link, niespójność PL/EN, materiał niezgodny z kodem/testem."
+title: "[content]: "
+labels: ["course-content"]
+body:
+  - type: input
+    id: file-link
+    attributes:
+      label: "File / link — Plik / link"
+      description: "Path or link to the affected file, e.g. course/module_06_sensors/03_klasyfikacja_odporna_na_awarie.md. / Ścieżka lub link do pliku, np. course/module_06_sensors/03_klasyfikacja_odporna_na_awarie.md."
+    validations:
+      required: true
+
+  - type: input
+    id: module-mission
+    attributes:
+      label: "Module / mission — Moduł / misja"
+      placeholder: "e.g. Module 6 / Misja 22"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: "Type of problem — Typ problemu"
+      options:
+        - Unclear instruction / Niejasna instrukcja
+        - Factual error / Błąd merytoryczny
+        - Typo / Literówka
+        - Wrong mission number / Zły numer misji
+        - Broken link / Zepsuty link
+        - PL/EN inconsistency / Niespójność PL/EN
+        - Doesn't match code or tests / Niezgodność z kodem lub testem
+        - Other / Inne
+    validations:
+      required: true
+
+  - type: textarea
+    id: whats-wrong
+    attributes:
+      label: "What's wrong — Co jest nie tak"
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-fix
+    attributes:
+      label: "Suggested fix — Sugerowana poprawka"
+    validations:
+      required: false
