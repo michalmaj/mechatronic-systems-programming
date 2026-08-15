@@ -1,0 +1,77 @@
+name: "Bug / Błąd"
+description: "Problems with code, the build, tests, or simulator behavior. / Problemy z kodem, buildem, testami lub działaniem symulatora."
+title: "[bug]: "
+labels: ["bug"]
+body:
+  - type: input
+    id: module-tag
+    attributes:
+      label: "Module / tag — Moduł / tag"
+      description: "Which module or tag this relates to, e.g. module-06-start, final-project-start. / Którego modułu lub tagu to dotyczy, np. module-06-start, final-project-start."
+      placeholder: "module-06-start"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: "OS — System operacyjny"
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Other / Inny
+    validations:
+      required: true
+
+  - type: input
+    id: compiler
+    attributes:
+      label: "Compiler / IDE — Kompilator / IDE"
+      description: "e.g. GCC 13, Clang 17, MSVC 19.4x, CLion, Visual Studio 2022. / np. GCC 13, Clang 17, MSVC 19.4x, CLion, Visual Studio 2022."
+      placeholder: "e.g. Clang 17 / CLion 2024.2"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: "Steps to reproduce — Kroki reprodukcji"
+      description: "Exact commands and steps, starting from a clean checkout if possible. / Dokładne komendy i kroki, najlepiej od czystego stanu repozytorium."
+      placeholder: |
+        1. git switch -c my-work module-06-start
+        2. cmake --preset dev
+        3. cmake --build --preset dev
+        4. ctest --preset test -L misja-22
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected behavior — Oczekiwane zachowanie"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: "Actual behavior — Rzeczywiste zachowanie"
+    validations:
+      required: true
+
+  - type: textarea
+    id: log
+    attributes:
+      label: "Log / output — Log / wynik"
+      description: "Paste relevant build/test output. / Wklej odpowiedni fragment logu builda/testu."
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "Additional context — Dodatkowy kontekst"
+    validations:
+      required: false

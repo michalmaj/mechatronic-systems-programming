@@ -1,0 +1,47 @@
+name: "Enhancement / Propozycja"
+description: "A new feature, a new example, a course improvement, or a documentation extension. / Propozycja nowej funkcji, nowego przykładu, ulepszenia kursu lub rozszerzenia dokumentacji."
+title: "[enhancement]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Problem / need — Problem / potrzeba"
+      description: "What's missing or could be better? / Czego brakuje albo co mogłoby być lepsze?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: "Proposed solution — Proponowane rozwiązanie"
+    validations:
+      required: true
+
+  - type: textarea
+    id: value
+    attributes:
+      label: "Educational value — Wartość dydaktyczna"
+      description: "What would a student learn or gain from this? / Czego student nauczy się dzięki temu, albo co zyska?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: "Impact on existing Core — Wpływ na istniejący Core"
+      description: "Does this touch Course Core 0-9 material, or is it additive only? / Czy to dotyka materiału Course Core 0-9, czy jest wyłącznie addytywne?"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: "Core or optional extension? — Core czy optional extension?"
+      options:
+        - Course Core (Modules 0-9) / Course Core (Moduły 0-9)
+        - Final Project optional extension / Opcjonalne rozszerzenie projektu końcowego
+        - Documentation / infrastructure only / Wyłącznie dokumentacja / infrastruktura
+        - Not sure / Nie jestem pewien/pewna
+    validations:
+      required: true
