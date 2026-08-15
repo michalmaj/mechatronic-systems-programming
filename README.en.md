@@ -2,6 +2,9 @@
 
 # Mechatronic Systems Programming
 
+[![CI](https://github.com/michalmaj/mechatronic-systems-programming/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/michalmaj/mechatronic-systems-programming/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/michalmaj/mechatronic-systems-programming)](LICENSE)
+
 A hands-on C++ course for mechatronics students: across 35 missions you build, test, and extend
 **one deterministic industrial sorting-cell simulator** — from your first `enum class` to your own
 final project.
@@ -58,7 +61,11 @@ matching `module-XX-start` (exact workflow: see the Roadmap).
   final project: an input buffer for the sorting line.
 - **[Issues](../../issues)** — bugs in code/tests, problems in the material, proposals.
 
-## License and status
+## Status
 
 The course is in a pilot phase. Course Core 0–9 material is closed and stable; if anything in the
 code, tests, or material looks inconsistent, report it via Issues.
+
+## License
+
+This project is released under the MIT License. See [LICENSE](LICENSE) for details.

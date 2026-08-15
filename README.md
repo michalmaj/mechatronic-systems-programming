@@ -2,6 +2,9 @@
 
 # Programowanie systemów mechatronicznych
 
+[![CI](https://github.com/michalmaj/mechatronic-systems-programming/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/michalmaj/mechatronic-systems-programming/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/michalmaj/mechatronic-systems-programming)](LICENSE)
+
 Praktyczny kurs C++ dla mechatroników: przez 35 misji budujesz, testujesz i rozbudowujesz **jeden,
 deterministyczny symulator przemysłowej komórki sortującej** — od pierwszego `enum class` po własny
 projekt końcowy.
@@ -58,7 +61,11 @@ Działa na Windows, Linux i macOS. Do każdego kolejnego modułu tworzysz nową 
   końcowy: bufor wejściowy dla linii sortującej.
 - **[Issues](../../issues)** — błędy w kodzie/testach, problemy w materiale, propozycje.
 
-## Licencja i status
+## Status
 
 Kurs jest w fazie pilotażu. Materiał Course Core 0–9 jest zamknięty i stabilny; jeśli coś w kodzie,
 testach lub materiale wygląda na niespójne — zgłoś przez Issues.
+
+## Licencja
+
+Projekt jest udostępniany na licencji MIT. Szczegóły znajdują się w pliku [LICENSE](LICENSE).
