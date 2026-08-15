@@ -39,4 +39,9 @@ Thumbs.db
 Desktop.ini
 
 # Local-only working notes and agent instructions (not for the public repo)
-/docs/
+# NOTE: narrowed from a blanket `/docs/` to these specific paths -- the blanket rule was silently
+# swallowing the public course documentation this project now publishes under docs/ (roadmap,
+# handbook). Flagged in the bilingual-course-publication PR description.
+/docs/CLAUDE.md
+/docs/AGENTS.md
+/docs/superpowers/
