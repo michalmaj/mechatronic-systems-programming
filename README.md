@@ -61,7 +61,11 @@ Działa na Windows, Linux i macOS. Do każdego kolejnego modułu tworzysz nową 
   końcowy: bufor wejściowy dla linii sortującej.
 - **[Issues](../../issues)** — błędy w kodzie/testach, problemy w materiale, propozycje.
 
-## Licencja i status
+## Status
 
 Kurs jest w fazie pilotażu. Materiał Course Core 0–9 jest zamknięty i stabilny; jeśli coś w kodzie,
 testach lub materiale wygląda na niespójne — zgłoś przez Issues.
+
+## Licencja
+
+Projekt jest udostępniany na licencji MIT. Szczegóły znajdują się w pliku [LICENSE](LICENSE).

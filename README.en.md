@@ -61,7 +61,11 @@ matching `module-XX-start` (exact workflow: see the Roadmap).
   final project: an input buffer for the sorting line.
 - **[Issues](../../issues)** — bugs in code/tests, problems in the material, proposals.
 
-## License and status
+## Status
 
 The course is in a pilot phase. Course Core 0–9 material is closed and stable; if anything in the
 code, tests, or material looks inconsistent, report it via Issues.
+
+## License
+
+This project is released under the MIT License. See [LICENSE](LICENSE) for details.
