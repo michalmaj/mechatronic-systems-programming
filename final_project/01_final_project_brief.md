@@ -134,9 +134,12 @@ Zanim zaczniesz kodować: napisz kilka zdań uzasadnienia dla dwóch decyzji, kt
 DESIGN CHOICE niżej):
 
 - **Gdzie mieszka bufor** (jaki byt jest jego właścicielem) — i dlaczego to miejsce, a nie inne.
-  Rozważ: czy to stan fizyczny czy stan eksperymentu; kto powinien być właścicielem; czy bufor istnieje
-  także w trybie imperatywnym (bez `Scenario`); jaki to ma wpływ na `Engine::step()` i na
-  testowalność.
+  Rozważ oba kierunki symetrycznie, nie tylko jeden: czy to stan fizyczny czy stan eksperymentu; czy
+  bufor pasuje bardziej do stref, którymi już włada `Plant`, czy do komponentów „urządzeniowych”,
+  którymi włada `Engine` (jak `Diverter`/`BeltMotor`); czy bufor istnieje także w trybie imperatywnym
+  (bez `Scenario`) w obu wariantach; jak każdy z wariantów wpływa na `Engine::step()` i na
+  testowalność — w jednym miejscu ten wpływ jest inny niż w drugim, i to jest właśnie coś, co masz
+  sam/a ocenić i uzasadnić, nie coś z góry przesądzonego przez ten brief.
 - **Jak dobrałeś/aś pojemność** i sposób jej ustawienia.
 
 To krótki dokument (kilkanaście zdań wystarczy), nie osobny raport — ale będzie punktem wyjścia do
@@ -144,10 +147,12 @@ indywidualnej obrony (patrz niżej).
 
 ## DESIGN CHOICE — decydujesz i uzasadniasz
 
-- **Miejsce własności bufora.** Bufor jako część `Plant`, albo jako osobny komponent, którym włada
-  `Engine` — obie opcje są dozwolone, o ile spełniasz identyczny kontrakt zachowania z sekcji MUST.
-  Bufor jako prywatny stan wyłącznie wewnątrz `runScenario`/`Scenario` (czyli niewidoczny dla trybu
-  imperatywnego) **nie jest dozwolony** — to jedyna wykluczona opcja.
+- **Miejsce własności bufora.** Bufor jako część `Plant` (obok istniejących stref) — albo jako osobny
+  komponent, którym włada `Engine`, analogicznie do `Diverter`/`BeltMotor`, które `Engine` już dziś
+  posiada. Obie opcje są tu celowo równorzędne — żadna nie jest sugerowana jako „bardziej poprawna”;
+  wybierasz i uzasadniasz sam/a (patrz Design rationale wyżej). Jedyna wykluczona opcja to bufor jako
+  prywatny stan wyłącznie wewnątrz `runScenario`/`Scenario`, czyli niewidoczny dla trybu
+  imperatywnego.
 - **Dokładna wartość pojemności powyżej minimum 2** i sposób jej ustawienia (stała czy pole
   konfigurowalne).
 - **Dokładna nazwa nowego API arrival** (`acceptArrival` jest sugerowane, ale to twoja decyzja).
