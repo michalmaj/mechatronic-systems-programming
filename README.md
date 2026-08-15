@@ -2,6 +2,9 @@
 
 # Programowanie systemów mechatronicznych
 
+[![CI](https://github.com/michalmaj/mechatronic-systems-programming/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/michalmaj/mechatronic-systems-programming/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/michalmaj/mechatronic-systems-programming)](LICENSE)
+
 Praktyczny kurs C++ dla mechatroników: przez 35 misji budujesz, testujesz i rozbudowujesz **jeden,
 deterministyczny symulator przemysłowej komórki sortującej** — od pierwszego `enum class` po własny
 projekt końcowy.

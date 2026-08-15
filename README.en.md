@@ -2,6 +2,9 @@
 
 # Mechatronic Systems Programming
 
+[![CI](https://github.com/michalmaj/mechatronic-systems-programming/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/michalmaj/mechatronic-systems-programming/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/michalmaj/mechatronic-systems-programming)](LICENSE)
+
 A hands-on C++ course for mechatronics students: across 35 missions you build, test, and extend
 **one deterministic industrial sorting-cell simulator** — from your first `enum class` to your own
 final project.
