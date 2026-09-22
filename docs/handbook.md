@@ -33,8 +33,9 @@ Kilka rzeczy, które są prawdziwe przez cały kurs i warto je zrozumieć raz, n
   `Engine::step()` to jeden tick: przeczytaj bieżący stan, zdecyduj, co się zmienia, zwróć wynik
   (`TickResult`). Ten sam ciąg wejść zawsze daje ten sam ciąg wyników.
 - **Testy są dostarczone przez kurs.** Nie piszesz ich sam/a aż do Project Kickoff (rozdział 10) —
-  Twoim zadaniem jest je zrozumieć i uruchomić, nie zaprojektować od zera. Test jest ostatecznym,
-  wykonywalnym kontraktem misji: jeśli jest zielony, misja jest zrobiona.
+  Twoim zadaniem jest je zrozumieć i uruchomić, nie zaprojektować od zera. Test jest wykonywalnym
+  kontraktem misji: zielony wynik potwierdza wymagane zachowanie i kończy misję, ale sam w sobie nie
+  dowodzi zrozumienia — tego dotyczą checkpointy po Modułach 3, 7 i 9.
 - **CMake/CTest to narzędzia, nie przedmiot nauki.** Konfigurujesz preset, budujesz, uruchamiasz testy
   — to wszystko, czego potrzebujesz umieć o samym CMake w tym kursie (patrz Dodatek B).
 - **Pracujesz na tagach.** Każdy moduł zaczyna się od `git switch -c <twoja-gałąź> module-XX-start`.
@@ -157,8 +158,11 @@ rozpędzać i hamować, nie przełączać się natychmiast.
 ```cpp
 enum class BeltMotorCommand { Stop, Run };
 enum class BeltMotorState { Stopped, RampingUp, Running, RampingDown };
-enum class Mode { Idle, Running, EStopped, Fault };
+enum class Mode { Idle, Running };
 ```
+
+(`Mode` rośnie w kolejnych modułach — `EStopped` dochodzi w Module 5, `Fault` w Module 7. To nie jest
+przeoczenie: każdy stan pojawia się dopiero razem z mechanizmem, który go potrzebuje.)
 
 `BeltMotor` powtarza wzorzec command/actual z Modułu 2, ale z ważną nowością: przejście między stanami
 zajmuje więcej niż jeden tick (`Stopped → RampingUp → Running`). To nie jest szczegół implementacyjny
@@ -195,9 +199,15 @@ enum class EStopLatchState { Released, Engaged, Armed };
 
 `EStopLatchState` to *latch* (zatrzask) — stan, który **nie cofa się sam z siebie**. Naciśnięcie
 przycisku wprowadza go w `Engaged`; zwolnienie przycisku samo w sobie nie wystarcza, żeby wrócić do
-`Released` — potrzebny jest jeszcze jawny `Reset`, i to dopiero z pośredniego stanu `Armed`. To
-świadomy wybór projektowy: **fresh start po recovery** ma być zawsze wynikiem jawnej, dwuetapowej
-decyzji operatora, nigdy przypadkowego zbiegu okoliczności.
+`Released` — potrzebny jest jeszcze jawny `Reset`, i to dopiero z pośredniego stanu `Armed`.
+
+To załatwia sam zatrzask, ale nie samo ponowne uruchomienie linii. Release + Reset odblokowują
+system i sprowadzają `Mode` z powrotem do `Idle` — to jeszcze nie `Running`. Do faktycznego ruszenia
+linii potrzeba osobnego, kolejnego `StartRequested`, na późniejszym ticku. `Reset` i `StartRequested`
+wysłane na tym samym ticku **nie** restartują systemu od razu — `modeStep` w tym ticku i tak
+sprowadza `Mode` tylko do `Idle`; `Running` wymaga oddzielnego wywołania startu, gdy `Mode` jest już
+`Idle`. To świadomy wybór projektowy: ponowny ruch linii ma być zawsze wynikiem osobnej, jawnej
+decyzji operatora, nigdy efektem ubocznym samego odblokowania.
 
 `Mode::EStopped` ma wyższy priorytet niż wszystko inne — dokładnie to znaczy „niezależna ścieżka”:
 reszta systemu nie musi wiedzieć o E-Stopie, żeby E-Stop mógł nad nią zapanować.
@@ -223,13 +233,19 @@ zawsze znamy, bo to my go budujemy) kontra **observation** (co czujnik faktyczni
 `ReadingStatus`). Logika sterowania nigdy nie powinna sięgać po ground truth bezpośrednio — działa
 wyłącznie na obserwacjach, dokładnie tak, jak działałby prawdziwy sterownik z prawdziwymi czujnikami.
 
-Gdy odczyt jest `Missing` albo `Stale`, system stosuje wzorzec **last-known-good**: trzyma ostatnią
-zaufaną wartość zamiast zgadywać albo zamierać. To prowadzi do „klasyfikacji odpornej na awarie” —
-decyzji, która degraduje się w sposób przewidywalny, zamiast psuć się w sposób przypadkowy.
+Gdy odczyt jest `Stale`, czujnik podstawia ostatnią zaufaną wartość (wzorzec **last-known-good**) —
+ale tylko wtedy, gdy taka wartość w ogóle już istnieje; jeśli nie, `Stale` degraduje się do tego
+samego zachowania co `Missing`. `Missing` z kolei nigdy nie korzysta z last-known-good — to jawny
+sygnał „nic nie wiadomo”, inny niż „wiadomo, ale nieaktualnie”. Ten sam wzorzec działa identycznie dla
+odczytu obecności i wagi. Stąd „klasyfikacja odporna na awarie” — decyzja, która degraduje się w
+sposób przewidywalny, zamiast psuć się przypadkowo.
 
-Ten moduł wprowadza też pierwszą realną potrzebę **korelacji** — skąd wiadomo, którego `ItemId`
-dotyczy dany odczyt, skoro odczyty i ruch paczek dzieją się asynchronicznie względem siebie w ramach
-jednego ticku.
+Klasyfikacja korzysta z tych odczytów, ale musi też pamiętać coś własnego między tickami:
+potwierdzenie obecności (`PresenceCheck`) i odczyt wagi (`Weighing`) to dwie osobne, sekwencyjne
+strefy — paczka mija je jedna po drugiej, na różnych tickach. Żeby zaufać wadze później, system musi
+pamiętać, że obecność była już potwierdzona wcześniej. Stąd `ControllerState` — mały rekord
+(`presenceConfirmed`, `classification`) trzymany między tickami dla aktualnie przetwarzanej paczki,
+aktualizowany co tick w miarę tego, jak paczka przechodzi przez kolejne strefy.
 
 ---
 
