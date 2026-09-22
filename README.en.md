@@ -31,8 +31,9 @@ declarative test scenarios. Everything runs on a regular computer — **no hardw
 - The simulation is **deterministic and sequential** — the same scenario always produces the same
   result. No threads, no randomness.
 - `cmake`/`ctest` are provided infrastructure — you configure and run them, you don't build them from
-  scratch. Each mission has its own test (`ctest -L misja-N`), which is its final contract: a mission
-  is done when its test is green.
+  scratch. Each mission has its own test (`ctest -L misja-N`) — a green test confirms the required
+  behavior and marks the mission done, but it isn't proof of understanding (that's what the
+  checkpoints check, see the Roadmap).
 - The course ends with an independent **final project**, built on top of what you've already made.
 
 ## Quick start
@@ -57,6 +58,8 @@ matching `module-XX-start` (exact workflow: see the Roadmap).
 - **[Roadmap / Student's plan of work](docs/roadmap.en.md)** — the exact path from Module 0 to the
   final project defense.
 - **[Handbook](docs/handbook.en.md)** — coherent teaching material for every module.
+- **[Module material](course/README.md)** *(Polish only for now)* — before clicking a source-code
+  link inside a mission, read the short note on why those links need the right tag checked out.
 - **[Final Project](https://github.com/michalmaj/mechatronic-systems-programming/blob/final-project-start/final_project/README.md)** *(available from the `final-project-start` tag — this link won't resolve on `main`)* — the
   final project: an input buffer for the sorting line.
 - **[Issues](../../issues)** — bugs in code/tests, problems in the material, proposals.
