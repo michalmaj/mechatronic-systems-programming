@@ -73,7 +73,7 @@ wybór id, które się nie koliduje — nie ma tu wewnętrznej kolejki ani gener
 [`include/psm/plant.hpp`](../../include/psm/plant.hpp) — nowy kształt `Plant`, `ItemDeparture`,
 `AdvanceResult`, sygnatury `spawnItem`/`advance` — wszystko gotowe.
 
-[`src/plant.cpp`](../../src/plant.cpp) — `advance()` to na razie kompletny no-op (misja Misji 30, nie
+[`src/plant.cpp`](../../src/plant.cpp) — `advance()` to na razie kompletny no-op (praca Misji 30, nie
 tej) — nie polegaj na tym, że cokolwiek przesuwa, dopóki nie napiszesz Misji 30. Ciało `spawnItem` jest
 `// TODO`.
 
