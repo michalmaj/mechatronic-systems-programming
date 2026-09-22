@@ -55,7 +55,9 @@ The same pattern repeats for Modules 1–9:
 1. `git fetch --tags` to get the latest tags.
 2. Create your own branch from the module's starting point: `git switch -c my-work module-XX-start`.
 3. Read the module's material in the [Handbook](handbook.en.md) (matching chapter) and the module
-   introduction in `course/module_XX_.../00_wprowadzenie.md`.
+   introduction in `course/module_XX_.../00_wprowadzenie.md` — see
+   [`course/README.md`](../course/README.md) (Polish only for now) regarding source-code links inside
+   that material.
 4. Work through the module's missions in order — each mission is a file
    `course/module_XX_.../NN_*.md` with a concrete task.
 5. After each mission, run its test: `ctest --preset test -L misja-N`.

@@ -9,11 +9,16 @@
       Żaden istniejący test nie został zmieniony tylko po to, żeby przeszedł — zmiany zachowania są
       opisane niżej
 
-## Docs — Dokumentacja PL/EN
+## Docs — Dokumentacja
 
-- [ ] Polish and English docs updated together, if this PR touches `README*`, `docs/*`, or
-      `final_project/*` / Dokumentacja PL i EN zaktualizowana razem, jeśli PR dotyka `README*`,
-      `docs/*` lub `final_project/*`
+- [ ] If this PR touches `README*`, `docs/roadmap*`, or `docs/handbook*` — PL and EN updated together
+      (these files have both language versions today) / Jeśli PR dotyka `README*`, `docs/roadmap*`
+      lub `docs/handbook*` — PL i EN zaktualizowane razem (te pliki mają dziś obie wersje językowe)
+- [ ] If this PR touches `course/*.md` or `final_project/*.md` — content checked against the code/tests
+      at the matching tag (these files are Polish-only today; an English version is not required yet)
+      / Jeśli PR dotyka `course/*.md` lub `final_project/*.md` — treść sprawdzona względem kodu/testów
+      na odpowiadającym tagu (te pliki są dziś tylko po polsku; wersja angielska nie jest jeszcze
+      wymagana)
 - [ ] Relative links checked / Sprawdzone linki względne
 
 ## Course checkpoints — Tagi i checkpointy kursu

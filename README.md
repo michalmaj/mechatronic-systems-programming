@@ -31,8 +31,9 @@ scenariusze testowe. Całość działa na zwykłym komputerze — **żaden sprz�
 - Symulacja jest **deterministyczna i sekwencyjna** — ten sam scenariusz zawsze daje ten sam wynik.
   Żadnych wątków, żadnej przypadkowości.
 - `cmake`/`ctest` to dostarczona infrastruktura — konfigurujesz i uruchamiasz, nie budujesz jej od
-  zera. Każda misja ma własny test (`ctest -L misja-N`), który jest jej ostatecznym kontraktem: misja
-  jest zrobiona, gdy jej test jest zielony.
+  zera. Każda misja ma własny test (`ctest -L misja-N`) — zielony test to potwierdzenie wymaganego
+  zachowania i kryterium ukończenia misji, ale nie dowód zrozumienia (to sprawdzają checkpointy, patrz
+  Roadmap).
 - Kurs kończy się samodzielnym **projektem końcowym** na bazie tego, co już zbudowałeś/aś.
 
 ## Szybki start
@@ -57,6 +58,8 @@ Działa na Windows, Linux i macOS. Do każdego kolejnego modułu tworzysz nową 
 - **[Roadmap / Plan pracy studenta](docs/roadmap.md)** — dokładna ścieżka od Modułu 0 do obrony
   projektu końcowego.
 - **[Handbook / Podręcznik](docs/handbook.md)** — spójny materiał dydaktyczny do każdego modułu.
+- **[Materiał modułów](course/README.md)** — zanim klikniesz link do kodu źródłowego wewnątrz misji,
+  przeczytaj krótką uwagę o tym, dlaczego te linki wymagają wyewidencjonowanego właściwego tagu.
 - **[Final Project](https://github.com/michalmaj/mechatronic-systems-programming/blob/final-project-start/final_project/README.md)** *(dostępne od tagu `final-project-start` — ten link nie zadziała na `main`)* — projekt
   końcowy: bufor wejściowy dla linii sortującej.
 - **[Issues](../../issues)** — błędy w kodzie/testach, problemy w materiale, propozycje.

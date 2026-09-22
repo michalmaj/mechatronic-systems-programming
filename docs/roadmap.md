@@ -54,7 +54,8 @@ Ten sam schemat powtarza się dla Modułów 1–9:
 1. `git fetch --tags`, żeby mieć najnowsze tagi.
 2. Utwórz własną gałąź z punktu startowego modułu: `git switch -c my-work module-XX-start`.
 3. Przeczytaj materiał modułu w [Handbooku](handbook.md) (odpowiedni rozdział) oraz wprowadzenie w
-   `course/module_XX_.../00_wprowadzenie.md`.
+   `course/module_XX_.../00_wprowadzenie.md` — patrz [`course/README.md`](../course/README.md) w
+   sprawie linków do kodu źródłowego wewnątrz tych materiałów.
 4. Wykonuj misje modułu po kolei — każda misja to plik `course/module_XX_.../NN_*.md` z konkretnym
    zadaniem.
 5. Po każdej misji uruchom jej test: `ctest --preset test -L misja-N`.

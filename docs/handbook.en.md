@@ -35,7 +35,9 @@ A few things hold true throughout the course and are worth understanding once, u
   sequence of inputs always produces the same sequence of results.
 - **Tests are provided by the course.** You don't write them yourself until Project Kickoff (chapter
   10) — your job is to understand and run them, not design them from scratch. A test is a mission's
-  final, executable contract: if it's green, the mission is done.
+  executable contract: a green result confirms the required behavior and finishes the mission, but it
+  isn't proof of understanding on its own — that's what the checkpoints after Modules 3, 7, and 9
+  check.
 - **CMake/CTest are tools, not a subject to learn.** Configure a preset, build, run tests — that's all
   you need to know about CMake itself in this course (see Appendix B).
 - **You work on tags.** Every module starts with `git switch -c <your-branch> module-XX-start`. You
@@ -157,8 +159,11 @@ up and down, not switch instantly.
 ```cpp
 enum class BeltMotorCommand { Stop, Run };
 enum class BeltMotorState { Stopped, RampingUp, Running, RampingDown };
-enum class Mode { Idle, Running, EStopped, Fault };
+enum class Mode { Idle, Running };
 ```
+
+(`Mode` grows in later modules — `EStopped` arrives in Module 5, `Fault` in Module 7. That's not an
+oversight here: each state shows up together with the mechanism that needs it.)
 
 `BeltMotor` repeats the command/actual pattern from Module 2, with an important addition: the
 transition between states takes more than one tick (`Stopped → RampingUp → Running`). This is not an
@@ -195,9 +200,15 @@ enum class EStopLatchState { Released, Engaged, Armed };
 
 `EStopLatchState` is a *latch* — a state that **does not revert on its own.** Pressing the button
 drives it to `Engaged`; releasing the button alone is not enough to return to `Released` — an explicit
-`Reset` is still needed, and only from the intermediate `Armed` state. This is a deliberate design
-choice: a **fresh start after recovery** is always meant to be the result of an explicit, two-step
-operator decision, never an accidental coincidence.
+`Reset` is still needed, and only from the intermediate `Armed` state.
+
+That clears the latch itself, but not restarting the line. Release + Reset unlock the system and bring
+`Mode` back to `Idle` — that's not `Running` yet. Actually moving the line again needs a separate,
+later `StartRequested`. Sending `Reset` and `StartRequested` on the same tick does **not** restart the
+system right away — that tick's `modeStep` still only brings `Mode` to `Idle`; reaching `Running`
+needs its own start call once `Mode` is already `Idle`. This is a deliberate design choice: resuming
+the line is always meant to be the result of a separate, explicit operator decision, never a side
+effect of unlocking the latch.
 
 `Mode::EStopped` has higher priority than everything else — that is exactly what "independent path"
 means: the rest of the system doesn't need to know about the E-Stop for the E-Stop to be able to
@@ -224,13 +235,19 @@ simulator always knows, because we're the ones building it) versus **observation
 actually reported, with its own `ReadingStatus`). Control logic should never reach for ground truth
 directly — it operates only on observations, exactly the way a real controller with real sensors would.
 
-When a reading is `Missing` or `Stale`, the system applies the **last-known-good** pattern: it keeps
-the last trusted value instead of guessing or freezing. This leads to "fault-tolerant classification" —
-a decision that degrades predictably instead of failing randomly.
+When a reading is `Stale`, the sensor substitutes the last trusted value (the **last-known-good**
+pattern) — but only if such a value already exists; otherwise `Stale` degrades to the same behavior as
+`Missing`. `Missing`, in turn, never falls back to last-known-good — it's an explicit "nothing is
+known" signal, distinct from "known, but out of date." The same rule applies identically to the
+presence and weight readings. This is what "fault-tolerant classification" means: a decision that
+degrades predictably instead of failing randomly.
 
-This module also introduces the first real need for **correlation** — how do you know which `ItemId` a
-given reading is about, when readings and parcel movement happen asynchronously with respect to each
-other within a tick?
+Classification uses these readings, but it also has to remember something of its own across ticks:
+presence confirmation (`PresenceCheck`) and the weight reading (`Weighing`) are two separate,
+sequential zones — a parcel passes through them one after another, on different ticks. To trust the
+weight later, the system has to remember that presence was already confirmed earlier. That's what
+`ControllerState` is for — a small record (`presenceConfirmed`, `classification`) kept across ticks for
+the parcel currently being processed, updated every tick as it moves through the zones.
 
 ---
 

@@ -58,7 +58,8 @@ Sprawdź, czy wynik wygląda sensownie: paczka przechodzi przez kolejne strefy, 
 ctest --preset test
 ```
 
-Oczekiwany wynik: wszystkie testy zielone — `misja-1` do `misja-4`, `misja-6` do `misja-12`.
+Oczekiwany wynik: wszystkie testy zielone — `misja-1` do `misja-4`, `misja-6` do `misja-11`. (Ta
+misja, tak jak Misja 6, nie ma osobnej etykiety — patrz Self-check wyżej.)
 
 ## Zapisz swoją pracę
 
