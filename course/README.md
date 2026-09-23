@@ -9,7 +9,7 @@
 Pliki w tym katalogu linkują do kodu źródłowego ścieżkami względnymi, np.
 `[Plant](../../src/plant.cpp)`. Te linki są poprawne wtedy, gdy czytasz materiał **na własnej gałęzi,
 utworzonej z punktu startowego tego modułu** — dokładnie tak, jak opisuje
-[Roadmap](../docs/roadmap.md#workflow-każdego-modułu):
+[Roadmap](../docs/roadmap.md#jak-pracować-w-każdym-module):
 
 ```bash
 git fetch --tags
@@ -23,7 +23,7 @@ którym mówi tekst.
 prowadzą do zupełnie innego kodu, albo do pliku, który jeszcze nie istnieje na tym etapie. To nie
 błąd w materiale — to konsekwencja struktury tego repozytorium: materiał kursu (`course/`) żyje na
 `main`, ale kod, który budujesz krok po kroku, żyje na tagach `module-XX-start`/`module-XX-solution`,
-nie na `main`. `main` sam w sobie zawiera osobny, niezwiązany z Course Core projekt referencyjny —
+nie na `main`. `main` sam w sobie zawiera osobny, niezwiązany z rdzeniem kursu projekt referencyjny —
 podobieństwo nazw plików jest przypadkowe.
 
 Zasada jest prosta: **materiał czytaj skądkolwiek, ale linki do kodu klikaj (albo otwieraj lokalnie)

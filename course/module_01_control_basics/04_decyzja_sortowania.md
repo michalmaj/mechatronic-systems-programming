@@ -66,7 +66,7 @@ przekazanego parametru `diverterPosition`, żeby zdecydować, czy przenieść j�
 (dla `Straight`), czy `Zone::OutputHeavy` (dla `Diverted`). Dodatkowo: gdy paczka jest już w
 `OutputLight` albo `OutputHeavy`, wyczyść `plant.item` (`std::nullopt`) — paczka opuszcza system.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-4

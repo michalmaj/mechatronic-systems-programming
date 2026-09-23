@@ -27,7 +27,7 @@ kolejność, używana zarówno przez `runTicks`, jak i przez `main()`:
    `toDiverterCommand(...)`.
 2. **`diverter.setCommand(...)`** — powiedz dywerterowi, czego teraz chcemy.
 3. **`diverter.resolve()`** — dywerter robi swój jeden fizyczny krok w tym ticku.
-4. **`advance(plant, diverter)`** — `Plant` reaguje na stan dywertera **po** tegorocznym `resolve()`,
+4. **`advance(plant, diverter)`** — `Plant` reaguje na stan dywertera **po** tym `resolve()`,
    nie sprzed niego.
 5. **Obserwacja** (tylko w `main()`) — wypisanie wyniku; `runTicks` pozostaje czystą funkcją bez
    wypisywania, tak jak w Module 1.
@@ -40,7 +40,7 @@ jeden tick.
 
 W [`src/plant.cpp`](../../src/plant.cpp) gałęzie `Infeed`/`PresenceCheck`/`Weighing` (przesuwanie
 przez `advanceZone`) oraz `OutputLight`/`OutputHeavy` (czyszczenie `plant.item`) są już gotowe i
-działają — to logika z Module 1, niezmieniona. Brakuje tylko gałęzi `Diverting`:
+działają — to logika z Modułu 1, niezmieniona. Brakuje tylko gałęzi `Diverting`:
 
 ```cpp
 case Zone::Diverting:
@@ -73,7 +73,7 @@ Module 1: 4 tiki do `OutputHeavy`), zawiera też scenariusz, w którym polecenie
 **dopiero, gdy paczka już czeka w `Diverting`** — to jedyny sposób, żeby naprawdę zobaczyć, jak
 przenośnik czeka na urządzenie.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-9
@@ -111,7 +111,7 @@ git commit -m "..."
 - **`runTicks` bez własnego `Diverter`** — dywerter musi żyć przez cały czas trwania pętli (żeby
   pamiętać swój stan między tickami), nie może być tworzony od nowa w każdej iteracji.
 - **Sprawdzanie `diverter.isSettled()` przed `resolve()`** zamiast po — pamiętaj, `Plant::advance`
-  patrzy na stan dywertera **po** tegorocznym kroku.
+  patrzy na stan dywertera **po** tym kroku.
 
 ## Pytanie do zastanowienia
 

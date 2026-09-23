@@ -56,7 +56,7 @@ Uzupełnij `toDiverterCommand` tak, żeby:
 - `WeightClass::Light` dawało `DiverterCommand::HoldStraight` (lekka paczka: rozjazd zostaje prosto),
 - `WeightClass::Heavy` dawało `DiverterCommand::Divert` (ciężka paczka: rozjazd ma skręcić).
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-7

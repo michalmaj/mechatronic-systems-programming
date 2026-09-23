@@ -95,7 +95,7 @@ W [`src/diverter.cpp`](../../src/diverter.cpp) uzupełnij cztery metody:
 - `actualPosition() const` — zwróć `actual_`.
 - `isSettled() const` — policz i zwróć porównanie opisane wyżej.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-8
