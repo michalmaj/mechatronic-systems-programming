@@ -22,12 +22,12 @@ urządzenia** — i celowo zostaje w tyle za intencją, bo na tym właśnie pole
 
 Konsekwencja: `Mode::Idle` razem z `BeltMotorState::RampingDown`, oraz `Mode::Running` razem z
 `BeltMotorState::RampingUp`, to **poprawne, oczekiwane, przejściowe** kombinacje — nie błędy, nie coś
-do specjalnego traktowania. Zobaczysz je w self-checku tej misji.
+do specjalnego traktowania. Zobaczysz je w weryfikacji tej misji.
 
 ## Rozszerzona kolejność `step()`
 
 1. Skonsumuj i wyzeruj oczekujące żądania start/stop, policz `mode_ = modeStep(mode_, ...)`
-   (zamrożona reguła konfliktu z Misji 14 obowiązuje też tutaj).
+   (reguła konfliktu z Misji 14 obowiązuje też tutaj).
 2. `beltMotor_.setCommand(mode_ == Running ? Run : Stop)`, `beltMotor_.resolve()`.
 3. Decyzja Controllera → `diverter_.setCommand` → `diverter_.resolve()` — bez zmian względem
    Modułu 3.
@@ -35,7 +35,7 @@ do specjalnego traktowania. Zobaczysz je w self-checku tej misji.
    w przeciwnym razie pomiń to wywołanie całkowicie; paczka po prostu nie rusza się w tym ticku.
 5. Złóż większy teraz `TickResult`, zwiększ `tick_`.
 
-## Zamrożony przykładowy przebieg
+## Przykładowy przebieg
 
 Świeży `Engine`, paczka już dodana przez `spawnItem`. Wywołujesz `requestStart()`, potem dwa razy
 `step()`:
@@ -66,7 +66,7 @@ wygląda dokładnie tak, jak zostawił je Moduł 3 — to Twoje zadanie, żeby j
 **`describe()` pozostaje nietknięte** — jego kontrakt (tekst opisujący `tick`/`item`) się nie
 zmienia; informacje o trybie/pasie wypisujesz osobno w `main()`.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-15
@@ -108,7 +108,7 @@ git commit -m "..."
 
 ## Pytanie do zastanowienia
 
-Zamrożony przebieg pokazuje, że pierwszy `step()` po `requestStart()` **nie** rusza paczki, a dopiero
+Przykładowy przebieg pokazuje, że pierwszy `step()` po `requestStart()` **nie** rusza paczki, a dopiero
 drugi tak. Gdyby ktoś zamienił kolejność kroków 2 i 4 (najpierw sprawdzić bramę, potem dopiero
 wywołać `beltMotor_.resolve()`), czy przebieg wyglądałby inaczej? Spróbuj prześledzić to na kartce
 przed uruchomieniem testu.

@@ -25,7 +25,7 @@ przez `resolve()`, krok po kroku) — `Mode` na razie żadnego nie ma. Gdyby w p
 się konkretny powód, żeby to zmienić, to właśnie wtedy warto by do tego wrócić — nie wcześniej, i nie
 "na wszelki wypadek".
 
-## Zamrożona reguła konfliktu
+## Reguła konfliktu
 
 Co się dzieje, gdy `startRequested` i `stopRequested` są prawdziwe **w tym samym wywołaniu**? Reguła
 jest jednoznaczna: **`stopRequested` wygrywa**.
@@ -43,10 +43,10 @@ gotowe.
 
 ## Co masz napisać
 
-Uzupełnij ciało `modeStep` zgodnie z zamrożoną regułą konfliktu powyżej — dokładnie w tej kolejności
+Uzupełnij ciało `modeStep` zgodnie z regułą konfliktu powyżej — dokładnie w tej kolejności
 sprawdzeń (najpierw `stopRequested`, potem `startRequested`, potem bez zmian).
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-14
@@ -57,7 +57,7 @@ kombinacje `startRequested`/`stopRequested`, w tym oba jednocześnie prawdziwe.
 
 ## Częste błędy
 
-- **Sprawdzenie `startRequested` przed `stopRequested`** — to odwraca zamrożoną regułę konfliktu i
+- **Sprawdzenie `startRequested` przed `stopRequested`** — to odwraca regułę konfliktu i
   da złą odpowiedź dokładnie w przypadku, gdy oba są prawdziwe naraz.
 - **Zwrócenie `Running`/`Idle` na sztywno** zamiast `current` w przypadku "bez zmian" — funkcja musi
   zwrócić dokładnie to, co dostała, gdy żadne z żądań nie jest aktywne.

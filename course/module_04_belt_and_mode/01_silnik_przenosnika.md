@@ -62,7 +62,7 @@ jak wyżej.
 
 Uzupełnij ciała `setCommand`, `resolve` i `actualState` zgodnie z regułą powyżej.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-13

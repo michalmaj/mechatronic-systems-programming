@@ -23,7 +23,7 @@ oba). `diverterMayMove` — prawda wyłącznie dla `Mode::Running`. Obie są zwy
 funkcjami, dokładnie w duchu `classify`/`toDiverterCommand` z Controllera.
 
 **`BeltMotor::forceStop()` jest inne z natury.** To **celowo mutująca operacja awaryjna**, nie czysta
-decyzja. Zamrożone zachowanie: `forceStop()` ustawia **jednocześnie** `command_` na `Stop` **i**
+decyzja. Wymagane zachowanie: `forceStop()` ustawia **jednocześnie** `command_` na `Stop` **i**
 `actual_` na `Stopped`, w tym samym wywołaniu — żądana komenda i fizyczny stan zostają natychmiast
 zgodne, z pominięciem `RampingDown`. To sedno ścieżki awaryjnej: nie czeka na rampę, i nie zostawia
 "chce jechać" jako zaległej komendy, którą kolejny tick mógłby przypadkiem zrealizować.
@@ -52,11 +52,11 @@ kompletne, jak wyżej.
 ## Co masz napisać
 
 - `checkEmergencyOverride` i `diverterMayMove` — dwie proste, jednolinijkowe decyzje.
-- `BeltMotor::forceStop()` — dwa przypisania, dokładnie jak w zamrożonym zachowaniu powyżej.
+- `BeltMotor::forceStop()` — dwa przypisania, dokładnie jak w wymaganym zachowaniu powyżej.
 
 Żadna z tych trzech rzeczy jeszcze nie dotyka `Engine` — to Misja 19.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-18
