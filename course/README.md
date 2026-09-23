@@ -29,4 +29,4 @@ budowana krok po kroku implementacja, którą rozwijasz przez cały kurs, żyje 
 materiałów misji trzeba śledzić w kontekście właściwego taga, nie na `main`.
 
 Zasada jest prosta: **materiał czytaj skądkolwiek, ale linki do kodu klikaj (albo otwieraj lokalnie)
-dopiero mając wyewidencjonowany właściwy tag.**
+dopiero po przełączeniu się na właściwy tag.**

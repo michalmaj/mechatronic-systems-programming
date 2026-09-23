@@ -16,12 +16,12 @@ teraz podróżuje razem z konkretną paczką, bo przy kilku paczkach naraz róż
 tym samym ticku dotyczyć zupełnie różnych `ItemId`.
 
 `Plant` zyskuje cztery nazwane pola: `infeed`, `presenceCheck`, `weighing`, `diverting`. Każde mieści
-najwyżej jedną paczkę — to naturalny, fizyczny backpressure: paczka nie może wejść do zajętej strefy.
+najwyżej jedną paczkę — to naturalne, fizyczne ograniczenie: paczka nie może wejść do zajętej strefy.
 Dzięki temu dywerter nigdy nie musi arbitrażować między dwiema paczkami naraz — w `diverting` zawsze
 jest co najwyżej jedna.
 
-`advance()` przesuwa teraz cztery przejścia zamiast jednego, w ustalonej kolejności downstream-to-
-upstream (`Diverting` → `Weighing` → `PresenceCheck` → `Infeed`) — dzięki temu paczka może w tym samym
+`advance()` przesuwa teraz cztery przejścia zamiast jednego, w ustalonej kolejności, od wyjścia do
+wejścia (`Diverting` → `Weighing` → `PresenceCheck` → `Infeed`) — dzięki temu paczka może w tym samym
 ticku wejść do strefy dopiero co zwolnionej przez inną paczkę, bez sztucznego opóźnienia, a mimo to
 żadna paczka nigdy nie przesuwa się więcej niż raz w jednym ticku.
 
@@ -32,7 +32,7 @@ paczka, która wyjeżdża, jest zgłaszana jako `ItemDeparture` i znika z `Plant
 ## Cztery misje
 
 - **Misja 29 — partie i paczki.** Nowy kształt `Item`/`Plant`, `spawnItem(id, mass)`.
-- **Misja 30 — przesuwanie partii.** Pełny algorytm `advance()`, downstream-to-upstream.
+- **Misja 30 — przesuwanie partii.** Pełny algorytm `advance()`, w kolejności od wyjścia do wejścia.
 - **Misja 31 — korelacja per paczka.** `ControllerState` odchodzi; dwie nowe, jawnie rozdzielone
   funkcje korelacji zajmują jego miejsce.
 - **Misja 32 — silnik z wieloma paczkami.** Pełna integracja w `Engine::step()`, rozszerzony
@@ -42,7 +42,7 @@ paczka, która wyjeżdża, jest zgłaszana jako `ItemDeparture` i znika z `Plant
 
 Ten moduł nie da się zbudować przyrostowo tak, jak poprzednie — `Engine::step()` z Modułu 7 odwołuje
 się wprost do `Plant::item` i `Item::zone`, które w ogóle już nie istnieją. Dlatego start tego modułu
-wygląda inaczej: kompiluje się od razu, ale `Engine::step()` to świadomie tymczasowy placeholder — nie
+wygląda inaczej: kompiluje się od razu, ale `Engine::step()` celowo jeszcze nic nie robi — nie
 przesuwa żadnej paczki, dopóki nie napiszesz Misji 32. To normalne i zamierzone, nie błąd w starcie.
 
 **Dalej:** [Misja 29: partie i paczki](./01_partie_i_paczki.md).

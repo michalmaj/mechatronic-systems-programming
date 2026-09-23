@@ -25,8 +25,8 @@ void resolve(std::optional<DiverterFaultKind> fault = std::nullopt);
 
 ## Dokładna reguła
 
-Gdy `fault == DiverterFaultKind::Blocked`, `resolve()` jest **całkowitym no-opem** — `actual_` nie
-zmienia się wcale, nawet w stronę `Moving`. W przeciwnym razie zachowanie jest identyczne jak
+Gdy `fault == DiverterFaultKind::Blocked`, `resolve()` **nic nie robi** — `actual_` nie zmienia się
+wcale, nawet w stronę `Moving`. W przeciwnym razie zachowanie jest identyczne jak
 dotychczas — cała logika trzech stanów z Modułu 2 zostaje bez zmian, tylko poprzedzona tym jednym
 sprawdzeniem.
 
@@ -55,8 +55,9 @@ innego się wykona.
 ctest --preset test -L misja-25
 ```
 
-Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test sprawdza no-op dla `Blocked`
-(łącznie z zamrożeniem dokładnie w stanie `Moving`, jeśli usterka pojawia się w połowie przejścia),
+Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test sprawdza, że przy `Blocked`
+`resolve()` nic nie robi (łącznie z zamrożeniem dokładnie w stanie `Moving`, jeśli usterka pojawia się
+w połowie przejścia),
 i że zwykłe, nieusterkowe działanie pozostaje dokładnie takie jak w Module 2.
 
 ## Częste błędy
