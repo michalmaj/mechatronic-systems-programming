@@ -23,8 +23,8 @@
 
 ## Course checkpoints — Tagi i checkpointy kursu
 
-- [ ] No accidental changes to `module-*` tags or Course Core checkpoints / Brak przypadkowych zmian
-      tagów `module-*` ani checkpointów rdzenia kursu
+- [ ] No accidental changes to `module-*` tags or course checkpoints / Brak przypadkowych zmian tagów
+      `module-*` ani checkpointów rdzenia kursu
 
 ## Behavior change — Zmiana zachowania
 
