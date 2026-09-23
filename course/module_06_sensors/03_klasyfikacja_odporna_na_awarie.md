@@ -34,7 +34,7 @@ komentarzem `// TODO`; `classify`/`toDiverterCommand` już działają poprawnie.
 
 Uzupełnij ciało `decideClassification` zgodnie z regułą powyżej.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-22

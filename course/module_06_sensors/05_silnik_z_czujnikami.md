@@ -51,7 +51,7 @@ Kroki 1–4 (żądania, `latch_`, ścieżka awaryjna, `Mode`) zostają bez zmian
    trzema argumentami.
 10. Złóż `TickResult` (teraz z polem `sensors`), zwiększ `tick_`.
 
-## Zamrożona demonstracja w CLI
+## Przykładowy przebieg w CLI
 
 **`Stale` nie powoduje "innego rutowania" — pokazuje, że wiarygodnie wyglądająca liczba NIE jest
 używana do nowej klasyfikacji.** Najbardziej przekonujący sposób, żeby to pokazać: przepuść **jedną**
@@ -59,7 +59,7 @@ paczkę normalnie (bez usterki), żeby czujnik wagi naprawdę zapamiętał prawd
 `Stale` na czujniku wagi i wyślij **drugą** paczkę. Czujnik wagi będzie teraz powtarzał masę
 **pierwszej** paczki (prawdziwą, wiarygodnie wyglądającą liczbę) — ale `decideClassification`
 odrzuci ją mimo to, bo status to `Stale`, nie `Ok`. Druga paczka dotrze do `Diverting` i zostanie
-tam zamrożona.
+tam zatrzymana.
 
 ## Co już masz gotowe
 
@@ -73,10 +73,10 @@ Moduł 5 — to Twoje zadanie, żeby je rozszerzyć.
   `weightFault_`, zależnie od `target`.
 - `Engine::clearFault(FaultTarget)` — wyczyść (`std::nullopt`) odpowiednie pole.
 - `Engine::step()` — rozszerz o kroki 5–10 opisane wyżej.
-- `apps/simulator_cli/main.cpp` — zaimplementuj zamrożoną demonstrację (dwie paczki, usterka między
+- `apps/simulator_cli/main.cpp` — zaimplementuj przykładowy przebieg (dwie paczki, usterka między
   nimi) i wypisuj `sensors` obok istniejącego wyjścia.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-24
