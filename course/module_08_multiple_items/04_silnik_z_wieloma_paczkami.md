@@ -3,42 +3,42 @@
 ## Problem
 
 Wszystkie kawałki istnieją osobno — nowy `Plant`, `advance()`, dwie funkcje korelacji — ale nic w
-`Engine::step()` jeszcze ich nie łączy. Startowy szkielet tej misji to świadomie tymczasowy
-placeholder: kompiluje się, ale nigdy nie wywołuje `advance()`, więc żadna paczka się nie porusza.
+`Engine::step()` jeszcze ich nie łączy. Startowy szkielet tej misji celowo nic nie robi: kompiluje
+się, ale nigdy nie wywołuje `advance()`, więc żadna paczka się nie porusza.
 
-## Rozszerzenie `step()`
+## Integracja: odpowiedzialności i ograniczenia
 
-Kroki 1–3 (flagi wejściowe, `latch_`, `decision`, pierwsze liczenie `modeForTick`) zostają dokładnie
-takie, jak w Module 7. Zmienia się reszta:
+To nie jest nowa logika — to złożenie mechanizmów z Modułów 6 i 7 oraz reszty tego modułu w jedną
+całość, teraz dla czterech slotów naraz zamiast jednego. Nic poniżej nie jest nowym pomysłem; nowe
+jest tylko to, że wszystko musi zadziałać razem, w jednym wywołaniu `step()`.
 
-**4. Czujniki + korelacja.** Każdy czujnik czyta swój slot dokładnie tak jak w Module 6/7
-(`presenceSensor_.read(...)`, `weightSensor_.read(...)`), ale teraz trzeba dodatkowo zaktualizować
-`ControllerState` paczki, która w danym slocie faktycznie jest — i tylko wtedy, gdy slot jest zajęty
-(wołanie `updatePresenceConfirmation`/`updateClassification` na pustym `std::optional<Item>` się nie
-skompiluje).
+**Czujniki i korelacja per paczka.** Każdy czujnik nadal czyta dokładnie ten slot, do którego jest
+fizycznie przypięty (Misja 31). Dwie rzeczy muszą się przy tym zdarzyć: `ControllerState` paczki
+faktycznie obecnej w danym slocie musi się zaktualizować (tylko gdy slot jest zajęty — wywołanie na
+pustym `std::optional<Item>` się nie skompiluje), a `SensorSnapshot` musi zapisać, której paczki
+(`ItemId`) dotyczył dany odczyt — ale tylko gdy odczyt był `Ok` **i** slot faktycznie zajęty. Odczyt
+`Stale` nigdy nie jest przypisywany dzisiejszemu okupantowi slotu, nawet jeśli ktoś tam akurat stoi —
+to powtórzenie wcześniejszej zaufanej wartości, nie świeża obserwacja.
 
-**5. Polecenie dywertera.** Musi pochodzić **wyłącznie** z paczki, która w tym momencie jest w
+**Polecenie dywertera.** Musi pochodzić **wyłącznie** z paczki, która w tym momencie jest w
 `plant_.diverting` — nigdy z paczki właśnie sklasyfikowanej w `plant_.weighing` w tym samym ticku
 (Misja 30 wyjaśniła, dlaczego to jedyny poprawny wybór: taka paczka fizycznie nie może jeszcze być w
 `diverting`). Bramka jest ta sama co w Module 7 (brak override'u, `diverterMayMove(modeForTick)`), z
 dwoma dodatkowymi warunkami: slot `diverting` musi być zajęty, i ta paczka musi już mieć klasyfikację.
 Ten sam warunek decyduje jednocześnie o tym, czy w ogóle wolno wydać polecenie dywertera, i o wartości
-`routingReady`, którą trzeba przekazać niżej do `advance()` — to jeden warunek, nie dwa niezależne.
+`routingReady`, którą trzeba przekazać do `advance()` — to jeden warunek, nie dwa niezależne.
 
-**6. Pas** — bramkowany przez `modeForTick`, jak w Module 7, bez zmian.
+**Kolejność, która ma znaczenie.** Odczyt czujników, korelacja i decyzja o poleceniu dywertera muszą
+się zdarzyć, zanim `advance()` cokolwiek przesunie — inaczej sprawdzałbyś zajętość slotów po ruchu,
+nie przed nim. `advance()` z kolei musi się zdarzyć, zanim policzysz `Mode` po raz drugi — jak w Module 7, bo ten
+drugi rachunek potrzebuje zdarzenia z `AdvanceResult`, którego `advance()` jeszcze nie zwrócił.
+Wszystko inne (flagi wejściowe, `latch_`, `decision`, pierwsze liczenie `modeForTick`, bramkowanie
+pasa) zostaje dokładnie tak, jak w Module 7.
 
-**7. `advance()`** — pod tą samą bramką co zawsze (pas faktycznie `Running`), teraz zwraca
-`AdvanceResult` zamiast samego zdarzenia.
-
-**8. Drugie liczenie `Mode`** — `reactToSystemEvent(modeForTick, ...)`, gdzie zdarzenie pochodzi teraz
-z `AdvanceResult` z kroku 7.
-
-**9. Korelacja id w `SensorSnapshot`.** `presenceObservedItemId`/`weightObservedItemId` mają być
-ustawione tylko wtedy, gdy odczyt z kroku 4 był `Ok` **i** odpowiedni slot faktycznie jest zajęty —
-odczyt `Stale` powtarza wcześniejszą zaufaną wartość i nie wolno go przypisać dzisiejszemu
-okupantowi slotu, nawet jeśli ktoś tam akurat stoi.
-
-**10. `TickResult`** — ze wszystkimi czterema slotami i `departure` z `AdvanceResult`.
+**Czego musi dowodzić `TickResult`.** Kompletny stan wszystkich czterech slotów w tym ticku, wynik
+`advance()` (`event`, `departure`), i pełną korelację `ItemId` w `SensorSnapshot` — dokładny format
+opisuje sekcja niżej. To jedyne źródło prawdy, jakiego używają testy i CLI; żaden z nich nie sięga do
+wewnętrznego stanu `Engine` w trakcie ticku.
 
 ## Rozszerzony `TickResult` i `describe()`
 
@@ -67,8 +67,8 @@ zmian do wprowadzenia. Cała reszta `Engine`'a poza `step()` (flagi wejściowe, 
 ## Co masz napisać
 
 - `Engine::step()` w [`src/engine.cpp`](../../src/engine.cpp) — pełna integracja opisana powyżej.
-- `describe(TickResult)` w [`src/tick_result.cpp`](../../src/tick_result.cpp) — dokładny format
-  powyżej.
+- `describe(TickResult)` w [`src/tick_result.cpp`](../../src/tick_result.cpp) — format
+  opisany powyżej.
 - [`apps/simulator_cli/main.cpp`](../../apps/simulator_cli/main.cpp) — demonstracja co najmniej
   trzech paczek o różnych klasyfikacjach jednocześnie w locie (np. Light/Heavy/Light — zobacz ślad w
   materiałach Misji 30), zawierająca co najmniej jeden tick z widocznym "same-tick chain shift":
@@ -82,8 +82,9 @@ ctest --preset test -L misja-32
 ```
 
 To dedykowany test tej misji (`multiple_items_engine_test`), sprawdzający, że trzy paczki o masach
-100g/800g/150g, utworzone jedna po drugiej przez `spawnItem`, odjeżdżają w tej samej kolejności, każda z poprawnym,
-niezależnym rutowaniem (Light/Heavy/Light) — złapie dokładnie regresję do współdzielonej klasyfikacji.
+100g/800g/150g, utworzone jedna po drugiej przez `spawnItem`, odjeżdżają w tej samej kolejności, każda
+z poprawnym, niezależnym rutowaniem (Light/Heavy/Light) — złapie dokładnie regresję do współdzielonej
+klasyfikacji.
 
 Uzupełnienie `Engine::step()` jednocześnie odblokowuje każdy pozostały test na poziomie `Engine` —
 uruchom też pełny zestaw:
@@ -112,7 +113,7 @@ git commit -m "..."
 ## Częste błędy
 
 - **Wyliczanie polecenia dywertera z `plant_.weighing`** — dokładnie ta pomyłka, przed którą Misja 30
-  i krok 5 powyżej ostrzegają.
+  i sekcja "Polecenie dywertera" powyżej ostrzegają.
 - **Wołanie `updatePresenceConfirmation`/`updateClassification` bez sprawdzenia `.has_value()`** —
   wywołanie na pustym `std::optional<Item>` się nie skompiluje (brak czego dereferencjonować) — ale
   łatwo przeoczyć samą bramkę `if`, jeśli kopiuje się kod bez zastanowienia.
@@ -125,5 +126,6 @@ git commit -m "..."
 
 Symulator modeluje teraz to, co robi każda prawdziwa taśma sortująca: kilka paczek naraz, każda na
 swoim etapie, każda ze swoim własnym stanem — a mimo to jeden wspólny dywerter i jeden wspólny pas
-wciąż działają poprawnie, bo backpressure per-strefa i kolejność downstream-to-upstream eliminują
-kolizje przez samą konstrukcję, bez żadnej dodatkowej logiki arbitrażu.
+wciąż działają poprawnie, bo ograniczenie "co najwyżej jedna paczka na strefę" i kolejność
+przetwarzania od wyjścia do wejścia eliminują kolizje przez samą konstrukcję, bez żadnej dodatkowej
+logiki arbitrażu.
