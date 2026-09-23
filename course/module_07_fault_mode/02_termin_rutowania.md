@@ -72,7 +72,7 @@ gałęzi `Diverting` jest `// TODO`.
 
 Uzupełnij gałąź `Diverting` w `advance()` zgodnie z dokładną regułą powyżej.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-26

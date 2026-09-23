@@ -49,7 +49,7 @@ niezmieniona; brakuje tylko sprawdzenia `Blocked` na samym początku (`// TODO`)
 Dodaj sprawdzenie `fault == DiverterFaultKind::Blocked` na początku `resolve()`, zanim cokolwiek
 innego się wykona.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-25

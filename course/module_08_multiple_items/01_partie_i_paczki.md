@@ -37,34 +37,23 @@ Każde pole mieści najwyżej jedną paczkę. `spawnItem` przyjmuje teraz tylko 
 cały `Item` — i sam konstruuje świeży `Item` wewnątrz. Skoro wywołujący nie ma żadnej możliwości
 przekazać "używanego" `Item` z niezerowym stanem przetwarzania, nie ma też czego zerować.
 
-## Frozen invariant: unikalność `ItemId`
+## Kontrakt: co `spawnItem` musi gwarantować
 
 `ItemId` musi być unikalne wśród paczek **aktualnie obecnych** w `Plant` — nie wśród wszystkich, które
 kiedykolwiek istniały. Gdy paczka opuszcza system (odjeżdża do `OutputLight`/`OutputHeavy`), jej id
 jest wolne do ponownego użycia. Nie ma globalnego rejestru id i nie jest potrzebny — `spawnItem` sam
 odrzuca kolizję, sprawdzając tylko to, co jest obecne *teraz*.
 
-## Dokładna reguła
+Funkcja musi zwrócić `false` i zostawić `plant` bez żadnej zmiany w dwóch niezależnych przypadkach:
 
-```cpp
-bool spawnItem(Plant& plant, ItemId id, Grams mass) {
-    if (plant.infeed.has_value()) {
-        return false;
-    }
-    if ((plant.presenceCheck.has_value() && plant.presenceCheck->id == id) ||
-        (plant.weighing.has_value() && plant.weighing->id == id) ||
-        (plant.diverting.has_value() && plant.diverting->id == id)) {
-        return false;
-    }
-    plant.infeed = Item{id, mass};
-    return true;
-}
-```
+- `infeed` jest już zajęty — nie ma gdzie umieścić nowej paczki,
+- podane `id` koliduje z id dowolnej *innej* paczki obecnej gdziekolwiek w `Plant`, czyli w
+  `presenceCheck`, `weighing` albo `diverting` (kolizja z samym `infeed` jest już pokryta pierwszym
+  warunkiem, więc nie trzeba jej sprawdzać osobno).
 
-Odrzuca na dwóch niezależnych warunkach: `infeed` jest zajęty, albo `id` koliduje z dowolną *inną*
-aktualnie obecną paczką. W obu przypadkach `plant` pozostaje bez zmian i funkcja zwraca `false`.
-Wywołujący (docelowo `Engine`, a nad nim CLI/testy) odpowiada za ponowną próbę w kolejnym ticku i za
-wybór id, które się nie koliduje — nie ma tu wewnętrznej kolejki ani generatora id.
+W każdym innym przypadku funkcja umieszcza w `infeed` świeżo skonstruowany `Item` o podanych `id` i
+`mass` i zwraca `true`. Wywołujący (docelowo `Engine`, a nad nim CLI/testy) odpowiada za ponowną próbę w
+kolejnym ticku i za wybór id, które się nie koliduje — nie ma tu wewnętrznej kolejki ani generatora id.
 
 ## Co już masz gotowe
 
@@ -79,9 +68,10 @@ tej) — nie polegaj na tym, że cokolwiek przesuwa, dopóki nie napiszesz Misji
 
 ## Co masz napisać
 
-Uzupełnij ciało `spawnItem` zgodnie z dokładną regułą powyżej.
+Uzupełnij ciało `spawnItem` w [`src/plant.cpp`](../../src/plant.cpp) tak, by spełniało kontrakt opisany
+wyżej.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-29

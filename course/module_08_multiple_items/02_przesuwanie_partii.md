@@ -27,53 +27,31 @@ AdvanceResult advance(Plant& plant, const Diverter& diverter, bool routingReady 
 `event` dotyczy wyłącznie paczki w `diverting`, jeśli nie odjechała w tym ticku. `departure` jest
 ustawiane tylko przy udanym rutowaniu — z konstrukcji obu tych pól nigdy nie ustawia się jednocześnie.
 
-## Dokładny algorytm
+## Reguły przejść, w wymaganej kolejności
 
-```cpp
-AdvanceResult advance(Plant& plant, const Diverter& diverter, bool routingReady) {
-    AdvanceResult result;
+`advance()` musi wykonać cztery przejścia, **każde dokładnie raz na wywołanie**, w tej ustalonej
+kolejności downstream-to-upstream:
 
-    // Diverting: rutuj / czekaj / przekrocz termin -- dokładnie reguła Misji 26, teraz na
-    // własnym divertingWaitTicks tej konkretnej paczki.
-    if (plant.diverting.has_value()) {
-        if (!routingReady) {
-            plant.diverting->divertingWaitTicks = 0;
-        } else if (!diverter.isSettled()) {
-            ++plant.diverting->divertingWaitTicks;
-            result.event = plant.diverting->divertingWaitTicks <= 1
-                                ? SystemEventKind::DiverterNotReady
-                                : SystemEventKind::RoutingDeadlineMissed;
-        } else {
-            const Zone destination = diverter.actualPosition() == DiverterPosition::Straight
-                                          ? Zone::OutputLight
-                                          : Zone::OutputHeavy;
-            result.departure = ItemDeparture{plant.diverting->id, destination};
-            plant.diverting.reset();
-        }
-    }
+**1. Rozstrzygnięcie w `diverting`** (tylko gdy slot jest zajęty). To dokładnie reguła terminu
+rutowania z Misji 26 — z tą różnicą, że licznik `divertingWaitTicks` żyje teraz na samej paczce
+(`Item::divertingWaitTicks`), nie gdzieś obok w `Engine`:
+- gdy `routingReady` jest `false`, licznik paczki wraca do zera i na tym przejście się kończy w tym
+  ticku (paczka zostaje w `diverting`, bez zdarzenia);
+- gdy `routingReady` jest `true`, ale dywerter jeszcze nie ustawił się na zadanej pozycji
+  (`!diverter.isSettled()`), licznik paczki rośnie o jeden; zdarzenie w wyniku to
+  `SystemEventKind::DiverterNotReady` przy pierwszym takim ticku licznika, a
+  `SystemEventKind::RoutingDeadlineMissed` przy każdym kolejnym;
+- gdy dywerter jest ustawiony, paczka odjeżdża: `result.departure` dostaje jej id i miejsce docelowe
+  (`Zone::OutputLight` dla pozycji `Straight`, `Zone::OutputHeavy` w przeciwnym razie), a slot
+  `diverting` zostaje zwolniony.
 
-    // Weighing -> Diverting: dozwolone do slotu zwolnionego wcześniej W TYM SAMYM ticku.
-    if (!plant.diverting.has_value() && plant.weighing.has_value()) {
-        plant.diverting = std::move(plant.weighing);
-        plant.weighing.reset();
-        plant.diverting->divertingWaitTicks = 0;
-    }
-
-    // PresenceCheck -> Weighing: ten sam wzorzec.
-    if (!plant.weighing.has_value() && plant.presenceCheck.has_value()) {
-        plant.weighing = std::move(plant.presenceCheck);
-        plant.presenceCheck.reset();
-    }
-
-    // Infeed -> PresenceCheck: ten sam wzorzec.
-    if (!plant.presenceCheck.has_value() && plant.infeed.has_value()) {
-        plant.presenceCheck = std::move(plant.infeed);
-        plant.infeed.reset();
-    }
-
-    return result;
-}
-```
+**2–4. Trzy przejścia między sąsiednimi strefami** — `weighing`→`diverting`,
+`presenceCheck`→`weighing`, `infeed`→`presenceCheck`, w tej właśnie kolejności. Każde z nich stosuje
+ten sam wzorzec: jeśli strefa docelowa jest teraz pusta (co mogło być efektem przejścia wykonanego
+przed chwilą, w tym samym wywołaniu) i strefa źródłowa jest zajęta, paczka przenosi się do strefy
+docelowej, a strefa źródłowa zostaje zwolniona. Jedyny wyjątek: paczka wchodząca do `diverting`
+zaczyna z wyzerowanym `divertingWaitTicks` — to świeże wejście do strefy, nie kontynuacja czyjegoś
+odliczania.
 
 ## Dlaczego to gwarantuje "co najwyżej jeden ruch na paczkę na tick"
 
@@ -93,10 +71,9 @@ paczkom przesunąć się razem bez sztucznej przerwy.
 Polecenie dywertera decydowane w danym `Engine::step()` zawsze pochodzi z klasyfikacji paczki, która
 **już jest** w `diverting` — nigdy z paczki właśnie sklasyfikowanej w `weighing` w tym samym ticku, bo
 ta paczka nie może dotrzeć do `diverting` przed wywołaniem `advance()`, a polecenie jest decydowane
-przed tym wywołaniem. Zweryfikowane na osobnym prototypie przed zamrożeniem tej lekcji — zobacz
-zweryfikowany ślad niżej.
+przed tym wywołaniem. Zobacz przykładowy przebieg niżej — dobrze to pokazuje.
 
-## Zweryfikowany ślad: trzy paczki, Light/Heavy/Light
+## Przykładowy przebieg: trzy paczki, Light/Heavy/Light
 
 ```text
 tick 0: infeed=2 presenceCheck=1 weighing=- diverting=-  cmd=Hold(for -)      event=-                 departure=-
@@ -124,9 +101,10 @@ właśnie zwolnionego `diverting` — a mimo to polecenie decydowane w tym ticku
 
 ## Co masz napisać
 
-Uzupełnij ciało `advance()` zgodnie z dokładnym algorytmem powyżej.
+Zaimplementuj ciało `advance()` w [`src/plant.cpp`](../../src/plant.cpp) zgodnie z regułami przejść
+opisanymi wyżej: cztery przejścia, w podanej kolejności, każde wykonane dokładnie raz na wywołanie.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-30
@@ -149,6 +127,6 @@ poleceniem dywertera zadanym późno (`plant_diverter_test`); pełny termin ruto
 ## Pytanie do zastanowienia
 
 Gdyby `advance()` przetwarzał strefy w odwrotnej kolejności (upstream-to-downstream), które dokładnie
-zachowanie z zamrożonego śladu powyżej by się zepsuło, i na czym konkretnie by to polegało?
+zachowanie z przebiegu powyżej by się zepsuło, i na czym konkretnie by to polegało?
 
 **Dalej:** [Misja 31: korelacja per paczka](./03_korelacja_per_paczka.md).

@@ -20,7 +20,7 @@ nazw w `src/scenario.cpp`. Nie są deklarowane w `scenario.hpp`: upublicznienie 
 udokumentowania i utrzymania osobnego kontraktu ("działa poprawnie tylko dla już zwalidowanych,
 nienakładających się harmonogramów"), którego obecnie nic nie potrzebuje.
 
-## Zamrożona kolejność ticka
+## Ustalona kolejność ticka
 
 **arrivals → operator inputs → stan usterek → `Engine::step()` → zbierz wynik.**
 
@@ -40,7 +40,7 @@ na poziomie API warunek, nie błąd programisty do pominięcia w Release. Dwa pr
   (zależy od stanu pasa/trybu wynikającego z `operatorInputs`) i **nie** jest ponawiane -- to błąd
   scenariusza, zgłaszany tak samo jak nieprawidłowość statyczna.
 
-## Kontrakt odtwarzalności (zamrożony invariant)
+## Kontrakt odtwarzalności
 
 **Dla dowolnego poprawnego `Scenario`, który da się odtworzyć do końca, dwa osobne wywołania
 `runScenario(scenario)` dają sekwencje `TickResult` semantycznie identyczne, pole po polu.** ("Pole po
@@ -51,7 +51,7 @@ ukrytego stanu globalnego -- prawda od Modułu 0).
 
 ## Dlaczego `{EmergencyStopReleased, Reset}` na tym samym ticku jest bezpieczne
 
-Zweryfikowane względem prawdziwego, niezmienionego `nextEStopLatchState` (Moduł 5):
+Wynika to z zachowania prawdziwego, niezmienionego `nextEStopLatchState` (Moduł 5):
 ustawienie `released` i `resetRequested` jednocześnie, startując z `Engaged`, trafia w gałąź
 `previous == Engaged` (sprawdzaną jako pierwszą) -- `resetRequested` nie jest w ogóle konsultowane tym
 wywołaniem. Zatrzask trafia do `Armed`, nie `Released`. Para jest dozwolona, bo jest bezpieczna i dobrze
@@ -65,9 +65,9 @@ zdefiniowana -- nie dlatego, że skraca dwuetapowe odzyskiwanie, które znasz z 
 ## Co masz napisać
 
 Uzupełnij ciało `runScenario` w [`src/scenario.cpp`](../../src/scenario.cpp), łącznie z prywatnymi
-`activeSensorFault`/`activeDiverterFault`, zgodnie z zamrożoną kolejnością powyżej.
+`activeSensorFault`/`activeDiverterFault`, zgodnie z ustaloną kolejnością powyżej.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-34

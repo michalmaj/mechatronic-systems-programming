@@ -25,7 +25,7 @@ buduje świeży `Engine` i odtwarza scenariusz tick po ticku, zwracając `std::o
 
 - **Misja 33 — model i walidacja.** Kształt `Scenario` i jego pięciu składowych typów;
   `isValidScenario`.
-- **Misja 34 — odtwarzacz.** `runScenario`: świeży `Engine`, zamrożona kolejność ticka, kontrakt
+- **Misja 34 — odtwarzacz.** `runScenario`: świeży `Engine`, ustalona kolejność ticka, kontrakt
   odtwarzalności.
 - **Misja 35 — integracja w CLI.** Dwie demonstracje w `apps/simulator_cli`: odtworzenie mechanizmu i
   osi czasu ze śladu odzyskiwania z Modułu 7, oraz nowy scenariusz z zaplanowanymi przybyciami wielu

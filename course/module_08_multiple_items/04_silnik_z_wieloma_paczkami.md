@@ -6,66 +6,39 @@ Wszystkie kawałki istnieją osobno — nowy `Plant`, `advance()`, dwie funkcje 
 `Engine::step()` jeszcze ich nie łączy. Startowy szkielet tej misji to świadomie tymczasowy
 placeholder: kompiluje się, ale nigdy nie wywołuje `advance()`, więc żadna paczka się nie porusza.
 
-## Rozszerzone `step()`
+## Rozszerzenie `step()`
 
-```cpp
-TickResult Engine::step() {
-    // 1-3. flagi, latch_, decision, modeForTick -- bez zmian od Modułu 7.
-    ...
+Kroki 1–3 (flagi wejściowe, `latch_`, `decision`, pierwsze liczenie `modeForTick`) zostają dokładnie
+takie, jak w Module 7. Zmienia się reszta:
 
-    // 4. czujniki + korelacja -- tylko gdy odpowiedni slot jest zajęty.
-    const PresenceReading presence = presenceSensor_.read(plant_.presenceCheck, presenceFault_);
-    if (plant_.presenceCheck.has_value()) {
-        updatePresenceConfirmation(*plant_.presenceCheck, presence);
-    }
-    const WeightReading weight = weightSensor_.read(plant_.weighing, weightFault_);
-    if (plant_.weighing.has_value()) {
-        updateClassification(*plant_.weighing, weight);
-    }
+**4. Czujniki + korelacja.** Każdy czujnik czyta swój slot dokładnie tak jak w Module 6/7
+(`presenceSensor_.read(...)`, `weightSensor_.read(...)`), ale teraz trzeba dodatkowo zaktualizować
+`ControllerState` paczki, która w danym slocie faktycznie jest — i tylko wtedy, gdy slot jest zajęty
+(wołanie `updatePresenceConfirmation`/`updateClassification` na pustym `std::optional<Item>` się nie
+skompiluje).
 
-    // 5. polecenie dywertera -- WYŁĄCZNIE z plant_.diverting, nigdy z plant_.weighing.
-    const bool routingReady = !decision.overrideActive && diverterMayMove(modeForTick)
-                               && plant_.diverting.has_value()
-                               && plant_.diverting->classification.has_value();
-    DiverterCommand diverterCommand = DiverterCommand::HoldStraight;
-    std::optional<ItemId> diverterCommandItemId;
-    if (!decision.overrideActive && diverterMayMove(modeForTick) && plant_.diverting.has_value()
-        && plant_.diverting->classification.has_value()) {
-        diverterCommand = toDiverterCommand(*plant_.diverting->classification);
-        diverterCommandItemId = plant_.diverting->id;
-        diverter_.setCommand(diverterCommand);
-        diverter_.resolve(diverterFault_);
-    }
+**5. Polecenie dywertera.** Musi pochodzić **wyłącznie** z paczki, która w tym momencie jest w
+`plant_.diverting` — nigdy z paczki właśnie sklasyfikowanej w `plant_.weighing` w tym samym ticku
+(Misja 30 wyjaśniła, dlaczego to jedyny poprawny wybór: taka paczka fizycznie nie może jeszcze być w
+`diverting`). Bramka jest ta sama co w Module 7 (brak override'u, `diverterMayMove(modeForTick)`), z
+dwoma dodatkowymi warunkami: slot `diverting` musi być zajęty, i ta paczka musi już mieć klasyfikację.
+Ten sam warunek decyduje jednocześnie o tym, czy w ogóle wolno wydać polecenie dywertera, i o wartości
+`routingReady`, którą trzeba przekazać niżej do `advance()` — to jeden warunek, nie dwa niezależne.
 
-    // 6. pas -- bramkowany przez modeForTick, jak w Module 7.
-    ...
+**6. Pas** — bramkowany przez `modeForTick`, jak w Module 7, bez zmian.
 
-    // 7. advance() -- pod tą samą bramką co zawsze.
-    AdvanceResult advanceResult;
-    if (beltMotor_.actualState() == BeltMotorState::Running) {
-        advanceResult = psm::advance(plant_, diverter_, routingReady);
-    }
+**7. `advance()`** — pod tą samą bramką co zawsze (pas faktycznie `Running`), teraz zwraca
+`AdvanceResult` zamiast samego zdarzenia.
 
-    // 8. Mode, krok drugi.
-    mode_ = reactToSystemEvent(modeForTick, advanceResult.event);
+**8. Drugie liczenie `Mode`** — `reactToSystemEvent(modeForTick, ...)`, gdzie zdarzenie pochodzi teraz
+z `AdvanceResult` z kroku 7.
 
-    // 9. korelacja id w SensorSnapshot -- tylko gdy Ok I paczka faktycznie obecna.
-    const std::optional<ItemId> presenceObservedItemId =
-        (presence.status == ReadingStatus::Ok && plant_.presenceCheck.has_value())
-            ? std::optional<ItemId>{plant_.presenceCheck->id} : std::nullopt;
-    const std::optional<ItemId> weightObservedItemId =
-        (weight.status == ReadingStatus::Ok && plant_.weighing.has_value())
-            ? std::optional<ItemId>{plant_.weighing->id} : std::nullopt;
+**9. Korelacja id w `SensorSnapshot`.** `presenceObservedItemId`/`weightObservedItemId` mają być
+ustawione tylko wtedy, gdy odczyt z kroku 4 był `Ok` **i** odpowiedni slot faktycznie jest zajęty —
+odczyt `Stale` powtarza wcześniejszą zaufaną wartość i nie wolno go przypisać dzisiejszemu
+okupantowi slotu, nawet jeśli ktoś tam akurat stoi.
 
-    // 10. TickResult, ze wszystkimi czterema slotami i departure.
-    ...
-}
-```
-
-Zwróć uwagę na krok 5: `routingReady` i polecenie dywertera pochodzą wyłącznie z `plant_.diverting`
-sprzed wywołania `advance()` — nigdy z paczki właśnie sklasyfikowanej w `plant_.weighing` w tym samym
-ticku (Misja 30 wyjaśniła, dlaczego to jedyny poprawny wybór: taka paczka fizycznie nie może jeszcze
-być w `diverting`).
+**10. `TickResult`** — ze wszystkimi czterema slotami i `departure` z `AdvanceResult`.
 
 ## Rozszerzony `TickResult` i `describe()`
 
@@ -82,8 +55,8 @@ presenceCheck=<id|-> weighing=<id|-> diverting=<id|-> departure=<id->dest|->
 ```
 
 gdzie `<dest>` to `"Light"` dla `Zone::OutputLight` albo `"Heavy"` dla `Zone::OutputHeavy` (nie pełna
-nazwa `Zone`). Test `tick_result_test.cpp` zawiera dokładne, zamrożone przykłady tego formatu — to Twój
-ostateczny kontrakt.
+nazwa `Zone`). Test `tick_result_test.cpp` zawiera dokładne przykłady tego formatu — to Twój ostateczny
+kontrakt.
 
 ## Co już masz gotowe
 
@@ -102,14 +75,14 @@ zmian do wprowadzenia. Cała reszta `Engine`'a poza `step()` (flagi wejściowe, 
   odjazd jednej paczki i wejście kolejnej do właśnie zwolnionego slotu w tym samym ticku. Użyj
   `psm::describe()` do wypisywania każdego ticku.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-32
 ```
 
 To dedykowany test tej misji (`multiple_items_engine_test`), sprawdzający, że trzy paczki o masach
-100g/800g/150g, zespawnowane jedna po drugiej, odjeżdżają w tej samej kolejności, każda z poprawnym,
+100g/800g/150g, utworzone jedna po drugiej przez `spawnItem`, odjeżdżają w tej samej kolejności, każda z poprawnym,
 niezależnym rutowaniem (Light/Heavy/Light) — złapie dokładnie regresję do współdzielonej klasyfikacji.
 
 Uzupełnienie `Engine::step()` jednocześnie odblokowuje każdy pozostały test na poziomie `Engine` —
