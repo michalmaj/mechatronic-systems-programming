@@ -91,7 +91,7 @@ wcześniej flagę zamiast liczyć na nowo, dałby tu błędną odpowiedź.
 
 W [`src/diverter.cpp`](../../src/diverter.cpp) uzupełnij cztery metody:
 - `setCommand(DiverterCommand)` — zapisz argument w `command_`.
-- `resolve()` — zaimplementuj dokładnie tabelę przejść powyżej.
+- `resolve()` — zaimplementuj tabelę przejść powyżej.
 - `actualPosition() const` — zwróć `actual_`.
 - `isSettled() const` — policz i zwróć porównanie opisane wyżej.
 
@@ -108,7 +108,7 @@ przejść w obie strony (`Straight`→`Diverted` i z powrotem) oraz sprawdza `is
 ## Częste błędy
 
 - **`isSettled()` liczące na podstawie starej, zapamiętanej wartości** zamiast porównania na żywo —
-  dokładnie ten błąd omówiony wyżej.
+  ten błąd omówiony wyżej.
 - **`resolve()` przeskakujące od razu do celu** z `Straight`/`Diverted` (pomijając `Moving`) —
   pamiętaj: settled-źle zawsze najpierw przechodzi przez `Moving`, dopiero kolejne `resolve()`
   dojeżdża do celu.

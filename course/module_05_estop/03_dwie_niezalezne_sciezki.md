@@ -20,7 +20,7 @@ bool diverterMayMove(Mode mode);
 
 `checkEmergencyOverride` — prawda, gdy `latch` nie jest `Released` (`Engaged` i `Armed` liczą się
 oba). `diverterMayMove` — prawda wyłącznie dla `Mode::Running`. Obie są zwykłymi, testowalnymi
-funkcjami, dokładnie w duchu `classify`/`toDiverterCommand` z Controllera.
+funkcjami, w duchu `classify`/`toDiverterCommand` z Controllera.
 
 **`BeltMotor::forceStop()` jest inne z natury.** To **celowo mutująca operacja awaryjna**, nie czysta
 decyzja. Wymagane zachowanie: `forceStop()` ustawia **jednocześnie** `command_` na `Stop` **i**
@@ -52,7 +52,7 @@ kompletne, jak wyżej.
 ## Co masz napisać
 
 - `checkEmergencyOverride` i `diverterMayMove` — dwie proste, jednolinijkowe decyzje.
-- `BeltMotor::forceStop()` — dwa przypisania, dokładnie jak w wymaganym zachowaniu powyżej.
+- `BeltMotor::forceStop()` — dwa przypisania, jak w wymaganym zachowaniu powyżej.
 
 Żadna z tych trzech rzeczy jeszcze nie dotyka `Engine` — to Misja 19.
 

@@ -76,7 +76,7 @@ pamięci.
 
 - **Wywołanie `updateClassification` niezależnie od `presenceConfirmed` tej konkretnej paczki** — to
   właśnie ten global-state bug, którego ta misja uczy unikać.
-- **Powrót do porównania `item->zone`** — niemożliwe do skompilowania, ale warto świadomie zauważyć,
+- **Powrót do porównania `item->zone`** — niemożliwe do skompilowania, ale warto zauważyć,
   dlaczego: `Item` nie niesie już tej informacji.
 - **Aktualizowanie `lastKnownMass_`/`lastKnownOccupied_` przy potwierdzonym pustym odczycie** — to
   właśnie regresja, przed którą ta sekcja explicite ostrzega.

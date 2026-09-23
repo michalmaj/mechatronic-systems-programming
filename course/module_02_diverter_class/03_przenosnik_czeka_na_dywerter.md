@@ -56,7 +56,7 @@ teraz własnego, lokalnego obiektu `Diverter`, prowadzonego zgodnie z kolejnośc
 
 ## Co masz napisać
 
-1. **Gałąź `Diverting` w `src/plant.cpp`** — zaimplementuj dokładnie to, co mówi komentarz TODO.
+1. **Gałąź `Diverting` w `src/plant.cpp`** — zaimplementuj to, co mówi komentarz TODO.
 2. **`runTicks` w `src/loop.cpp`** — dla każdego z `tickCount` ticków wykonaj pięć kroków z sekcji
    "Minimalna kolejność" (bez kroku 5 — `runTicks` nic nie wypisuje).
 3. **`main()` w `apps/simulator_cli/main.cpp`** — stwórz `Plant` i `Diverter`, dodaj paczkę przez
@@ -123,6 +123,6 @@ dlaczego nie?
 ## Koniec modułu 2
 
 Masz teraz system, w którym fizyczne urządzenie naprawdę ma swój własny czas reakcji, a przenośnik go
-respektuje. To dokładnie ten sam krok, który ten projekt przeszedł na samym początku swojej
+respektuje. To ten sam krok, który ten projekt przeszedł na samym początku swojej
 historii — w kolejnych modułach dołączą kolejne elementy: drugi aktuator (silnik przenośnika), tryby
 pracy systemu i bezpieczeństwo.

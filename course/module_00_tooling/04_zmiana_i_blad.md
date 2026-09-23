@@ -30,7 +30,7 @@ czerwonym tekstem, w oknie "Output"/"Build" (Visual Studio) albo w oknie komunik
 
 Typowy komunikat błędu zawiera trzy rzeczy, których szukamy w tej kolejności:
 
-1. **Nazwę pliku i numer linii** — dokładnie wskazuje, gdzie kompilator napotkał problem. Czasem
+1. **Nazwę pliku i numer linii** — wskazuje, gdzie kompilator napotkał problem. Czasem
    to nie jest dokładnie ta linia, którą zepsułeś — brakujący średnik często ujawnia się dopiero w
    *następnej* linii, bo dopiero tam kompilator "gubi wątek".
 2. **Pierwszy komunikat błędu** — jeśli widzisz kilkanaście linii błędów naraz, skup się na

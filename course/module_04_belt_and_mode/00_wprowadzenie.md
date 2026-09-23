@@ -14,7 +14,7 @@ git switch -c <nazwa-twojego-brancha> module-04-start
 
 Ważna różnica względem struktury tego modułu: **`Engine::step()` zostaje dokładnie taki, jaki
 zostawił go Moduł 3, aż do ostatniej misji.** Najpierw budujesz `BeltMotor` (Misja 13) i `Mode`
-(Misja 14) jako samodzielne, osobno testowalne elementy — dokładnie tak, jak w prawdziwej historii
+(Misja 14) jako samodzielne, osobno testowalne elementy — tak, jak w prawdziwej historii
 tego projektu budowano tego typu elementy przed jakąkolwiek integracją. Dopiero Misja 15 spina
 wszystko razem.
 

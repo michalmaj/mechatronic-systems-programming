@@ -115,6 +115,6 @@ tym etapie projektu jest to akceptowalne?
 ## Koniec modułu 1
 
 Masz teraz działający, kompletny (choć mały) system: paczkę poruszającą się przez strefy i sortowaną
-według wagi, ze stanem oddzielonym od decyzji. To jest dokładnie ta sama architektura, do której ten
+według wagi, ze stanem oddzielonym od decyzji. To jest ta sama architektura, do której ten
 projekt doszedł na samym początku swojej historii — w kolejnych modułach będziesz ją rozbudowywać
 o kolejne elementy: aktuatory z własnym stanem, tryby pracy, bezpieczeństwo, czujniki i usterki.
