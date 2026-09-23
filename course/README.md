@@ -20,11 +20,13 @@ Wtedy `../../src/plant.cpp` wskazuje na Twój własny, lokalny kod tego modułu 
 którym mówi tekst.
 
 **Jeśli zamiast tego przeglądasz ten plik na GitHubie w kontekście gałęzi `main`,** te same linki
-prowadzą do zupełnie innego kodu, albo do pliku, który jeszcze nie istnieje na tym etapie. To nie
-błąd w materiale — to konsekwencja struktury tego repozytorium: materiał kursu (`course/`) żyje na
-`main`, ale kod, który budujesz krok po kroku, żyje na tagach `module-XX-start`/`module-XX-solution`,
-nie na `main`. `main` sam w sobie zawiera osobny, niezwiązany z rdzeniem kursu projekt referencyjny —
-podobieństwo nazw plików jest przypadkowe.
+mogą prowadzić do innego kodu niż ten, o którym mówi tekst, albo do pliku, który na tym etapie
+jeszcze nie istnieje. To nie błąd w materiale — to konsekwencja struktury tego repozytorium: `main`
+zawiera materiał kursu (`course/`, `docs/`) oraz zrzut demonstracyjny z Modułu 0 — ten sam
+`simulator_cli`, który uruchamiasz w misji 0.5 jako podgląd tego, dokąd zmierzasz. Właściwa,
+budowana krok po kroku implementacja, którą rozwijasz przez cały kurs, żyje na tagach
+`module-XX-start`/`module-XX-solution`, nie na `main`. Dlatego linki do kodu źródłowego wewnątrz
+materiałów misji trzeba śledzić w kontekście właściwego taga, nie na `main`.
 
 Zasada jest prosta: **materiał czytaj skądkolwiek, ale linki do kodu klikaj (albo otwieraj lokalnie)
 dopiero mając wyewidencjonowany właściwy tag.**
