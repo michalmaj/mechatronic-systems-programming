@@ -63,7 +63,7 @@ jeszcze w `Diverting`, przesuń ją o jedną strefę (użyj `advanceZone` z Misj
 `*plant.item`). Jeśli `plant.item` jest puste — nic nie rób. Zachowanie w `Diverting` zostaw na razie
 bez zmian (paczka czeka) — to znowu praca dla Misji 4.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-3

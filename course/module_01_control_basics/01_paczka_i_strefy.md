@@ -69,7 +69,7 @@ switch (zone) {
 Usuń linijkę `(void)zone;` — była tam tylko po to, żeby kompilator nie narzekał na nieużywany
 parametr, zanim go faktycznie użyjesz.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-1

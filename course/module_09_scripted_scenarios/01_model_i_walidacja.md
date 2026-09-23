@@ -31,7 +31,7 @@ bool isValidScenario(const Scenario& scenario);
 
 `ScriptedSensorFault`/`ScriptedDiverterFault` są dwoma **osobnymi** typami, nie jednym wspólnym
 "usterka + cel" -- dokładnie ta sama decyzja co `SensorFaultKind`/`DiverterFaultKind` w Module 7:
-nielegalna kombinacja ma być niewyrażalna w typach, nie odrzucana dopiero w runtime.
+nielegalna kombinacja ma być niewyrażalna w typach, nie odrzucana dopiero w trakcie działania programu.
 
 `duration` żyje na `Scenario`, nie jako osobny parametr -- scenariusz ma być kompletnym opisem
 powtarzalnego eksperymentu, a to, jak długo trwa, jest częścią tego opisu.
@@ -48,7 +48,7 @@ wartości `at`/`from`/`until` zapisane w danych, nie przez pozycję w wektorze.
 4. Wejścia operatora, per tick: żaden powtórzony `ScenarioInputKind` na tym samym ticku; co najwyżej
    dwa różne rodzaje na tym samym ticku, i tylko jeśli to dokładnie `{EmergencyStopReleased, Reset}`.
    **To węższy kontrakt niż sam `Engine`** -- `nextEStopLatchState`/`modeStep` obsługują `Reset` i
-   `StartRequested` ustawione jednocześnie bezpiecznie (zamrożone od Modułu 5), ale odporność `Engine`
+   `StartRequested` ustawione jednocześnie bezpiecznie (niezmienione od Modułu 5), ale odporność `Engine`
    na kombinację flag to inny kontrakt niż to, co dobrze napisany `Scenario` powinien *mówić*. Scenariusz,
    który chce obu efektów, zapisuje je na osobnych tickach.
 5. Każde `operatorInputs.at` musi być `< duration`.
@@ -78,7 +78,7 @@ gotowe.
 Uzupełnij ciało `isValidScenario` w [`src/scenario.cpp`](../../src/scenario.cpp) zgodnie z ośmioma
 regułami powyżej.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-33

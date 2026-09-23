@@ -8,7 +8,7 @@ przepuszcza ją przez system i pokazuje na konsoli, co się z nią dzieje, krok 
 
 ## Nowe elementy C++
 
-**`main()`** — punkt wejścia programu. Widziałeś go już w `toolchain_check` (Module 0) i w gotowym
+**`main()`** — punkt wejścia programu. Widziałeś go już w `toolchain_check` (Moduł 0) i w gotowym
 podglądzie `simulator_cli`, ale to pierwszy raz, kiedy piszesz go sam, do własnego kodu.
 
 **`std::cout`** — wypisywanie tekstu na konsolę, ten sam mechanizm co w `toolchain_check`.
@@ -56,7 +56,7 @@ tick 1: zone=Weighing
 tick 4: empty
 ```
 
-## Self-check
+## Sprawdź się
 
 Najpierw smoke test — sprawdza tylko, że program się uruchamia i kończy bez błędu:
 

@@ -39,7 +39,7 @@ Nieużywany, wciąż poprawnie skompilowany kod, który czeka na sprzątanie, to
 sytuacja w prawdziwych projektach — nie każda duplikacja znika tego samego dnia, w którym przestaje
 być potrzebna.
 
-## Self-check
+## Sprawdź się
 
 Ta misja nie ma osobnej etykiety `ctest` — tak jak w Misji 6 Modułu 1, prawdziwym testem jest
 uruchomienie programu i przeczytanie wyniku:
@@ -59,7 +59,7 @@ ctest --preset test
 ```
 
 Oczekiwany wynik: wszystkie testy zielone — `misja-1` do `misja-4`, `misja-6` do `misja-11`. (Ta
-misja, tak jak Misja 6, nie ma osobnej etykiety — patrz Self-check wyżej.)
+misja, tak jak Misja 6, nie ma osobnej etykiety — patrz "Sprawdź się" wyżej.)
 
 ## Zapisz swoją pracę
 

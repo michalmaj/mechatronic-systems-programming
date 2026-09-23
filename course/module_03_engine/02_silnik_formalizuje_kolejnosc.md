@@ -31,7 +31,7 @@ private:
 
 `plant_` i `diverter_` żyją i umierają razem z `Engine` — nie istnieją nigdzie indziej, nikt inny nie
 trzyma do nich dostępu. To inny sposób użycia `class` niż w Module 2, ale ten sam mechanizm
-(enkapsulacja) i ta sama konwencja nazewnicza (§1 Module 2: "typ z ukrytym stanem i publicznym
+(enkapsulacja) i ta sama konwencja nazewnicza (§1 Moduł 2: "typ z ukrytym stanem i publicznym
 interfejsem nazywamy `class`").
 
 ## Niezmiennik — dokładna wersja
@@ -59,7 +59,7 @@ oczekiwane — dokładnie tak, jak robiłeś to w Module 1 i 2 z `spawnItem(Plan
 5. Złóż i zwróć `TickResult` dla ticku, który właśnie przetworzyłeś — numer ticku to `tick_`
    **sprzed** inkrementacji — a dopiero potem zwiększ `tick_`.
 
-## Zamrożona semantyka numeracji
+## Reguła numeracji
 
 Pierwsze wywołanie `step()` zwraca `tick == 0`. `TickResult` opisuje stan **po** przetworzeniu tego
 ticku — pierwsze wywołanie już odzwierciedla pełny cykl decyzja→`setCommand`→`resolve`→`advance`, nie
@@ -76,7 +76,7 @@ stan sprzed niego.
 - `Engine::spawnItem(Item)` — jedna linijka: wywołanie wolnej funkcji `psm::spawnItem(plant_, item)`.
 - `Engine::step()` — pięć kroków opisanych wyżej, w tej dokładnie kolejności.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-11
@@ -94,7 +94,7 @@ teraz zweryfikowane przez jedno wywołanie zamiast czterech ręcznie poukładany
 - **Wywołanie `plant_.spawnItem(item)` albo `plant_.advance(diverter_)`** — `Plant` nie ma takich
   metod. Kompilator to złapie, ale komunikat błędu bywa nieoczywisty przy pierwszym spotkaniu.
 - **Numer ticku w `TickResult` po inkrementacji zamiast przed** — pierwszy `step()` zwróciłby wtedy
-  `tick == 1`, nie `tick == 0`, łamiąc zamrożoną semantykę numeracji.
+  `tick == 1`, nie `tick == 0`, łamiąc regułę numeracji opisaną wyżej.
 
 ## Pytanie do zastanowienia
 

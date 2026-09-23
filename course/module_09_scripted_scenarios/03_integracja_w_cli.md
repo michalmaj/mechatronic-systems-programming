@@ -45,7 +45,7 @@ zdolność, której sama Misja 34 nie mogła jeszcze pokazać: wiele paczek zade
 deklaratywnie, zamiast przez ręczną pętlę ponawiającą spawn co tick (por.
 `tests/multiple_items_engine_test.cpp` z Modułu 8).
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-35
@@ -53,7 +53,7 @@ ctest --preset test -L misja-35
 
 To prawdziwy test (`simulator_cli_scenario_smoke`), nie tylko stary `simulator_cli_smoke` (misja-6).
 Obydwa uruchamiają dokładnie to samo polecenie -- ale teraz oznaczają coś innego: `simulator_cli_smoke`
-zawsze sprawdzał tylko "program się uruchomił i zwrócił 0"; własny self-check w `main.cpp` sprawia, że
+zawsze sprawdzał tylko "program się uruchomił i zwrócił 0"; własna weryfikacja w `main.cpp` sprawia, że
 ten sam kod wyjścia jest teraz naprawdę powiązany z tym, czy obie demonstracje faktycznie się udały.
 Dlatego `misja-6`, mimo że historycznie osobny, w tym module dzieli wynik z `misja-35`, dopóki ta misja
 nie jest gotowa.
@@ -93,7 +93,7 @@ git commit -m "..."
 
 `main.cpp` sam sprawdza tylko dwie rzeczy: czy `Mode::Fault` w ogóle się pojawił, i czy było co
 najmniej trzy odjazdy. To celowo minimalny bar. Jaki błędny, ale wciąż "działający" (kod wyjścia `0`)
-`recoveryDemoScenario()` przeszedłby ten self-check, mimo że w ogóle nie odtwarza mechanizmu z Modułu 7?
+`recoveryDemoScenario()` przeszedłby tę weryfikację, mimo że w ogóle nie odtwarza mechanizmu z Modułu 7?
 
 ## Koniec modułu 9
 

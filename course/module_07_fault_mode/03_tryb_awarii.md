@@ -8,7 +8,7 @@ dwa **różne** pytania, dostępne w dwóch **różnych** momentach tego samego 
 
 Wcześniejszy szkic tego projektu próbował dwóch skrótów. Pierwszy: przesunąć `Plant::advance()`
 przed liczenie `Mode`. Odrzucony — cichaczem przesunąłby o jeden tick każdy istniejący test
-sprawdzający dokładny moment ruchu paczki, łącznie z zamrożonymi testami z Modułu 4. Drugi:
+sprawdzający dokładny moment ruchu paczki, łącznie z już istniejącymi testami z Modułu 4. Drugi:
 wywoływać dotychczasowy `modeStep()` dwukrotnie w jednym ticku, z częścią flag ręcznie wygaszonych na
 `false`. To technicznie działa — ale zaciera fakt, że pojawiły się dwie naprawdę różne
 odpowiedzialności pod jedną nazwą funkcji.
@@ -37,26 +37,24 @@ tej samej.
 
 ## Poprawiona kolejność reguł w `modeStep`
 
-```text
-1. latch != Released              -> EStopped   (bez zmian, priorytet absolutny)
-2. current == EStopped            -> Idle       (bez zmian)
-3. current == Fault               -> resetRequested ? Idle : Fault   (NOWE — zatrzask)
-4. stopRequested                  -> Idle       (bez zmian)
-5. startRequested                 -> Running    (bez zmian)
-6. w przeciwnym razie             -> current bez zmian
-```
+Łańcuch reguł z Modułu 5 zostaje w tej samej kolejności i bez zmian: bezwarunkowy priorytet zatrzasku
+e-stopu, potem powrót z `EStopped` do `Idle`, potem `stopRequested`, potem `startRequested`, a na
+końcu `current` bez zmian, gdy nic z powyższego nie pasuje. Nowa reguła wchodzi jako **trzecia** w tej
+kolejności — zaraz po powrocie z `EStopped`, a przed `stopRequested` — i dotyczy wyłącznie przypadku
+`current == Mode::Fault`. Jej dokładne zachowanie (kiedy wraca do `Idle`, kiedy zostaje w `Fault`)
+opisuje sekcja „`Fault` jest zatrzaskowe” niżej.
 
 Zwróć uwagę, czego tu **nie ma**: żadnego parametru `routingDeadlineMissed`, żadnej reguły o nim
 wspominającej. Ta odpowiedzialność w całości należy teraz do `reactToSystemEvent`.
 
 ## Cała reguła `reactToSystemEvent`
 
-```text
-jeśli modeForTick == Running i event == RoutingDeadlineMissed: zwróć Fault
-w przeciwnym razie: zwróć modeForTick bez zmian
-```
+Jedyny przypadek, w którym funkcja zwraca `Fault`, to jednoczesne spełnienie dwóch warunków:
+`modeForTick == Mode::Running` oraz `event == SystemEventKind::RoutingDeadlineMissed`. W każdej innej
+sytuacji — inny `modeForTick`, brak zdarzenia, albo `event == SystemEventKind::DiverterNotReady` —
+funkcja zwraca `modeForTick` bez żadnej zmiany.
 
-To wszystko. Funkcja nie ma dostępu do `start`/`stop`/`reset`/`latch`, więc nie może ponownie
+Funkcja nie ma dostępu do `start`/`stop`/`reset`/`latch`, więc nie może ponownie
 wywołać żadnej reguły `modeStep`. Może odpalić wyłącznie z `Running` — a skoro `latch != Released`
 zawsze wymusza `EStopped` już w kroku 1 `modeStep`, `modeForTick` nigdy nie jest jednocześnie
 `Running` i pod aktywnym e-stopem w tym samym ticku. Żadna kombinacja wejść nie potrafi odpalić obu
@@ -89,7 +87,7 @@ ciała `reactToSystemEvent` (`// TODO`).
 
 Dodaj regułę 3 do `modeStep`, we właściwym miejscu w łańcuchu. Uzupełnij `reactToSystemEvent`.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-27

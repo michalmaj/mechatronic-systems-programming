@@ -18,45 +18,26 @@ void clearDiverterFault();
 
 Bez parametru celu — jest tylko jeden dywerter, więc nie ma czego wybierać.
 
-## Rozszerzone `step()` — sedno tej misji
+## Rozszerzenie `step()` — sedno tej misji
 
-```cpp
-TickResult Engine::step() {
-    // 1-2. flagi, latch_, decision -- bez zmian od Modułu 6.
-    ...
+`step()` z Modułu 6 pozostaje w niemal niezmienionym kształcie (flagi wejściowe, `latch_`, `decision`,
+czujniki i `ControllerState` — bez zmian) — zmieniają się cztery rzeczy, w tej kolejności:
 
-    // 3. Mode, krok pierwszy -- wszystko, co wiadomo PRZED próbą rutowania w tym ticku.
-    const Mode modeForTick = modeStep(mode_, startRequested, stopRequested, latch_, resetRequested);
+1. **Liczenie `Mode` przenosi się na sam początek `step()`**, przed jakąkolwiek próbą rutowania w tym
+   ticku. Policz `modeForTick` dokładnie tym samym wywołaniem `modeStep(...)` co dotąd i zapamiętaj
+   wynik w zmiennej lokalnej — **nie** przypisuj go jeszcze do `mode_`.
+2. **Bramkowania aktuatorów (dywerter, pas) używają `modeForTick`, nie `mode_`** — pole `mode_` w tym
+   ticku wciąż ma starą wartość, aż do punktu 4 poniżej. Bramka dywertera dodatkowo przekazuje
+   `diverterFault_` do `diverter_.resolve(...)`, dokładnie tak jak czujniki dostają swoje usterki w
+   Module 6.
+3. **`psm::advance(...)` woła się pod tą samą bramką co w Module 6** (pas faktycznie `Running`), ale
+   jego wynik trzeba teraz zapamiętać — `advance()` zwraca informację, czy w tym ticku wystąpił
+   `SystemEventKind` (np. przekroczenie terminu rutowania).
+4. **Drugie liczenie `Mode` dzieje się dopiero po `advance()`**, nie przed nim: to jedyne miejsce,
+   gdzie `mode_` dostaje nową wartość w tym ticku, przez `reactToSystemEvent(modeForTick, event)` —
+   `modeForTick` z punktu 1, `event` z punktu 3.
 
-    // 4. czujniki + ControllerState -- bez zmiany pozycji/logiki.
-    ...
-
-    // 5. dywerter -- bez zmiany pozycji, teraz przekazuje diverterFault_.
-    if (!decision.overrideActive && diverterMayMove(modeForTick)) {
-        ...
-        diverter_.resolve(diverterFault_);
-    }
-
-    // 6. pas -- bez zmian, ale bramkowany przez modeForTick, nie mode_.
-    ...
-
-    // 7. Plant::advance() -- dokładnie ta sama pozycja co w Module 6.
-    std::optional<SystemEventKind> event;
-    if (beltMotor_.actualState() == BeltMotorState::Running) {
-        event = psm::advance(plant_, diverter_, routingReady);
-    }
-
-    // 8. Mode, krok drugi -- teraz znamy wynik rutowania z TEGO ticku.
-    mode_ = reactToSystemEvent(modeForTick, event);
-
-    // 9. TickResult, teraz z polem event.
-    ...
-}
-```
-
-Wszystkie bramkowania aktuatorów (dywerter w kroku 5, pas w kroku 6) używają **`modeForTick`**, nie
-`mode_`. Pole `mode_` klasy dostaje nową wartość dokładnie raz, na samym końcu, przez
-`reactToSystemEvent`.
+`TickResult` tego ticku dostaje dodatkowo pole `event`.
 
 ## Jednotickowe opóźnienie zatrzymania pasa — zaakceptowane, nie naprawiane
 
@@ -73,7 +54,7 @@ ticku, w którym wykryto naciśnięcie. `Fault` nie ma i nie dostaje żadnej tak
 tym module: to stan kontrolowany, rutingowy, nie stan bezpieczeństwa krytycznego. Jednotickowe
 opóźnienie jest poprawnym, zaakceptowanym zachowaniem, nie luką.
 
-## Zamrożony scenariusz odzyskiwania (dokładnie zweryfikowany na realnym buildzie)
+## Przykładowy scenariusz odzyskiwania
 
 ```text
 krok 1: item wchodzi do Infeed, mode=Running, belt=RampingUp -- paczka jeszcze czeka, pas dopiero się rozpędza.
@@ -117,9 +98,9 @@ zadanie, żeby je rozszerzyć.
 - `Engine::step()` — rozszerz zgodnie z opisem powyżej: `modeForTick` do bramkowania aktuatorów,
   `diverterFault_` przekazywane do `diverter_.resolve()`, `reactToSystemEvent` na końcu ustawiające
   `mode_`, `event` w `TickResult`.
-- `apps/simulator_cli/main.cpp` — zaimplementuj zamrożony scenariusz odzyskiwania powyżej.
+- `apps/simulator_cli/main.cpp` — zaimplementuj scenariusz odzyskiwania opisany powyżej.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-28

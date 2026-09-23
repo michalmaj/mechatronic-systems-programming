@@ -21,29 +21,26 @@ paczek jest kilka, żaden odczyt czujnika nie może po cichu "przeciekać" do ni
 
 ## Dokładna reguła
 
-```cpp
-void updatePresenceConfirmation(Item& itemAtPresenceCheck, PresenceReading presence) {
-    if (presence.status == ReadingStatus::Ok && presence.occupied) {
-        itemAtPresenceCheck.presenceConfirmed = true;
-    }
-}
+`updatePresenceConfirmation` ustawia `itemAtPresenceCheck.presenceConfirmed` na `true` wtedy i tylko
+wtedy, gdy przekazany odczyt ma jednocześnie `status == ReadingStatus::Ok` i `occupied == true`. W
+każdym innym przypadku — odczyt błędny albo `occupied == false` — pole zostaje bez zmian; funkcja
+nigdy nie resetuje `presenceConfirmed` z powrotem na `false`.
 
-void updateClassification(Item& itemAtWeighing, WeightReading weight) {
-    if (itemAtWeighing.presenceConfirmed && weight.status == ReadingStatus::Ok) {
-        itemAtWeighing.classification = decideClassification(weight);
-    }
-}
-```
+`updateClassification` zapisuje wynik `decideClassification(weight)` do
+`itemAtWeighing.classification` wyłącznie wtedy, gdy jednocześnie: paczka w `weighing` ma już
+`presenceConfirmed == true`, i przekazany odczyt wagi ma `status == ReadingStatus::Ok`. Brak
+któregokolwiek z tych dwóch warunków oznacza brak zapisu — `classification` zostaje takie, jakie
+było wcześniej (dla świeżej paczki: `std::nullopt`).
 
 `Engine::step()` (Misja 32) wywoła każdą z nich tylko wtedy, gdy odpowiedni slot jest faktycznie
-zajęty — nie ma tu żadnej gałęzi "resetuj przy braku paczki", bo świeżo zespawnowany `Item` już
-zaczyna z domyślnym, czystym stanem (`presenceConfirmed = false`, `classification = std::nullopt`) —
-nie ma nic do zerowania.
+zajęty — nie ma tu żadnej gałęzi "resetuj przy braku paczki", bo `Item` utworzony przez `spawnItem`
+już zaczyna z domyślnym, czystym stanem (`presenceConfirmed = false`, `classification =
+std::nullopt`) — nie ma nic do zerowania.
 
 ## Uproszczenie czujników
 
 Skoro `PresenceSensor::read`/`WeightSensor::read` dostają teraz dokładnie ten slot, do którego są
-fizycznie przypięte, ground truth to po prostu `item.has_value()` — dawne porównanie `item->zone ==
+fizycznie przypięte, stan rzeczywisty to po prostu `item.has_value()` — dawne porównanie `item->zone ==
 Zone::PresenceCheck` nie tylko nie jest już potrzebne, jest niemożliwe (`Item` nie ma już `zone`).
 Reszta logiki z Modułu 6 zostaje bez zmian, i to jest tu ważne: gdy slot jest pusty i nie ma usterki,
 sensor nadal zwraca `{Ok, 0}`/`{Ok, false}`, **nie** aktualizując `lastKnownMass_`/`lastKnownOccupied_`.
@@ -61,10 +58,10 @@ gotowe. [`include/psm/presence_sensor.hpp`](../../include/psm/presence_sensor.hp
 - `updatePresenceConfirmation`/`updateClassification` w [`src/controller.cpp`](../../src/controller.cpp)
   zgodnie z dokładną regułą powyżej.
 - `PresenceSensor::read` w [`src/presence_sensor.cpp`](../../src/presence_sensor.cpp) i
-  `WeightSensor::read` w [`src/weight_sensor.cpp`](../../src/weight_sensor.cpp): zamień ground truth na
+  `WeightSensor::read` w [`src/weight_sensor.cpp`](../../src/weight_sensor.cpp): zamień stan rzeczywisty na
   `item.has_value()` (i `item->mass` dla wagi), zachowując resztę logiki Modułu 6 bez zmian.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-31

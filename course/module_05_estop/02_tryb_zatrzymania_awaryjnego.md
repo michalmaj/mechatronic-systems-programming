@@ -42,7 +42,7 @@ wygrywa zawsze.
 `latch` wreszcie znowu czyta `Released`, `Mode` staje się `Idle` — wznowienie pracy wymaga od
 operatora jawnego, osobnego `requestStart()`, dokładnie tak samo jak przy starcie od zera.
 
-**Zamrożony przypadek: `resetRequested` i `startRequested` prawdziwe w tym samym ticku.** Wynikiem
+**Przypadek brzegowy: `resetRequested` i `startRequested` prawdziwe w tym samym ticku.** Wynikiem
 wciąż jest `Idle`, nigdy `Running`. Sprawdzenie "właśnie wróciłem z `EStopped`" ma pierwszeństwo przed
 sprawdzeniem "`Idle` plus `startRequested`" — `Start` zażądany w tym samym ticku co reset, który
 wyczyścił latch, **nie** zadziała w tym ticku. Operator zobaczy `Idle`, a dopiero **osobne**, kolejne
@@ -63,14 +63,14 @@ Rozszerz ciało `modeStep` o dwa sprawdzenia, w tej kolejności, **przed** istni
 2. jeśli `current == Mode::EStopped` (a powyższy warunek nie zadziałał, czyli `latch` jest już
    `Released`), zwróć `Mode::Idle`.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-17
 ```
 
 Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test to nowy, dedykowany plik —
-sprawdza priorytet e-stopu z różnych stanów, powrót do `Idle`, oraz zamrożony przypadek
+sprawdza priorytet e-stopu z różnych stanów, powrót do `Idle`, oraz przypadek brzegowy
 `resetRequested`+`startRequested` naraz.
 
 Warto też ponownie odpalić `ctest --preset test -L misja-14` — powinien nadal przechodzić, mimo że
@@ -81,7 +81,7 @@ nic w nim nie zmieniłeś.
 - **Sprawdzenie `stopRequested`/`startRequested` przed sprawdzeniem `latch`** — e-stop musi wygrywać
   zawsze, bez wyjątków.
 - **Zwrócenie `Mode::Running` zamiast `Mode::Idle`** przy powrocie z `EStopped`, gdy `startRequested`
-  jest akurat prawdziwe w tym samym wywołaniu — to dokładnie zamrożony przypadek konfliktu.
+  jest akurat prawdziwe w tym samym wywołaniu — to dokładnie ten przypadek konfliktu.
 - **Umieszczenie nowych sprawdzeń na końcu funkcji** zamiast na początku — kolejność ma znaczenie,
   e-stop musi być sprawdzony pierwszy.
 

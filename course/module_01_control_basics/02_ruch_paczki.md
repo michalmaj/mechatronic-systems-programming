@@ -58,7 +58,7 @@ Wypełnij ciało `advanceZone` tak, żeby:
 `switch` nad `item.zone`, przypisujący nową wartość do `item.zone` w każdym przypadku, jest
 naturalnym narzędziem do tego zadania.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-2

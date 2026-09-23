@@ -20,7 +20,7 @@ private:
 };
 ```
 
-**Ground truth:** `item.has_value() && item->zone == Zone::Weighing` → `item->mass`.
+**Stan rzeczywisty:** `item.has_value() && item->zone == Zone::Weighing` → `item->mass`.
 
 Reguła jest strukturalnie identyczna z `PresenceSensor`:
 - Bez usterki, na wadze: zapisz do `lastKnownMass_`, zwróć `{Ok, item->mass}`.
@@ -39,7 +39,7 @@ Reguła jest strukturalnie identyczna z `PresenceSensor`:
 
 Uzupełnij ciało `WeightSensor::read` zgodnie z regułą powyżej.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-21

@@ -31,7 +31,7 @@ pusty `std::optional` znaczy "nigdy nic wiarygodnego nie widziałem."
 
 ## Dokładna reguła
 
-**Ground truth** (prawda fizyczna, jaką ten czujnik może w ogóle zaobserwować):
+**Stan rzeczywisty** (prawda fizyczna, jaką ten czujnik może w ogóle zaobserwować):
 `item.has_value() && item->zone == Zone::PresenceCheck`.
 
 - **Bez usterki, paczka w `PresenceCheck`:** zapisz do `lastKnownOccupied_` i zwróć `{Ok, true}`.
@@ -59,7 +59,7 @@ kompletna, jak wyżej.
 
 Uzupełnij ciało `PresenceSensor::read` zgodnie z dokładną regułą powyżej.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-20

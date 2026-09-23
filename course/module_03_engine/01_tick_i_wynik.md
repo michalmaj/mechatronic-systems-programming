@@ -63,7 +63,7 @@ wysiłku.
 `describe` nie ma jeszcze żadnego wywołania w programie — to celowe. Dostanie swojego pierwszego
 użytkownika dopiero w Misji 12.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-10
@@ -82,7 +82,7 @@ obecną i pusty przenośnik, porównując dokładny, oczekiwany napis.
 
 ## Pytanie do zastanowienia
 
-`TickResult` przechowuje zarówno `diverterCommand`, jak i `diverterActual`, mimo że to Module 2 już
+`TickResult` przechowuje zarówno `diverterCommand`, jak i `diverterActual`, mimo że to Moduł 2 już
 wprowadził oba te pojęcia osobno w `Diverter`. Po co powtarzać tę informację w migawce, skoro
 teoretycznie dałoby się ją zawsze dociągnąć bezpośrednio z obiektu `Diverter`?
 

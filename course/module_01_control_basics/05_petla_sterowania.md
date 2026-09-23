@@ -45,7 +45,7 @@ Wypełnij `runTicks` tak, żeby dla każdego z `tickCount` "ticków" wykonać:
 Innymi słowy: `runTicks` **spina w jedną całość** to, co wcześniej testowałeś osobno — Controller i
 `Plant::advance` — i robi to `tickCount` razy z rzędu.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-5

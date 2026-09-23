@@ -66,7 +66,7 @@ kompletne, jak wyżej.
 
 Uzupełnij ciało `updateControllerState` zgodnie z dokładną regułą powyżej, w tej kolejności.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-23

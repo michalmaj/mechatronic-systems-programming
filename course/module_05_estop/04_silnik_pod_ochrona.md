@@ -18,7 +18,7 @@ Nowe pole prywatne `latch_`.
 To jest miejsce, gdzie łatwo popełnić subtelny błąd architektoniczny — i warto go nazwać wprost, żeby
 go uniknąć. **Nie wystarczy** obliczyć `Mode::EStopped` i potem bramkować dywerter/pas *wyłącznie
 przez* `Mode`. Gdyby tak zrobić, ścieżka awaryjna zależałaby od poprawności `modeStep` — dokładnie tej
-zależności zamrożona zasada zabrania (przyszły błąd w kolejności sprawdzeń `modeStep` mógłby cicho
+zależności ta reguła zabrania (przyszły błąd w kolejności sprawdzeń `modeStep` mógłby cicho
 unieważnić działanie przycisku awaryjnego). Dlatego `Engine::step()` sprawdza
 `checkEmergencyOverride(latch_)` **bezpośrednio**, i rozgałęzia się na tej podstawie jawnie: gdy
 override jest aktywny, rutynowa logika pasa/dywertera **w ogóle się nie wykonuje** w tym ticku — nie
@@ -34,15 +34,10 @@ override jest aktywny, rutynowa logika pasa/dywertera **w ogóle się nie wykonu
 3. Policz `mode_ = modeStep(mode_, startRequested, stopRequested, latch_)` — `Mode` wciąż jest
    potrzebny (to on jest obserwowalny i steruje ścieżką *rutynową*), po prostu ścieżka awaryjna już
    mu nie ufa.
-4. **Pas, jako `if`/`else`, nigdy oba naraz:**
-   ```cpp
-   if (decision.overrideActive) {
-       beltMotor_.forceStop();
-   } else {
-       beltMotor_.setCommand(mode_ == Mode::Running ? BeltMotorCommand::Run : BeltMotorCommand::Stop);
-       beltMotor_.resolve();
-   }
-   ```
+4. **Pas, jako `if`/`else`, nigdy oba naraz:** gdy `decision.overrideActive` jest prawdziwe, wywołaj
+   wyłącznie `beltMotor_.forceStop()` i nic więcej. W przeciwnym razie zachowaj się dokładnie tak, jak
+   w Module 4: `beltMotor_.setCommand(mode_ == Mode::Running ? BeltMotorCommand::Run :
+   BeltMotorCommand::Stop)`, a potem `beltMotor_.resolve()`.
 5. **Dywerter, bramkowany oboma sygnałami bezpośrednio, nie wyłącznie przez `Mode`:**
    `if (!decision.overrideActive && diverterMayMove(mode_))` — dopiero wtedy wykonuje się decyzja
    Controllera → `diverter_.setCommand` → `diverter_.resolve()`. W przeciwnym razie dywerter
@@ -51,13 +46,13 @@ override jest aktywny, rutynowa logika pasa/dywertera **w ogóle się nie wykonu
    zmian względem Modułu 4.
 7. Złóż `TickResult` (teraz z polem `latch`), zwiększ `tick_`.
 
-## Zamrożony przykładowy przebieg
+## Przykładowy przebieg
 
 System pracuje (paczka się porusza, pas `Running`) → `requestEStop()` → **w tym samym ticku**:
 `mode = EStopped`, `latch = Engaged`, `beltActual = Stopped` (natychmiast, przez `forceStop()`, bez
 rampy, bez konkurującego wywołania rutynowego w tym ticku), paczka zamrożona w miejscu →
 `releaseEStop()` → `latch = Armed`, **`mode` zostaje `EStopped`** (latch wciąż nie jest `Released`) →
-`requestReset()` → `latch = Released`, `mode = Idle` (**nie** `Running`, zgodnie z zamrożoną regułą z
+`requestReset()` → `latch = Released`, `mode = Idle` (**nie** `Running`, zgodnie z regułą z
 Misji 17) → wznowienie wymaga świeżego `requestStart()`.
 
 ## Co już masz gotowe
@@ -75,7 +70,7 @@ tak, jak zostawił je Moduł 4 — to Twoje zadanie, żeby je rozszerzyć.
 - `apps/simulator_cli/main.cpp` — zademonstruj przebieg (naciśnij, puść, zresetuj, wznów) i wypisuj
   `mode`/`latch` obok istniejącego wyjścia.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-19

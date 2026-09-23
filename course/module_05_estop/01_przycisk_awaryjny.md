@@ -21,7 +21,7 @@ enum+funkcja w tym kursie (po `Mode` w Module 4).
   wciąż czekam na potwierdzenie" — właśnie dlatego `Mode` (Misja 17) nigdy nie wznowi pracy
   automatycznie.
 
-**Zamrożony przypadek: `released` i `resetRequested` prawdziwe w tym samym wywołaniu.** Liczy się
+**Przypadek brzegowy: `released` i `resetRequested` prawdziwe w tym samym wywołaniu.** Liczy się
 wyłącznie `released`. Wynikiem jest `Armed`, nie `Released` — reset nie może "przeskoczyć" stanu,
 który dopiero co został zaobserwowany. Innymi słowy: z `Engaged`, `released=true` razem z
 `resetRequested=true` daje `Armed`; dopiero **osobne, kolejne** wywołanie z `resetRequested=true`
@@ -37,17 +37,17 @@ i deklaracja `nextEStopLatchState` już gotowe.
 
 ## Co masz napisać
 
-Uzupełnij ciało `nextEStopLatchState` zgodnie z regułą powyżej, uwzględniając zamrożony przypadek
+Uzupełnij ciało `nextEStopLatchState` zgodnie z regułą powyżej, uwzględniając przypadek brzegowy
 `released`+`resetRequested`.
 
-## Self-check
+## Sprawdź się
 
 ```bash
 ctest --preset test -L misja-16
 ```
 
 Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test przechodzi przez pełny cykl
-`Released→Engaged→Armed→Released`, sprawdza ignorowanie resetu w `Engaged`, zamrożony przypadek
+`Released→Engaged→Armed→Released`, sprawdza ignorowanie resetu w `Engaged`, przypadek brzegowy
 `released`+`resetRequested` naraz, oraz priorytet `pressed` nad wszystkim innym.
 
 ## Częste błędy
@@ -57,7 +57,7 @@ Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test przechodzi 
 - **Reagowanie na `resetRequested` w stanie `Engaged`** — reset ma sens wyłącznie w `Armed`; w
   `Engaged` (przycisk wciąż wciśnięty) nie ma czego resetować.
 - **Zwrócenie `Released` zamiast `Armed`** dla przypadku `released`+`resetRequested` naraz — to
-  dokładnie zamrożony przypadek opisany wyżej.
+  dokładnie przypadek opisany wyżej.
 
 ## Pytanie do zastanowienia
 
