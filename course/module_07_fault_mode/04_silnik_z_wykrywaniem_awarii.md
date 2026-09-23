@@ -28,7 +28,7 @@ czujniki i `ControllerState` — bez zmian) — zmieniają się cztery rzeczy, w
    wynik w zmiennej lokalnej — **nie** przypisuj go jeszcze do `mode_`.
 2. **Bramkowania aktuatorów (dywerter, pas) używają `modeForTick`, nie `mode_`** — pole `mode_` w tym
    ticku wciąż ma starą wartość, aż do punktu 4 poniżej. Bramka dywertera dodatkowo przekazuje
-   `diverterFault_` do `diverter_.resolve(...)`, dokładnie tak jak czujniki dostają swoje usterki w
+   `diverterFault_` do `diverter_.resolve(...)`, tak jak czujniki dostają swoje usterki w
    Module 6.
 3. **`psm::advance(...)` woła się pod tą samą bramką co w Module 6** (pas faktycznie `Running`), ale
    jego wynik trzeba teraz zapamiętać — `advance()` zwraca informację, czy w tym ticku wystąpił
@@ -51,27 +51,27 @@ terminu, sama musiała zostać wykonana pod bramkowaniem `Running`) i dopiero na
 To celowo inaczej niż e-stop, który wymusza `beltMotor_.forceStop()` natychmiast, przez
 `decision.overrideActive` — liczone niezależnie od `Mode`, właśnie po to, żeby zadziałać w tym samym
 ticku, w którym wykryto naciśnięcie. `Fault` nie ma i nie dostaje żadnej takiej wymuszonej ścieżki w
-tym module: to stan kontrolowany, rutingowy, nie stan bezpieczeństwa krytycznego. Jednotickowe
+tym module: to stan kontrolowany, związany z rutowaniem, nie stan bezpieczeństwa krytycznego. Jednotickowe
 opóźnienie jest poprawnym, zaakceptowanym zachowaniem, nie luką.
 
 ## Przykładowy scenariusz odzyskiwania
 
 ```text
-krok 1: item wchodzi do Infeed, mode=Running, belt=RampingUp -- paczka jeszcze czeka, pas dopiero się rozpędza.
-krok 2: item PresenceCheck, belt=Running -- dopiero teraz pas realnie jedzie, paczka rusza.
+krok 1: item wchodzi do Infeed, mode=Running, belt=RampingUp — paczka jeszcze czeka, pas dopiero się rozpędza.
+krok 2: item PresenceCheck, belt=Running — dopiero teraz pas realnie jedzie, paczka rusza.
 krok 3: item Weighing.
 krok 4: item Diverting, klasyfikacja już w ControllerState.
-krok 5: event=DiverterNotReady -- pierwsza aktywna próba, dywerter Blocked.
-krok 6: event=RoutingDeadlineMissed, mode=Fault, belt wciąż Running -- ten sam tick.
-krok 7: mode=Fault, belt=RampingDown -- dopiero teraz pas zaczyna zwalniać.
+krok 5: event=DiverterNotReady — pierwsza aktywna próba, dywerter Blocked.
+krok 6: event=RoutingDeadlineMissed, mode=Fault, belt wciąż Running — ten sam tick.
+krok 7: mode=Fault, belt=RampingDown — dopiero teraz pas zaczyna zwalniać.
 krok 8: mode=Fault, belt=Stopped.
--- clearDiverterFault() --
-krok 9: mode=Fault -- samo wyczyszczenie usterki nie wystarcza.
--- requestReset() --
-krok 10: mode=Idle -- zatrzask ustępuje dopiero teraz. Paczka wciąż w Diverting.
--- requestStart() --
-krok 11: mode=Running, belt=RampingUp -- paczka wciąż czeka, pas znów musi się rozpędzić od zera.
-krok 12: belt=Running, event=brak -- dywerter (usterka już wyczyszczona, w ruchu od poprzedniego ticku) zdążył się ustawić, zanim advance() w ogóle zdążył sprawdzić -- prosto do rutowania, bez żadnego DiverterNotReady po drodze.
+— clearDiverterFault() —
+krok 9: mode=Fault — samo wyczyszczenie usterki nie wystarcza.
+— requestReset() —
+krok 10: mode=Idle — zatrzask ustępuje dopiero teraz. Paczka wciąż w Diverting.
+— requestStart() —
+krok 11: mode=Running, belt=RampingUp — paczka wciąż czeka, pas znów musi się rozpędzić od zera.
+krok 12: belt=Running, event=brak — dywerter (usterka już wyczyszczona, w ruchu od poprzedniego ticku) zdążył się ustawić, zanim advance() w ogóle zdążył sprawdzić — prosto do rutowania, bez żadnego DiverterNotReady po drodze.
 ```
 
 Zwróć uwagę na krok 12: w tej konkretnej sekwencji odzyskiwanie **nie** przechodzi przez
@@ -106,7 +106,7 @@ zadanie, żeby je rozszerzyć.
 ctest --preset test -L misja-28
 ```
 
-To prawdziwy, dedykowany test tej misji, śledzący dokładnie scenariusz odzyskiwania powyżej krok po
+To prawdziwy, dedykowany test tej misji, śledzący scenariusz odzyskiwania powyżej krok po
 kroku. Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`.
 
 Uruchom też program naprawdę:

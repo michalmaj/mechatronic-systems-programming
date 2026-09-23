@@ -41,7 +41,7 @@ override jest aktywny, rutynowa logika pasa/dywertera **w ogóle się nie wykonu
 5. **Dywerter, bramkowany oboma sygnałami bezpośrednio, nie wyłącznie przez `Mode`:**
    `if (!decision.overrideActive && diverterMayMove(mode_))` — dopiero wtedy wykonuje się decyzja
    Controllera → `diverter_.setCommand` → `diverter_.resolve()`. W przeciwnym razie dywerter
-   pozostaje **całkowicie nietknięty** w tym ticku, zamrożony dokładnie tam, gdzie jest.
+   pozostaje **całkowicie nietknięty** w tym ticku, zamrożony tam, gdzie jest.
 6. Brama na `psm::advance(plant_, diverter_)` według `beltMotor_.actualState() == Running`, bez
    zmian względem Modułu 4.
 7. Złóż `TickResult` (teraz z polem `latch`), zwiększ `tick_`.

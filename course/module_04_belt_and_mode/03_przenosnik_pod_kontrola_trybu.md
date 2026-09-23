@@ -47,7 +47,7 @@ do specjalnego traktowania. Zobaczysz je w weryfikacji tej misji.
   `resolve()` od `RampingUp`) — brama teraz przechodzi, i paczka przesuwa się **dokładnie o jeden
   krok**.
 
-Dokładnie ten przebieg sprawdza dostarczony test — Twoja implementacja musi go odtworzyć co do joty.
+Ten przebieg sprawdza dostarczony test — Twoja implementacja musi go odtworzyć co do joty.
 
 ## Co już masz gotowe
 

@@ -42,9 +42,9 @@ niezależnie, z zewnątrz `Engine`.
 
 **`spawnItem()` jest jawnym wyjątkiem** — to nie jest "posuwanie symulacji naprzód", to sposób, w
 jaki paczka w ogóle trafia do systemu. Wywołanie go między tickami jest w pełni dozwolone i
-oczekiwane — dokładnie tak, jak robiłeś to w Module 1 i 2 z `spawnItem(Plant&, Item)`.
+oczekiwane — tak, jak robiłeś to w Module 1 i 2 z `spawnItem(Plant&, Item)`.
 
-## Kolejność `step()` — dokładnie, krok po kroku
+## Kolejność `step()` — krok po kroku
 
 1. Jeśli `plant_`'s aktualna paczka ma wartość: zdecyduj jej `DiverterCommand` przez wolne funkcje
    `classify` i `toDiverterCommand` (`Engine` **nie posiada** Controllera — nie ma żadnego obiektu
@@ -67,7 +67,7 @@ stan sprzed niego.
 
 ## Co już masz gotowe
 
-[`include/psm/engine.hpp`](../../include/psm/engine.hpp) — deklaracje kompletne, dokładnie jak wyżej.
+[`include/psm/engine.hpp`](../../include/psm/engine.hpp) — deklaracje kompletne, jak wyżej.
 
 [`src/engine.cpp`](../../src/engine.cpp) — puste szkielety obu metod z komentarzami `// TODO`.
 

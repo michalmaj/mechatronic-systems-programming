@@ -81,7 +81,7 @@ Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`.
 
 - **Brak `return` w którymś `case`** — wykonanie "przechodzi" do następnego przypadku (tzw.
   fall-through) i zwraca zły napis. Każdy `case` w tej funkcji powinien kończyć się swoim `return`.
-- **Literówka w napisie** — test porównuje dokładnie napis znak w znak (`"PresenceCheck"`, nie
+- **Literówka w napisie** — test porównuje napis znak w znak (`"PresenceCheck"`, nie
   `"presence_check"` ani `"Presence Check"`).
 - **Pominięta wartość `Zone`** — jeśli zapomnisz `case` dla którejś strefy, kompilator prawdopodobnie
   wypisze ostrzeżenie o niewyczerpanym `switch`. Warto je od razu naprawić, nie ignorować.

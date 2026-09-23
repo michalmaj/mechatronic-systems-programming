@@ -40,8 +40,8 @@ module. Więcej o tym w Misji 9.)
 
 ## Zanim zaczniesz
 
-- Tak jak w Module 1: nie edytujesz `CMakeLists.txt`, testy są dostarczone przez kurs, a scaffolding
-  maleje w miarę postępu przez misje.
+- Tak jak w Module 1: nie edytujesz `CMakeLists.txt`, testy są dostarczone przez kurs, a poziom
+  prowadzenia maleje w miarę postępu przez misje.
 - Ten moduł jest mniejszy niż Moduł 1 — trzy misje zamiast sześciu — bo buduje na już poznanych
   narzędziach (enumy, funkcje wolne, `std::optional`, pętle) zamiast wprowadzać je od nowa.
 

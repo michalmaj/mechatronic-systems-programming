@@ -30,7 +30,7 @@ ustawiane tylko przy udanym rutowaniu — z konstrukcji obu tych pól nigdy nie 
 ## Reguły przejść, w wymaganej kolejności
 
 `advance()` musi wykonać cztery przejścia, **każde dokładnie raz na wywołanie**, w tej ustalonej
-kolejności downstream-to-upstream:
+kolejności — od wyjścia do wejścia:
 
 **1. Rozstrzygnięcie w `diverting`** (tylko gdy slot jest zajęty). To dokładnie reguła terminu
 rutowania z Misji 26 — z tą różnicą, że licznik `divertingWaitTicks` żyje teraz na samej paczce
@@ -59,7 +59,7 @@ Nie dlatego, że każdy *slot* jest dotknięty tylko raz — slot jest odczytywa
 przejście i sprawdzany jako cel przez sąsiednie, więc jest odwoływany więcej niż raz. Gwarancja bierze
 się z tego, że każde z czterech *przejść* (rozstrzygnięcie w `Diverting`, `Weighing`→`Diverting`,
 `PresenceCheck`→`Weighing`, `Infeed`→`PresenceCheck`) jest wykonywane **dokładnie raz na wywołanie, w
-tej ustalonej kolejności downstream-to-upstream**. Paczka, która trafia do strefy przez jedno
+tej ustalonej kolejności, od wyjścia do wejścia**. Paczka, która trafia do strefy przez jedno
 przejście, nie może zostać podjęta przez *wcześniejsze* przejście w tym samym wywołaniu — bo to
 wcześniejsze przejście już się wykonało. Jednocześnie każde przejście sprawdza zajętość swojego celu w
 chwili, gdy samo się wykonuje — co może już odzwierciedlać efekt wcześniejszego przejścia z tego
@@ -102,7 +102,7 @@ właśnie zwolnionego `diverting` — a mimo to polecenie decydowane w tym ticku
 ## Co masz napisać
 
 Zaimplementuj ciało `advance()` w [`src/plant.cpp`](../../src/plant.cpp) zgodnie z regułami przejść
-opisanymi wyżej: cztery przejścia, w podanej kolejności, każde wykonane dokładnie raz na wywołanie.
+opisanymi wyżej: cztery przejścia, w podanej kolejności, każde wykonane raz na wywołanie.
 
 ## Sprawdź się
 
@@ -116,7 +116,7 @@ poleceniem dywertera zadanym późno (`plant_diverter_test`); pełny termin ruto
 
 ## Częste błędy
 
-- **Przetwarzanie stref w kolejności upstream-to-downstream** — wtedy paczka mogłaby przesunąć się
+- **Przetwarzanie stref w kolejności od wejścia do wyjścia** — wtedy paczka mogłaby przesunąć się
   dwukrotnie w jednym wywołaniu (raz jako "wejście do kolejnej strefy", raz jako "wyjście z niej chwilę
   później w tym samym przebiegu).
 - **Zapominanie o zerowaniu `divertingWaitTicks` przy wejściu do `diverting`** — kolejna paczka
@@ -126,7 +126,7 @@ poleceniem dywertera zadanym późno (`plant_diverter_test`); pełny termin ruto
 
 ## Pytanie do zastanowienia
 
-Gdyby `advance()` przetwarzał strefy w odwrotnej kolejności (upstream-to-downstream), które dokładnie
+Gdyby `advance()` przetwarzał strefy w odwrotnej kolejności (od wejścia do wyjścia), które dokładnie
 zachowanie z przebiegu powyżej by się zepsuło, i na czym konkretnie by to polegało?
 
 **Dalej:** [Misja 31: korelacja per paczka](./03_korelacja_per_paczka.md).

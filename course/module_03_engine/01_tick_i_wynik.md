@@ -74,7 +74,7 @@ obecną i pusty przenośnik, porównując dokładny, oczekiwany napis.
 
 ## Częste błędy
 
-- **Zły format napisu** — test porównuje dokładnie, znak w znak. Sprawdź spacje i dwukropki.
+- **Zły format napisu** — test porównuje znak w znak. Sprawdź spacje i dwukropki.
 - **Użycie `result.item->id` bez wcześniejszego sprawdzenia `has_value()`** — tak jak zawsze przy
   `std::optional`, najpierw sprawdź, potem odczytaj.
 - **Zapomniany `#include <psm/zone.hpp>`** — `psm::toString(Zone)` nie jest automatycznie widoczny

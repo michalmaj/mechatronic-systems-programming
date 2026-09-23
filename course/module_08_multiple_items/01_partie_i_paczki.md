@@ -62,9 +62,9 @@ kolejnym ticku i za wybór id, które się nie koliduje — nie ma tu wewnętrzn
 [`include/psm/plant.hpp`](../../include/psm/plant.hpp) — nowy kształt `Plant`, `ItemDeparture`,
 `AdvanceResult`, sygnatury `spawnItem`/`advance` — wszystko gotowe.
 
-[`src/plant.cpp`](../../src/plant.cpp) — `advance()` to na razie kompletny no-op (praca Misji 30, nie
-tej) — nie polegaj na tym, że cokolwiek przesuwa, dopóki nie napiszesz Misji 30. Ciało `spawnItem` jest
-`// TODO`.
+[`src/plant.cpp`](../../src/plant.cpp) — `advance()` na razie celowo nic nie robi (to praca Misji 30,
+nie tej) — nie polegaj na tym, że cokolwiek przesuwa, dopóki nie napiszesz Misji 30. Ciało `spawnItem`
+jest `// TODO`.
 
 ## Co masz napisać
 
@@ -79,7 +79,7 @@ ctest --preset test -L misja-29
 
 Oczekiwany wynik: `100% tests passed`. Test sprawdza: udany spawn do pustego `infeed`; odrzucenie, gdy
 `infeed` jest zajęty; odrzucenie przy kolizji id z paczką obecną gdziekolwiek indziej w `Plant`; że
-kolejny, nie kolidujący spawn się udaje nawet gdy inna paczka jest obecna.
+kolejne wywołanie z id, które nie koliduje, udaje się mimo obecności innej paczki.
 
 ## Częste błędy
 
