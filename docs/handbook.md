@@ -2,16 +2,16 @@
 
 # Podręcznik kursu
 
-← [README](../README.md) · [Roadmap](roadmap.md)
+← [README](../README.md) · [Plan pracy](roadmap.md)
 
-Spójny materiał dydaktyczny do Course Core 0–9 i wstęp do projektu końcowego. Źródłem prawdy dla
+Spójny materiał do rdzenia kursu (moduły 0–9) i wstęp do projektu końcowego. Źródłem prawdy dla
 każdego rozdziału jest aktualny kod i testy odpowiadającego tagu (`module-XX-start` /
-`module-XX-solution`) — jeśli coś tutaj wygląda inaczej niż kod, którym operujesz, kod wygrywa; zgłoś
+`module-XX-solution`) — jeśli coś tu wygląda inaczej niż kod, którym operujesz, kod wygrywa. Zgłoś
 to przez Issues.
 
 **Spis treści:** [0](#0-jak-korzystać-z-podręcznika) · [1](#1-modelowanie-prostego-procesu) ·
 [2](#2-polecenie-to-nie-stan-fizyczny) · [3](#3-orkiestracja-systemu) ·
-[4](#4-aktuator-i-tryb-pracy) · [5](#5-niezależna-ścieżka-e-stop) ·
+[4](#4-aktuator-i-tryb-pracy) · [5](#5-niezależna-ścieżka-awaryjnego-stopu) ·
 [6](#6-czujniki-i-jakość-danych) · [7](#7-usterki-i-zdarzenia-systemowe) ·
 [8](#8-wiele-paczek-i-niezmienniki) · [9](#9-scenariusze-jako-dane) ·
 [10](#10-jak-czytać-i-pisać-test) · [11](#11-projekt-końcowy--jak-podejść-do-nowego-wymagania) ·
@@ -22,24 +22,24 @@ to przez Issues.
 
 ## 0. Jak korzystać z podręcznika
 
-Ten kurs uczy przez trzy powtarzające się kroki: **kod → eksperyment → test.** Piszesz kawałek
-implementacji, uruchamiasz symulator (przez CLI albo test), patrzysz na wynik, i dopiero wtedy
-sprawdzasz go dostarczonym testem. Nie odwrotnie — test istnieje po to, żeby potwierdzić to, co już
-zaobserwowałeś/aś, nie żeby zgadywać, co ma robić kod.
+Ten kurs uczy przez trzy powtarzające się kroki: kod, eksperyment, test. Piszesz kawałek
+implementacji, uruchamiasz symulator (przez CLI albo test), patrzysz na wynik i dopiero wtedy
+sprawdzasz go dostarczonym testem — nie odwrotnie. Test ma potwierdzić to, co już zaobserwowałeś, a
+nie podpowiedzieć, co ma robić kod.
 
-Kilka rzeczy, które są prawdziwe przez cały kurs i warto je zrozumieć raz, na początku:
+Kilka rzeczy jest prawdziwych przez cały kurs i warto je zrozumieć raz, na początku:
 
-- **Symulacja działa w dyskretnych, deterministycznych krokach — tickach.** Każde wywołanie
+- Symulacja działa w dyskretnych, deterministycznych krokach, tickach. Każde wywołanie
   `Engine::step()` to jeden tick: przeczytaj bieżący stan, zdecyduj, co się zmienia, zwróć wynik
   (`TickResult`). Ten sam ciąg wejść zawsze daje ten sam ciąg wyników.
-- **Testy są dostarczone przez kurs.** Nie piszesz ich sam/a aż do Project Kickoff (rozdział 10) —
-  Twoim zadaniem jest je zrozumieć i uruchomić, nie zaprojektować od zera. Test jest wykonywalnym
-  kontraktem misji: zielony wynik potwierdza wymagane zachowanie i kończy misję, ale sam w sobie nie
-  dowodzi zrozumienia — tego dotyczą checkpointy po Modułach 3, 7 i 9.
-- **CMake/CTest to narzędzia, nie przedmiot nauki.** Konfigurujesz preset, budujesz, uruchamiasz testy
-  — to wszystko, czego potrzebujesz umieć o samym CMake w tym kursie (patrz Dodatek B).
-- **Pracujesz na tagach.** Każdy moduł zaczyna się od `git switch -c <twoja-gałąź> module-XX-start`.
-  Commitujesz na własnej gałęzi; tagi kursu pozostają nietknięte i są Twoim punktem odniesienia.
+- Testy dostarcza kurs. Nie piszesz ich sam aż do ćwiczenia przed projektem końcowym (rozdział 10) —
+  masz je zrozumieć i uruchomić, nie zaprojektować od zera. Test jest wykonywalnym kontraktem misji:
+  zielony wynik potwierdza wymagane zachowanie i kończy misję, ale sam w sobie nie dowodzi
+  zrozumienia. Tym zajmują się checkpointy po Modułach 3, 7 i 9.
+- CMake i CTest to narzędzia, nie przedmiot nauki. Konfigurujesz preset, budujesz, uruchamiasz testy
+  — to wszystko, co musisz wiedzieć o samym CMake w tym kursie (Dodatek B).
+- Pracujesz na tagach. Każdy moduł zaczynasz od `git switch -c <twoja-gałąź> module-XX-start`.
+  Commitujesz na własnej gałęzi; tagi kursu zostają nietknięte jako punkt odniesienia.
 
 ---
 
@@ -47,9 +47,9 @@ Kilka rzeczy, które są prawdziwe przez cały kurs i warto je zrozumieć raz, n
 
 **Moduł 1 · `module-01-start` · misje 1–6**
 
-Zaczynasz od najmniejszej możliwej wersji problemu: **jedna paczka, jedna strefa na raz.** Paczka
-wjeżdża, zostaje sklasyfikowana, i „przesuwa się” po strefach — na razie bez żadnego aktuatora, bez
-czasu reakcji, bez wielu paczek naraz.
+Zaczynasz od najmniejszej możliwej wersji problemu: jedna paczka, jedna strefa na raz. Paczka
+wjeżdża, zostaje sklasyfikowana i „przesuwa się” po strefach — na razie bez aktuatora, bez czasu
+reakcji, bez wielu paczek naraz.
 
 Pierwszy model domeny:
 
@@ -67,14 +67,14 @@ struct Plant {
 };
 ```
 
-To jest celowo najprostszy możliwy kształt — jeden `std::optional<Item>`, żadnego kontenera. Uczysz się
-tu podstawowego słownika C++, którego kurs używa wszędzie dalej: `enum class` do zamkniętego zbioru
-stanów, `struct` do prostych danych, `std::optional` do „może nie ma wartości” zamiast wskaźnika albo
-wartowniczej stałej, oraz wolnych funkcji (`spawnItem`, `advance`, `classify`) jako podstawowej jednostki
-logiki — jeszcze bez klas.
+To najprostszy możliwy kształt — jeden `std::optional<Item>`, żadnego kontenera. Poznajesz tu
+podstawowy słownik C++, którego kurs używa dalej wszędzie: `enum class` na zamknięty zbiór stanów,
+`struct` na proste dane, `std::optional` na „może nie ma wartości” zamiast wskaźnika czy wartowniczej
+stałej, oraz wolne funkcje (`spawnItem`, `advance`, `classify`) jako podstawową jednostkę logiki —
+jeszcze bez klas.
 
-Pierwsza pętla sterowania w CLI (uproszczona) pokazuje już cały rytm kursu: ustal polecenie na
-podstawie stanu, wykonaj krok, wypisz wynik. Ten rytm — *decyzja → krok → obserwacja* — wraca w każdym
+Pierwsza pętla sterowania w CLI, w uproszczonej formie, pokazuje już cały rytm kursu: ustal polecenie
+na podstawie stanu, wykonaj krok, wypisz wynik. Ten rytm — decyzja, krok, obserwacja — wraca w każdym
 kolejnym module, tylko z coraz bogatszym stanem.
 
 ---
@@ -83,10 +83,9 @@ kolejnym module, tylko z coraz bogatszym stanem.
 
 **Moduł 2 · `module-02-start` · misje 7–9**
 
-Kluczowa lekcja tego modułu: **wysłanie polecenia do urządzenia nie oznacza, że urządzenie już
-wykonało to polecenie.** Dywerter, który ma się przesunąć w pozycję `Diverted`, potrzebuje czasu.
-Zanim to zamodelujesz, kod, który zakłada natychmiastowość, jest po prostu błędny — nawet jeśli się
-kompiluje i „wygląda dobrze”.
+Lekcja tego modułu: wysłanie polecenia do urządzenia nie znaczy, że urządzenie już je wykonało.
+Dywerter, który ma się przesunąć w pozycję `Diverted`, potrzebuje na to czasu. Kod, który zakłada
+natychmiastowość, jest po prostu błędny, nawet jeśli się kompiluje i wygląda dobrze.
 
 ```cpp
 enum class DiverterCommand { HoldStraight, Divert };
@@ -101,15 +100,15 @@ public:
 };
 ```
 
-To Twoja pierwsza własna klasa w kursie. Uczysz się enkapsulacji nie jako abstrakcyjnej zasady, tylko
-jako konkretnego narzędzia: `Diverter` chroni rozróżnienie między tym, co **poleciłeś** (`command`), a
-tym, co **faktycznie się dzieje** (`actualPosition`) — reszta systemu nie powinna mieć możliwości
-bezpośrednio nadpisać stanu faktycznego. Ten wzorzec *polecenie/żądane vs. rzeczywiste* wraca później
-przy `BeltMotor` (Moduł 4) i jest jednym z najważniejszych nawyków projektowych całego kursu.
+To Twoja pierwsza własna klasa w kursie. Enkapsulacja przestaje być tu abstrakcyjną zasadą, a staje
+się konkretnym narzędziem: `Diverter` chroni różnicę między tym, co poleciłeś (`command`), a tym, co
+się faktycznie dzieje (`actualPosition`) — reszta systemu nie ma jak bezpośrednio nadpisać stanu
+faktycznego. Ten wzorzec, polecenie kontra rzeczywistość, wraca później przy `BeltMotor` (Moduł 4) i
+jest jednym z najważniejszych nawyków projektowych całego kursu.
 
-`Plant::advance()` musi teraz **czekać**, aż dywerter się ustabilizuje (`isSettled()`), zanim paczka
-faktycznie odjedzie — to pierwszy raz, kiedy czas (liczba ticków) staje się częścią logiki, nie tylko
-licznikiem pętli.
+`Plant::advance()` musi teraz poczekać, aż dywerter się ustabilizuje (`isSettled()`), zanim paczka
+faktycznie odjedzie. To pierwszy moment, w którym czas — liczba ticków — staje się częścią logiki, a
+nie tylko licznikiem pętli.
 
 ---
 
@@ -133,18 +132,18 @@ private:
 };
 ```
 
-Kluczowe pojęcie: **kompozycja, nie dziedziczenie.** `Engine` *posiada* `Plant` i `Diverter` jako pola
-— nie dziedziczy po nich, nie jest żadnym z nich. To rozróżnienie („ma” vs. „jest”) będzie wracać w
-kursie wielokrotnie i jest jednym z częstszych błędnych skrótów myślowych: `Engine` **komponuje**
-obiekty domeny i **wywołuje** logikę sterowania (funkcje z `Controller`), ale logika sterowania sama w
-sobie zostaje jako zbiór wolnych funkcji, nie metod `Engine`.
+`Engine` *ma* `Plant` i `Diverter` jako pola — nie dziedziczy po nich i nie jest żadnym z nich. To
+rozróżnienie, „ma” kontra „jest”, wraca w kursie wielokrotnie; mylenie kompozycji z dziedziczeniem to
+jeden z częstszych błędnych skrótów myślowych. `Engine` składa obiekty domeny w całość i wywołuje
+logikę sterowania (funkcje z `Controller`), ale sama logika zostaje zbiorem wolnych funkcji, nie
+metod `Engine`.
 
-`TickResult` to nowy, ważny wzorzec: zamiast wielu osobnych getterów, `Engine::step()` zwraca **jedną,
-kompletną wartość** opisującą wszystko, co wydarzyło się w danym ticku. Testy i CLI patrzą tylko na tę
-wartość — nigdy nie muszą pytać `Engine` o stan w środku ticku.
+`TickResult` wprowadza kolejny wzorzec: zamiast wielu osobnych getterów, `Engine::step()` zwraca
+jedną, kompletną wartość opisującą wszystko, co wydarzyło się w danym ticku. Testy i CLI patrzą tylko
+na tę wartość — nigdy nie muszą pytać `Engine` o stan w środku ticku.
 
-Ten moduł formalizuje też **kolejność operacji w ramach jednego kroku** — coś, co w Module 1 było
-niejawne, tu staje się jawnym, przetestowanym kontraktem.
+Ten moduł formalizuje też kolejność operacji w ramach jednego kroku — w Module 1 była ona niejawna,
+tu staje się jawnym, przetestowanym kontraktem.
 
 ---
 
@@ -152,8 +151,8 @@ niejawne, tu staje się jawnym, przetestowanym kontraktem.
 
 **Moduł 4 · `module-04-start` · misje 13–15**
 
-Linia produkcyjna nie może po prostu „działać” — musi mieć **tryb pracy**, a jej główny napęd musi się
-rozpędzać i hamować, nie przełączać się natychmiast.
+Linia produkcyjna nie może po prostu „działać” — musi mieć tryb pracy, a jej główny napęd musi się
+rozpędzać i hamować, a nie przełączać się natychmiast.
 
 ```cpp
 enum class BeltMotorCommand { Stop, Run };
@@ -161,56 +160,54 @@ enum class BeltMotorState { Stopped, RampingUp, Running, RampingDown };
 enum class Mode { Idle, Running };
 ```
 
-(`Mode` rośnie w kolejnych modułach — `EStopped` dochodzi w Module 5, `Fault` w Module 7. To nie jest
-przeoczenie: każdy stan pojawia się dopiero razem z mechanizmem, który go potrzebuje.)
+(`Mode` rośnie w kolejnych modułach — `EStopped` dochodzi w Module 5, `Fault` w Module 7. Każdy stan
+pojawia się dopiero razem z mechanizmem, który go potrzebuje.)
 
-`BeltMotor` powtarza wzorzec command/actual z Modułu 2, ale z ważną nowością: przejście między stanami
-zajmuje więcej niż jeden tick (`Stopped → RampingUp → Running`). To nie jest szczegół implementacyjny
-bez znaczenia — w dalszych modułach (a także w projekcie końcowym) ten jeden tick opóźnienia ma
-bezpośredni wpływ na to, kiedy dokładnie coś może ruszyć się po linii.
+`BeltMotor` powtarza wzorzec polecenie/stan rzeczywisty z Modułu 2, z jedną istotną nowością:
+przejście między stanami zajmuje więcej niż jeden tick (`Stopped → RampingUp → Running`). To ma
+realne konsekwencje w dalszych modułach i w projekcie końcowym — ten jeden tick opóźnienia decyduje o
+tym, kiedy dokładnie coś może ruszyć się po linii.
 
-`Mode` to pierwsza maszyna stanów, która **bramkuje** (guards) zachowanie reszty systemu: ruch fizyczny
-(`advance()`) wykonuje się tylko, gdy pas faktycznie jest `Running`. To wprowadza kluczowy nawyk
-architektoniczny kursu: zamiast rozrzucać warunki `if (tryb == coś)` po całym kodzie, jeden, dobrze
-przetestowany punkt decyzyjny (bramka) chroni jedną, konkretną operację.
+`Mode` to pierwsza maszyna stanów, która bramkuje zachowanie reszty systemu: ruch fizyczny
+(`advance()`) wykonuje się tylko wtedy, gdy pas faktycznie jest `Running`. Stąd nawyk, który wraca w
+całym kursie — zamiast rozrzucać warunki `if (tryb == coś)` po całym kodzie, jeden, dobrze
+przetestowany punkt decyzyjny (bramka) pilnuje jednej, konkretnej operacji.
 
-Od tego modułu w systemie współpracuje już kilka niezależnych maszyn stanów naraz (`Mode`,
-`DiverterPosition`, `BeltMotorState`) — każda ma swój własny zakres odpowiedzialności, żadna nie zna
-szczegółów pozostałych.
+Od tego modułu współpracuje już kilka niezależnych maszyn stanów naraz (`Mode`, `DiverterPosition`,
+`BeltMotorState`). Każda ma własny zakres odpowiedzialności i żadna nie zna szczegółów pozostałych.
 
 ---
 
-## 5. Niezależna ścieżka E-Stop
+## 5. Niezależna ścieżka awaryjnego stopu
 
 **Moduł 5 · `module-05-start` · misje 16–19**
 
-> **Ważny disclaimer:** to, co budujesz w tym module, to uproszczony, dydaktyczny model wzorca
-> „niezależna ścieżka bezpieczeństwa” w kodzie. **To nie jest projekt rzeczywistego systemu
-> safety-rated** i nie zastępuje kursu functional safety. Uczysz się tu wzorca inżynierskiego, nie
-> normy bezpieczeństwa.
+> To, co budujesz w tym module, to uproszczony, dydaktyczny model wzorca „niezależna ścieżka
+> bezpieczeństwa” w kodzie. Nie jest to projekt rzeczywistego systemu safety-rated i nie zastępuje
+> kursu functional safety — uczysz się tu wzorca inżynierskiego, nie normy bezpieczeństwa.
 
-Główna lekcja: bezpieczeństwo nie powinno być „jeszcze jednym `if`-em” wplecionym w logikę biznesową
-— powinno być **osobną, priorytetową ścieżką**, która potrafi nadpisać wszystko inne, niezależnie od
-tego, co w danym momencie robi reszta systemu.
+Bezpieczeństwo nie powinno być kolejnym `if`-em wplecionym w logikę biznesową — powinno być osobną,
+priorytetową ścieżką, zdolną nadpisać wszystko inne, niezależnie od tego, co akurat robi reszta
+systemu.
 
 ```cpp
 enum class EStopLatchState { Released, Engaged, Armed };
 ```
 
-`EStopLatchState` to *latch* (zatrzask) — stan, który **nie cofa się sam z siebie**. Naciśnięcie
-przycisku wprowadza go w `Engaged`; zwolnienie przycisku samo w sobie nie wystarcza, żeby wrócić do
-`Released` — potrzebny jest jeszcze jawny `Reset`, i to dopiero z pośredniego stanu `Armed`.
+`EStopLatchState` to zatrzask — stan, który nie cofa się sam z siebie. Naciśnięcie przycisku
+wprowadza go w `Engaged`; samo zwolnienie przycisku nie wystarcza, żeby wrócić do `Released` —
+potrzebny jest jeszcze jawny `Reset`, i to dopiero z pośredniego stanu `Armed`.
 
-To załatwia sam zatrzask, ale nie samo ponowne uruchomienie linii. Release + Reset odblokowują
-system i sprowadzają `Mode` z powrotem do `Idle` — to jeszcze nie `Running`. Do faktycznego ruszenia
-linii potrzeba osobnego, kolejnego `StartRequested`, na późniejszym ticku. `Reset` i `StartRequested`
-wysłane na tym samym ticku **nie** restartują systemu od razu — `modeStep` w tym ticku i tak
-sprowadza `Mode` tylko do `Idle`; `Running` wymaga oddzielnego wywołania startu, gdy `Mode` jest już
-`Idle`. To świadomy wybór projektowy: ponowny ruch linii ma być zawsze wynikiem osobnej, jawnej
-decyzji operatora, nigdy efektem ubocznym samego odblokowania.
+To załatwia sam zatrzask, ale nie ponowne uruchomienie linii. Zwolnienie i reset odblokowują system i
+sprowadzają `Mode` z powrotem do `Idle` — to jeszcze nie `Running`. Żeby linia faktycznie ruszyła,
+potrzeba osobnego, kolejnego `StartRequested`, na późniejszym ticku. `Reset` i `StartRequested`
+wysłane na tym samym ticku nie restartują systemu od razu: `modeStep` w tym ticku i tak sprowadza
+`Mode` tylko do `Idle`, a `Running` wymaga oddzielnego wywołania startu, gdy `Mode` jest już `Idle`.
+To świadoma decyzja projektowa — ponowny ruch linii ma być zawsze wynikiem osobnej, jawnej decyzji
+operatora, nigdy efektem ubocznym samego odblokowania.
 
-`Mode::EStopped` ma wyższy priorytet niż wszystko inne — dokładnie to znaczy „niezależna ścieżka”:
-reszta systemu nie musi wiedzieć o E-Stopie, żeby E-Stop mógł nad nią zapanować.
+`Mode::EStopped` ma wyższy priorytet niż wszystko inne. Dokładnie to znaczy niezależna ścieżka:
+reszta systemu nie musi wiedzieć o awaryjnym stopie, żeby ten mógł nad nią zapanować.
 
 ---
 
@@ -219,7 +216,7 @@ reszta systemu nie musi wiedzieć o E-Stopie, żeby E-Stop mógł nad nią zapan
 **Moduł 6 · `module-06-start` · misje 20–24**
 
 Do tej pory system zawsze „wiedział” dokładnie, co się dzieje. W realnym systemie czujnik może się
-zepsuć, dać nieaktualny odczyt, albo w ogóle nie odpowiedzieć.
+zepsuć, dać nieaktualny odczyt albo w ogóle nie odpowiedzieć.
 
 ```cpp
 enum class ReadingStatus { Ok, Missing, Stale };
@@ -228,22 +225,22 @@ struct PresenceReading { ReadingStatus status; bool occupied; };
 struct WeightReading { ReadingStatus status; Grams grams; };
 ```
 
-Kluczowe rozróżnienie tego modułu: **ground truth** (co naprawdę leży na wadze — coś, co w symulatorze
-zawsze znamy, bo to my go budujemy) kontra **observation** (co czujnik faktycznie zgłosił, ze swoim
-`ReadingStatus`). Logika sterowania nigdy nie powinna sięgać po ground truth bezpośrednio — działa
-wyłącznie na obserwacjach, dokładnie tak, jak działałby prawdziwy sterownik z prawdziwymi czujnikami.
+Rozróżnienie tego modułu: to, co naprawdę leży na wadze — a w symulatorze zawsze to wiemy, bo sami go
+budujemy — kontra to, co czujnik faktycznie zgłosił, wraz ze swoim `ReadingStatus`. Logika sterowania
+nigdy nie powinna sięgać po rzeczywisty stan bezpośrednio; działa wyłącznie na tym, co zgłaszają
+czujniki, dokładnie tak, jak działałby prawdziwy sterownik z prawdziwymi czujnikami.
 
-Gdy odczyt jest `Stale`, czujnik podstawia ostatnią zaufaną wartość (wzorzec **last-known-good**) —
-ale tylko wtedy, gdy taka wartość w ogóle już istnieje; jeśli nie, `Stale` degraduje się do tego
-samego zachowania co `Missing`. `Missing` z kolei nigdy nie korzysta z last-known-good — to jawny
-sygnał „nic nie wiadomo”, inny niż „wiadomo, ale nieaktualnie”. Ten sam wzorzec działa identycznie dla
-odczytu obecności i wagi. Stąd „klasyfikacja odporna na awarie” — decyzja, która degraduje się w
-sposób przewidywalny, zamiast psuć się przypadkowo.
+Gdy odczyt jest `Stale`, czujnik podstawia ostatnią zaufaną wartość — ale tylko wtedy, gdy taka
+wartość w ogóle już istnieje; jeśli nie, `Stale` degraduje się do tego samego zachowania co
+`Missing`. `Missing` z kolei nigdy nie korzysta z poprzedniej wartości — to jawny sygnał „nic nie
+wiadomo”, inny niż „wiadomo, ale nieaktualnie”. Ten sam mechanizm działa identycznie dla odczytu
+obecności i wagi. Stąd klasyfikacja odporna na awarie: decyzja, która degraduje się przewidywalnie,
+zamiast psuć się przypadkowo.
 
 Klasyfikacja korzysta z tych odczytów, ale musi też pamiętać coś własnego między tickami:
 potwierdzenie obecności (`PresenceCheck`) i odczyt wagi (`Weighing`) to dwie osobne, sekwencyjne
 strefy — paczka mija je jedna po drugiej, na różnych tickach. Żeby zaufać wadze później, system musi
-pamiętać, że obecność była już potwierdzona wcześniej. Stąd `ControllerState` — mały rekord
+pamiętać, że obecność była już wcześniej potwierdzona. Stąd `ControllerState` — mały rekord
 (`presenceConfirmed`, `classification`) trzymany między tickami dla aktualnie przetwarzanej paczki,
 aktualizowany co tick w miarę tego, jak paczka przechodzi przez kolejne strefy.
 
@@ -253,27 +250,27 @@ aktualizowany co tick w miarę tego, jak paczka przechodzi przez kolejne strefy.
 
 **Moduł 7 · `module-07-start` · misje 25–28**
 
-Ten moduł uczy rozróżnienia, które wraca później w każdym module: **zewnętrzne wejście** kontra
-**zdarzenie emergentne**.
+Ten moduł uczy rozróżnienia, które wraca później w każdym module: zewnętrzne wejście kontra
+zdarzenie, które system sam wywnioskował.
 
 ```cpp
 enum class DiverterFaultKind { Blocked };
 enum class SystemEventKind { DiverterNotReady, RoutingDeadlineMissed };
 ```
 
-`DiverterFaultKind::Blocked` to zewnętrzne wejście — coś, co *wstrzykujesz* do systemu z zewnątrz (np.
-w teście albo w scenariuszu), żeby zasymulować awarię mechaniczną. `SystemEventKind` to coś zupełnie
-innego: **zdarzenie, które system sam wywnioskował** z tego, co zaobserwował — np. że dywerter nie
-osiągnął pozycji w rozsądnym czasie (`DiverterNotReady`), a jeśli to trwa zbyt długo,
+`DiverterFaultKind::Blocked` to zewnętrzne wejście — coś, co wstrzykujesz do systemu z zewnątrz, na
+przykład w teście albo w scenariuszu, żeby zasymulować awarię mechaniczną. `SystemEventKind` to coś
+innego: zdarzenie, które system sam wywnioskował z tego, co zaobserwował. Na przykład, że dywerter
+nie osiągnął pozycji w rozsądnym czasie (`DiverterNotReady`), a jeśli trwa to zbyt długo,
 `RoutingDeadlineMissed`.
 
-To rozróżnienie ma znaczenie architektoniczne: zewnętrzne wejście jest czymś, co *dajesz* systemowi;
-zdarzenie systemowe jest czymś, co system *produkuje* jako wynik własnej logiki. Mylenie tych dwóch
-kategorii to częsty błąd projektowy — ten moduł uczy trzymać je rozdzielone w typach, nie tylko w
-nazwach.
+To rozróżnienie ma znaczenie architektoniczne: zewnętrzne wejście dajesz systemowi, zdarzenie
+systemowe system produkuje sam, jako wynik własnej logiki. Mylenie tych dwóch kategorii to częsty
+błąd projektowy — ten moduł uczy trzymać je rozdzielone w typach, nie tylko w nazwach.
 
-`Mode::Fault` reaguje na `RoutingDeadlineMissed` i blokuje dalszy ruch, dopóki operator nie zresetuje
-systemu — podobny wzorzec recovery co w Module 5, ale wywołany zupełnie inną przyczyną.
+`Mode::Fault` reaguje na `RoutingDeadlineMissed` i blokuje dalszy ruch, dopóki operator nie
+zresetuje systemu. Podobny wzorzec wznowienia pracy co w Module 5, ale wywołany zupełnie inną
+przyczyną.
 
 ---
 
@@ -281,15 +278,14 @@ systemu — podobny wzorzec recovery co w Module 5, ale wywołany zupełnie inn�
 
 **Moduł 8 · `module-08-start` · misje 29–32**
 
-Największy pojedynczy skok architektoniczny w Course Core: system musi obsłużyć **więcej niż jedną
-paczkę jednocześnie**.
+Największy pojedynczy skok architektoniczny w rdzeniu kursu: system musi obsłużyć więcej niż jedną
+paczkę naraz.
 
-> **Ważne rozróżnienie:** „wiele paczek naraz” **nie oznacza programowania współbieżnego.** Cały
-> rdzeń symulatora pozostaje w pełni sekwencyjny i deterministyczny — jeden wątek, jeden
-> `Engine::step()` na raz. Zmienia się tylko to, ile danych mieści `Plant` jednocześnie, nie model
-> wykonania.
+> Wiele paczek naraz nie oznacza programowania współbieżnego. Rdzeń symulatora zostaje w pełni
+> sekwencyjny i deterministyczny — jeden wątek, jeden `Engine::step()` na raz. Zmienia się tylko to,
+> ile danych mieści `Plant` jednocześnie, nie model wykonania.
 
-`Plant` przestaje trzymać jeden `std::optional<Item>` i zamiast tego dostaje **cztery nazwane sloty**:
+`Plant` przestaje trzymać jeden `std::optional<Item>` i dostaje cztery nazwane sloty:
 
 ```cpp
 struct Plant {
@@ -300,20 +296,20 @@ struct Plant {
 };
 ```
 
-To celowa decyzja: **fixed slots, nie kontener.** Każda fizyczna strefa linii mieści dokładnie jedną
-paczkę naraz — to fizyczne ograniczenie, więc typ (`std::optional`, nie `std::vector`) je od razu
-wymusza, zamiast tylko go opisywać w komentarzu.
+To celowa decyzja — nazwane sloty, nie kontener. Każda fizyczna strefa linii mieści dokładnie jedną
+paczkę naraz. To ograniczenie fizyczne, więc typ (`std::optional`, nie `std::vector`) je od razu
+wymusza, zamiast tylko opisywać w komentarzu.
 
-`advance()` przetwarza przejścia w jednym, ustalonym kierunku: **downstream → upstream** (najpierw
-strefa najbliżej wyjścia, na końcu Infeed) — dzięki temu paczka zwolniona z jednej strefy może od razu
-skorzystać z miejsca w tym samym ticku („przesunięcie łańcuchowe”), a jednocześnie zachowany jest
-kluczowy niezmiennik: **żadna paczka nie może poruszyć się dwa razy w tym samym ticku.** To nie jest
-przypadek — to bezpośrednia konsekwencja tego, że każde przejście jest ewaluowane dokładnie raz, w
-ustalonej kolejności.
+`advance()` przetwarza przejścia w jednym, ustalonym kierunku: od wyjścia do wejścia — najpierw
+strefa najbliżej wyjścia, na końcu Infeed. Dzięki temu paczka, która zwalnia jedną strefę, może od
+razu skorzystać z miejsca w tym samym ticku (przesunięcie łańcuchowe), a jednocześnie zachowany jest
+niezmiennik: żadna paczka nie może poruszyć się dwa razy w tym samym ticku. To nie przypadek — to
+bezpośrednia konsekwencja tego, że każde przejście jest ewaluowane dokładnie raz, w ustalonej
+kolejności.
 
-`ItemId` staje się teraz kluczem korelacji per-paczka wszędzie tam, gdzie wcześniej wystarczał sam fakt
-„czy coś tu jest” — ślad (`TickResult`) musi jednoznacznie mówić, *której* paczki dotyczy dana obserwacja
-czy zdarzenie, nawet gdy na linii jest ich kilka naraz.
+`ItemId` staje się teraz kluczem korelacji dla każdej paczki z osobna, wszędzie tam, gdzie wcześniej
+wystarczał sam fakt „czy coś tu jest”. Ślad (`TickResult`) musi jednoznacznie mówić, której paczki
+dotyczy dana obserwacja czy zdarzenie, nawet gdy na linii jest ich kilka naraz.
 
 ---
 
@@ -322,7 +318,7 @@ czy zdarzenie, nawet gdy na linii jest ich kilka naraz.
 **Moduł 9 · `module-09-start` · misje 33–35**
 
 Do tej pory każdy eksperyment wymagał ręcznego wywoływania metod `Engine` krok po kroku. Ten moduł
-wprowadza **deklaratywny** sposób opisywania całego eksperymentu jako jednej wartości danych:
+wprowadza deklaratywny sposób opisywania całego eksperymentu jako jednej wartości danych:
 
 ```cpp
 struct Scenario {
@@ -337,84 +333,84 @@ bool isValidScenario(const Scenario& scenario);
 std::optional<std::vector<TickResult>> runScenario(const Scenario& scenario);
 ```
 
-Kluczowa własność: `Scenario` to **czysta warstwa dodana nad `Engine`**, nie nowy mechanizm sterowania
-— `runScenario` wewnątrz po prostu wywołuje te same publiczne metody `Engine`, które znałeś/aś od
-Modułu 3, w kolejności i momentach zapisanych w danych.
+`Scenario` to czysta warstwa dodana nad `Engine`, nie nowy mechanizm sterowania — `runScenario`
+wewnątrz po prostu wywołuje te same publiczne metody `Engine`, które znasz od Modułu 3, w kolejności
+i momentach zapisanych w danych.
 
-Przedziały czasowe usterek (`from`, `until`) są **half-open**: `[from, until)` — usterka jest aktywna
-w ticku `from`, ale już nie w ticku `until`. To standardowy, przewidywalny sposób zapisu przedziałów w
-całym kursie, nie przypadkowa konwencja tego jednego typu.
+Przedziały czasowe usterek (`from`, `until`) są otwarte z jednej strony: `[from, until)` — usterka
+jest aktywna w ticku `from`, ale już nie w ticku `until`. To standardowy, przewidywalny sposób
+zapisu przedziałów w całym kursie, nie przypadkowa konwencja jednego typu.
 
-Ważne rozróżnienie dwóch rodzajów błędu: **błąd statyczny** (`isValidScenario` zwraca `false` —
-scenariusz w ogóle się nie uruchamia, bo jego opis jest wewnętrznie sprzeczny) kontra **błąd
-dynamiczny** (scenariusz jest poprawny statycznie, ale coś nie da się wykonać w trakcie — `runScenario`
-zwraca `std::nullopt` już po rozpoczęciu). To rozróżnienie — *czy błąd jest widoczny bez uruchamiania
-czegokolwiek, czy dopiero w trakcie* — wraca w projekcie końcowym.
+Warto rozróżnić dwa rodzaje błędu: błąd statyczny, gdy `isValidScenario` zwraca `false` i scenariusz
+w ogóle się nie uruchamia, bo jego opis jest sprzeczny sam w sobie; oraz błąd dynamiczny, gdy
+scenariusz jest poprawny statycznie, ale czegoś nie da się wykonać w trakcie — `runScenario` zwraca
+`std::nullopt` już po rozpoczęciu. To rozróżnienie, czy błąd widać bez uruchamiania czegokolwiek, czy
+dopiero w trakcie, wraca w projekcie końcowym.
 
-`runScenario` buduje **świeży `Engine`** przy każdym wywołaniu — to gwarantuje **powtarzalność**: ten
-sam poprawny `Scenario` uruchomiony dwa razy zawsze daje identyczny ślad.
+`runScenario` buduje świeży `Engine` przy każdym wywołaniu. To gwarantuje powtarzalność: ten sam,
+poprawny `Scenario` uruchomiony dwa razy zawsze daje identyczny ślad.
 
 ---
 
 ## 10. Jak czytać i pisać test
 
-Krótkie przygotowanie do Project Kickoff — pierwszego ćwiczenia, w którym sam/a piszesz test, nie
-tylko go uruchamiasz.
+Krótkie przygotowanie do pierwszego ćwiczenia, w którym sam piszesz test, a nie tylko go uruchamiasz.
 
-Każdy test w tym kursie ma tę samą, prostą strukturę — nieformalny **arrange / act / assert**:
+Każdy test w tym kursie ma tę samą, prostą strukturę — nieformalne przygotuj, wywołaj, sprawdź:
 
 ```cpp
-// arrange — przygotuj stan
+// przygotuj stan
 psm::WeightReading reading{psm::ReadingStatus::Ok, 750};
 
-// act — wywołaj to, co testujesz
+// wywołaj to, co testujesz
 auto result = psm::decideClassification(reading);
 
-// assert — sprawdź wynik
+// sprawdź wynik
 psmCheck(result == psm::WeightClass::Heavy, "750g przy poprawnym odczycie klasyfikuje się jako Heavy");
 ```
 
-Test to **wykonywalny kontrakt** — zamiast opisywać słownie, jak funkcja ma się zachować, test to
-*pokazuje*, w sposób, który można uruchomić i który albo przejdzie, albo nie. To dlatego kurs traktuje
+Test to wykonywalny kontrakt. Zamiast opisywać słownie, jak funkcja ma się zachować, test to
+pokazuje, w sposób, który można uruchomić i który albo przejdzie, albo nie. Dlatego kurs traktuje
 zielony `ctest -L misja-N` jako ostateczne kryterium ukończenia misji: kontrakt jest wykonywalny, nie
 tylko opisany.
 
-Najważniejsze pytanie, jakie warto zadać sobie o własnym teście: **czy on faktycznie coś wykrywa, czy
-tylko przechodzi?** Test, który przejdzie niezależnie od tego, czy kod jest poprawny, niczego nie
-dowodzi. Prosty sposób, żeby to sprawdzić: świadomie zepsuj testowany kod i upewnij się, że Twój test
-wtedy **faktycznie** się zaczerwieni. Dokładne ćwiczenie tego kroku znajdziesz w
+Najważniejsze pytanie, jakie warto zadać sobie o własnym teście: czy on faktycznie coś wykrywa, czy
+tylko przechodzi? Test, który przejdzie niezależnie od tego, czy kod jest poprawny, niczego nie
+dowodzi. Prosty sposób, żeby to sprawdzić: świadomie zepsuj testowany kod i sprawdź, czy Twój test
+naprawdę się wtedy zaczerwieni. Dokładne ćwiczenie tego kroku znajdziesz w
 `final_project/00_project_kickoff.md`.
 
 To nie jest rozdział o frameworkach testowych — kurs celowo używa jednej, minimalnej funkcji
-(`psmCheck`) przez cały czas, żeby uwaga została na *co* i *dlaczego* testujesz, nie na narzędziu.
+(`psmCheck`) przez cały czas, żeby uwaga została przy tym, co i dlaczego testujesz, a nie przy
+narzędziu.
 
 ---
 
 ## 11. Projekt końcowy — jak podejść do nowego wymagania
 
-Final Project stawia Cię po raz pierwszy w sytuacji, w której **nikt nie napisał za Ciebie
-architektury**. Dostajesz wymaganie domenowe (paczki mogą przybywać szybciej, niż linia może je
-przyjąć) i wspólny kontrakt do spełnienia (`final_project/01_final_project_brief.md`) — resztę
-projektujesz sam/a.
+Projekt końcowy stawia Cię po raz pierwszy w sytuacji, w której nikt nie napisał za Ciebie
+architektury. Dostajesz wymaganie domenowe — paczki mogą przybywać szybciej, niż linia jest w stanie
+je przyjąć — i wspólny kontrakt do spełnienia (`final_project/01_final_project_brief.md`). Resztę
+projektujesz sam.
 
-Ten rozdział **nie mówi, jak rozwiązać** zadanie projektu — to metodyka podejścia do nowego wymagania
-w istniejącym, ugruntowanym systemie, przydatna dużo szerzej niż tylko tutaj:
+Ten rozdział nie mówi, jak rozwiązać zadanie projektu. To metodyka podejścia do nowego wymagania w
+istniejącym, ugruntowanym systemie, przydatna dużo szerzej niż tylko tutaj:
 
-1. **Zacznij od kontraktu domenowego, nie od kodu.** Zanim napiszesz linijkę C++, zapisz słownie, co
-   ma być prawdą, zanim i po każdej operacji, którą dodajesz.
-2. **Wypisz niezmienniki jawnie.** Które z nich są zupełnie nowe? Które istniejące niezmienniki
-   systemu muszą pozostać prawdziwe bez zmian? Które trzeba świadomie rozszerzyć?
-3. **Zdecyduj o własności (ownership) nowego stanu**, zanim zaczniesz go implementować. Kto go trzyma?
-   Czy ma sens tylko w jednym trybie sterowania systemem, czy w każdym?
-4. **Chroń niezmienniki przez enkapsulację**, nie przez konwencję. Jeśli coś musi zostać prawdziwe
-   zawsze, powinno być niemożliwe do złamania przez publiczne API, nie tylko „niezalecane”.
-5. **Zachowuj istniejące kontrakty, jeśli nie musisz ich świadomie zmienić.** Rozszerzanie systemu nie
-   oznacza przepisywania go od nowa ani obchodzenia tego, co już działa równoległą implementacją.
-6. **Napisz własne testy** — kategoriami zachowań, nie przypadkowymi przykładami. Sprawdź, czy każdy
-   test faktycznie coś wykrywa (rozdział 10).
-7. **Zbuduj `Scenario`**, który demonstruje działanie Twojego rozwiązania od początku do końca —
-   dokładnie tak, jak `Scenario` demonstrowały gotowe zachowanie w Module 9.
-8. **Uzasadnij swoje decyzje projektowe** — krótko, pisemnie. To będzie punktem wyjścia do obrony.
+1. Zacznij od kontraktu domenowego, nie od kodu. Zanim napiszesz linijkę C++, zapisz słownie, co ma
+   być prawdą przed każdą operacją, którą dodajesz, i po niej.
+2. Wypisz niezmienniki jawnie. Które z nich są zupełnie nowe? Które istniejące niezmienniki systemu
+   muszą pozostać prawdziwe bez zmian? Które trzeba świadomie rozszerzyć?
+3. Zdecyduj, kto jest właścicielem nowego stanu, zanim zaczniesz go implementować. Kto go trzyma? Czy
+   ma sens tylko w jednym trybie sterowania systemem, czy w każdym?
+4. Chroń niezmienniki enkapsulacją, nie umową dżentelmeńską. Jeśli coś musi zostać prawdziwe zawsze,
+   powinno być niemożliwe do złamania przez publiczne API, a nie tylko „niezalecane”.
+5. Zachowuj istniejące kontrakty, jeśli nie musisz ich świadomie zmienić. Rozszerzanie systemu to nie
+   przepisywanie go od nowa ani obchodzenie tego, co już działa, równoległą implementacją.
+6. Napisz własne testy — kategoriami zachowań, nie przypadkowymi przykładami. Sprawdź, czy każdy z
+   nich faktycznie coś wykrywa (rozdział 10).
+7. Zbuduj `Scenario`, które demonstruje działanie Twojego rozwiązania od początku do końca, dokładnie
+   tak, jak `Scenario` demonstrowały gotowe zachowanie w Module 9.
+8. Uzasadnij swoje decyzje projektowe — krótko, pisemnie. To będzie punktem wyjścia do obrony.
 
 Pełne wymagania, kryteria akceptacji i lista decyzji pozostawionych Tobie:
 [`final_project/01_final_project_brief.md`](https://github.com/michalmaj/mechatronic-systems-programming/blob/final-project-start/final_project/01_final_project_brief.md)
@@ -434,7 +430,7 @@ Pełne wymagania, kryteria akceptacji i lista decyzji pozostawionych Tobie:
 | polecenie | command | `DiverterCommand`, `BeltMotorCommand` |
 | stan rzeczywisty | actual state | `DiverterPosition`, `BeltMotorState` |
 | tryb pracy | operating mode | `Mode` |
-| zatrzask (E-Stop) | latch | `EStopLatchState` |
+| zatrzask (awaryjny stop) | latch | `EStopLatchState` |
 | odczyt czujnika | sensor reading | `PresenceReading`, `WeightReading` |
 | status odczytu | reading status | `ReadingStatus` |
 | usterka (wstrzyknięta) | (injected) fault | `SensorFaultKind`, `DiverterFaultKind` |
@@ -472,8 +468,8 @@ git log --oneline                         # historia Twoich commitów
 
 ## Dodatek C — mapa typów/API
 
-Skrócona mapa najważniejszych typów Core (nie pełna dokumentacja API — po szczegóły sięgaj do
-nagłówków w `include/psm/` i materiału danego modułu):
+Skrócona mapa najważniejszych typów rdzenia kursu — nie pełna dokumentacja API. Po szczegóły sięgaj
+do nagłówków w `include/psm/` i materiału danego modułu.
 
 | Typ | Gdzie | Rola |
 |---|---|---|
