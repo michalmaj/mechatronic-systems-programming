@@ -4,10 +4,10 @@
 
 ← [README](../README.en.md) · [Roadmap](roadmap.en.md)
 
-Coherent teaching material for the course core (Modules 0–9) and an introduction to the final
-project. Each chapter's source of truth is the actual code and tests at the matching tag
-(`module-XX-start` / `module-XX-solution`). If anything here looks different from the code you're
-working with, the code wins — please report it via Issues.
+This handbook is the coherent teaching material for the course core (Modules 0–9), plus an
+introduction to the final project. Each chapter's source of truth is the actual code and tests at
+the matching tag (`module-XX-start` / `module-XX-solution`). If anything here looks different from
+the code you're working with, the code wins — please report it via Issues.
 
 **Contents:** [0](#0-how-to-use-this-handbook) · [1](#1-modeling-a-simple-process) ·
 [2](#2-a-command-is-not-physical-state) · [3](#3-orchestrating-the-system) ·

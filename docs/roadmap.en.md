@@ -113,8 +113,8 @@ git switch -c my-final-project final-project-start
 
 Full description: [`final_project/README.md`](https://github.com/michalmaj/mechatronic-systems-programming/blob/final-project-start/final_project/README.md)
 — available only once you've switched to `final-project-start`, since that directory doesn't exist
-on `main`. The project builds on the exact same simulator you've been working on all course; you're
-not starting over. Its reference solution isn't published — this one you solve on your own, with room
+on `main`. The project builds on the exact same simulator you've been working on throughout the
+course; you're not starting over. Its reference solution isn't published — this one you solve on your own, with room
 for your own design decisions wherever the brief explicitly leaves them open.
 
 ## Defense
