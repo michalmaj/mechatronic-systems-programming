@@ -40,14 +40,14 @@ niezależne "żądanie", które będzie miało sens filtrować.
 
 ## Co już masz gotowe
 
-[`include/psm/safety_supervisor.hpp`](../../include/psm/safety_supervisor.hpp) — deklaracje
+[`include/psm/safety_supervisor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/include/psm/safety_supervisor.hpp) — deklaracje
 kompletne, jak wyżej.
 
-[`src/safety_supervisor.cpp`](../../src/safety_supervisor.cpp) — puste szkielety obu funkcji.
+[`src/safety_supervisor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/src/safety_supervisor.cpp) — puste szkielety obu funkcji.
 
 `BeltMotor::forceStop()` została zadeklarowana w
-[`include/psm/belt_motor.hpp`](../../include/psm/belt_motor.hpp); jej pusty szkielet czeka w
-[`src/belt_motor.cpp`](../../src/belt_motor.cpp).
+[`include/psm/belt_motor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/include/psm/belt_motor.hpp); jej pusty szkielet czeka w
+[`src/belt_motor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/src/belt_motor.cpp).
 
 ## Co masz napisać
 

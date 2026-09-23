@@ -57,18 +57,18 @@ kolejnym ticku i za wybór id, które się nie koliduje — nie ma tu wewnętrzn
 
 ## Co już masz gotowe
 
-[`include/psm/item.hpp`](../../include/psm/item.hpp) — nowy kształt `Item`, kompletny.
+[`include/psm/item.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/item.hpp) — nowy kształt `Item`, kompletny.
 
-[`include/psm/plant.hpp`](../../include/psm/plant.hpp) — nowy kształt `Plant`, `ItemDeparture`,
+[`include/psm/plant.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/plant.hpp) — nowy kształt `Plant`, `ItemDeparture`,
 `AdvanceResult`, sygnatury `spawnItem`/`advance` — wszystko gotowe.
 
-[`src/plant.cpp`](../../src/plant.cpp) — `advance()` na razie celowo nic nie robi (to praca Misji 30,
+[`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/plant.cpp) — `advance()` na razie celowo nic nie robi (to praca Misji 30,
 nie tej) — nie polegaj na tym, że cokolwiek przesuwa, dopóki nie napiszesz Misji 30. Ciało `spawnItem`
 jest `// TODO`.
 
 ## Co masz napisać
 
-Uzupełnij ciało `spawnItem` w [`src/plant.cpp`](../../src/plant.cpp) tak, by spełniało kontrakt opisany
+Uzupełnij ciało `spawnItem` w [`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/plant.cpp) tak, by spełniało kontrakt opisany
 wyżej.
 
 ## Sprawdź się

@@ -48,6 +48,27 @@ The whole required path, from setup to the final project defense, is budgeted at
 work with the repository. Treat that as a planning target, not a hard limit — actual time varies
 between students, and it'll be refined once we have pilot data.
 
+## Where to read, where to get code
+
+You read this document, and the rest of the course material (`course/`, `docs/`), on the **`main`**
+branch — that's the canonical, current source of instructions. Your code lives somewhere else: on
+your own branch, created from a module's starting point.
+
+- **`module-XX-start`** — a module's starting point. Branch off it (`git switch -c my-work
+  module-XX-start`) and write your code there.
+- **`module-XX-solution`** — the reference checkpoint: a complete, correct solution for that module.
+  Use it freely when you're stuck, or compare your own approach against it afterward.
+- Both kinds of tags are public and **immutable** — we never move or overwrite them, even when we fix
+  the material on `main`. The code in those tags stays the correct, current reference point for that
+  stage of the course.
+- The `.md` files inside those tags are a **historical snapshot** from whenever that tag was cut —
+  they may not include editorial fixes that landed on `main` afterward. If the text on `main`
+  disagrees with what you see in a given tag, treat `main` as current.
+
+Short version: **read the docs on `main`, get your code from the tags.** Source-code links inside
+mission material point straight at the right tag on GitHub — they don't need to work as local links
+in your own checkout to be correct.
+
 ## Working through a module
 
 The same pattern repeats for Modules 1–9:
@@ -55,8 +76,10 @@ The same pattern repeats for Modules 1–9:
 1. `git fetch --tags` to get the latest tags.
 2. Branch off the module's starting point: `git switch -c my-work module-XX-start`.
 3. Read the module's chapter in the [Handbook](handbook.en.md) and the introduction in
-   `course/module_XX_.../00_wprowadzenie.md`. If you follow the source-code links inside that
-   material, check [`course/README.md`](../course/README.md) first (Polish only for now).
+   `course/module_XX_.../00_wprowadzenie.md` — read them on `main`, the canonical, current source
+   (see [above](#where-to-read-where-to-get-code); Polish only for now). Source-code links inside
+   those files point straight at the right tag, so they work correctly no matter where you click
+   them from.
 4. Work through the module's missions in order. Each one is its own file,
    `course/module_XX_.../NN_*.md`, with a concrete task.
 5. Run each mission's test as you finish it: `ctest --preset test -L misja-N`.

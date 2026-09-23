@@ -28,7 +28,9 @@ required.
 - The course core is Modules 0–9, made up of 35 missions.
 - Every module has its own starting point as a Git tag, `module-XX-start`, and a matching reference
   solution, `module-XX-solution`. Use the solution freely when you're stuck — but you get the most
-  out of the course by reaching it yourself first.
+  out of the course by reaching it yourself first. You read the docs on `main` — that's the
+  canonical, current source of instructions; the tags are your reference point for code and stay
+  immutable (see [Roadmap](docs/roadmap.en.md#where-to-read-where-to-get-code)).
 - The simulation is deterministic and sequential: the same scenario always produces the same result,
   with no threads and no randomness involved.
 - CMake and CTest are provided infrastructure — you configure and run them, not build them from
@@ -58,8 +60,8 @@ Works on Windows, Linux, and macOS. For each following module you branch off the
 
 - **[Roadmap](docs/roadmap.en.md)** — the exact path from Module 0 to the final project defense.
 - **[Handbook](docs/handbook.en.md)** — coherent teaching material for every module.
-- **[Module material](course/README.md)** *(Polish only for now)* — before clicking a source-code
-  link inside a mission, read the short note on when those links actually resolve correctly.
+- **[Module material](course/README.md)** *(Polish only for now)* — the missions themselves, with a
+  short note on where to read from and where to get code from.
 - **[Final project](https://github.com/michalmaj/mechatronic-systems-programming/blob/final-project-start/final_project/README.md)** *(available from the `final-project-start` tag — this link won't resolve on `main`)* — an
   input buffer for the sorting line.
 - **[Issues](../../issues)** — bugs in code or tests, problems in the material, proposals.

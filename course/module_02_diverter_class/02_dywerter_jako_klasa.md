@@ -89,7 +89,7 @@ wcześniej flagę zamiast liczyć na nowo, dałby tu błędną odpowiedź.
 
 ## Co masz napisać
 
-W [`src/diverter.cpp`](../../src/diverter.cpp) uzupełnij cztery metody:
+W [`src/diverter.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-02-start/src/diverter.cpp) uzupełnij cztery metody:
 - `setCommand(DiverterCommand)` — zapisz argument w `command_`.
 - `resolve()` — zaimplementuj tabelę przejść powyżej.
 - `actualPosition() const` — zwróć `actual_`.

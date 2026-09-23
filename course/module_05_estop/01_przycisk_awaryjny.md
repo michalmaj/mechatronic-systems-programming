@@ -30,10 +30,10 @@ można potwierdzić resetu przejścia, które jeszcze się nie zakończyło.
 
 ## Co już masz gotowe
 
-[`include/psm/estop_latch.hpp`](../../include/psm/estop_latch.hpp) — `enum class EStopLatchState`
+[`include/psm/estop_latch.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/include/psm/estop_latch.hpp) — `enum class EStopLatchState`
 i deklaracja `nextEStopLatchState` już gotowe.
 
-[`src/estop_latch.cpp`](../../src/estop_latch.cpp) — pusty szkielet z komentarzem `// TODO`.
+[`src/estop_latch.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/src/estop_latch.cpp) — pusty szkielet z komentarzem `// TODO`.
 
 ## Co masz napisać
 

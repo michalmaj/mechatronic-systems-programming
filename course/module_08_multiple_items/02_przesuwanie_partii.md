@@ -96,12 +96,12 @@ właśnie zwolnionego `diverting` — a mimo to polecenie decydowane w tym ticku
 
 ## Co już masz gotowe
 
-[`include/psm/plant.hpp`](../../include/psm/plant.hpp) — `ItemDeparture`, `AdvanceResult`, sygnatura
+[`include/psm/plant.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/plant.hpp) — `ItemDeparture`, `AdvanceResult`, sygnatura
 `advance()` — wszystko gotowe. `spawnItem` z Misji 29 jest już Twoje.
 
 ## Co masz napisać
 
-Zaimplementuj ciało `advance()` w [`src/plant.cpp`](../../src/plant.cpp) zgodnie z regułami przejść
+Zaimplementuj ciało `advance()` w [`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/plant.cpp) zgodnie z regułami przejść
 opisanymi wyżej: cztery przejścia, w podanej kolejności, każde wykonane raz na wywołanie.
 
 ## Sprawdź się

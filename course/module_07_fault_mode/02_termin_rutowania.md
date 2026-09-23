@@ -59,12 +59,12 @@ z rzędu dywerter dostawał **realną** szansę się ustawić i jej nie wykorzys
 
 ## Co już masz gotowe
 
-[`include/psm/system_event_kind.hpp`](../../include/psm/system_event_kind.hpp) — typ gotowy.
+[`include/psm/system_event_kind.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/include/psm/system_event_kind.hpp) — typ gotowy.
 
-[`include/psm/plant.hpp`](../../include/psm/plant.hpp) — `divertingWaitTicks` i nowa sygnatura
+[`include/psm/plant.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/include/psm/plant.hpp) — `divertingWaitTicks` i nowa sygnatura
 `advance()` już obecne.
 
-[`src/plant.cpp`](../../src/plant.cpp) — gałęzie `Infeed`/`PresenceCheck`/`Weighing`/`Output*`
+[`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/src/plant.cpp) — gałęzie `Infeed`/`PresenceCheck`/`Weighing`/`Output*`
 kompletne i niezmienione (w tym reset licznika przy `Weighing`→`Diverting`); tylko własna logika
 gałęzi `Diverting` jest `// TODO`.
 

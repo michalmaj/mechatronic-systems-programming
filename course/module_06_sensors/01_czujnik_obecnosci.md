@@ -45,15 +45,15 @@ pusty `std::optional` znaczy "nigdy nic wiarygodnego nie widziałem."
 
 ## Co już masz gotowe
 
-[`include/psm/reading_status.hpp`](../../include/psm/reading_status.hpp),
-[`include/psm/sensor_snapshot.hpp`](../../include/psm/sensor_snapshot.hpp),
-[`include/psm/fault_kind.hpp`](../../include/psm/fault_kind.hpp),
-[`include/psm/fault_target.hpp`](../../include/psm/fault_target.hpp) — wszystkie typy gotowe.
+[`include/psm/reading_status.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/reading_status.hpp),
+[`include/psm/sensor_snapshot.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/sensor_snapshot.hpp),
+[`include/psm/fault_kind.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/fault_kind.hpp),
+[`include/psm/fault_target.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/fault_target.hpp) — wszystkie typy gotowe.
 
-[`include/psm/presence_sensor.hpp`](../../include/psm/presence_sensor.hpp) — deklaracja klasy
+[`include/psm/presence_sensor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/presence_sensor.hpp) — deklaracja klasy
 kompletna, jak wyżej.
 
-[`src/presence_sensor.cpp`](../../src/presence_sensor.cpp) — pusty szkielet z komentarzem `// TODO`.
+[`src/presence_sensor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/src/presence_sensor.cpp) — pusty szkielet z komentarzem `// TODO`.
 
 ## Co masz napisać
 

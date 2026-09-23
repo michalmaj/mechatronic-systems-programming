@@ -29,14 +29,14 @@ do podjęcia decyzji "co jest następną strefą", zamiast do zwrócenia napisu.
 
 ## Co już masz gotowe
 
-[`include/psm/item_motion.hpp`](../../include/psm/item_motion.hpp) deklaruje funkcję, którą
+[`include/psm/item_motion.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/include/psm/item_motion.hpp) deklaruje funkcję, którą
 uzupełnisz:
 
 ```cpp
 void advanceZone(Item& item);
 ```
 
-[`src/item_motion.cpp`](../../src/item_motion.cpp) zawiera jej pusty szkielet:
+[`src/item_motion.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/src/item_motion.cpp) zawiera jej pusty szkielet:
 
 ```cpp
 void advanceZone(Item& item) {

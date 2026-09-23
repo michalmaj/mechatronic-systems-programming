@@ -31,15 +31,15 @@ stało) — gdyby zabrakło jednego z nich, wynik nie pokazywałby całej prawdy
 
 ## Co już masz gotowe
 
-[`include/psm/tick.hpp`](../../include/psm/tick.hpp) i
-[`include/psm/tick_result.hpp`](../../include/psm/tick_result.hpp) — `Tick` i `TickResult` już w
+[`include/psm/tick.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-03-start/include/psm/tick.hpp) i
+[`include/psm/tick_result.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-03-start/include/psm/tick_result.hpp) — `Tick` i `TickResult` już w
 pełni zdefiniowane. Deklaracja `describe` też już tam jest:
 
 ```cpp
 std::string describe(const TickResult& result);
 ```
 
-[`src/tick_result.cpp`](../../src/tick_result.cpp) ma pusty szkielet:
+[`src/tick_result.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-03-start/src/tick_result.cpp) ma pusty szkielet:
 
 ```cpp
 std::string describe(const TickResult& result) {

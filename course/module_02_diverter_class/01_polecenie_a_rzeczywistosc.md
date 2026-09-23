@@ -26,10 +26,10 @@ ich mylić.
 
 ## Co już masz gotowe
 
-[`include/psm/diverter_command.hpp`](../../include/psm/diverter_command.hpp) — `enum class
+[`include/psm/diverter_command.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-02-start/include/psm/diverter_command.hpp) — `enum class
 DiverterCommand` już zdefiniowany, kompletny.
 
-[`include/psm/controller.hpp`](../../include/psm/controller.hpp) deklaruje:
+[`include/psm/controller.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-02-start/include/psm/controller.hpp) deklaruje:
 
 ```cpp
 WeightClass classify(Grams mass);
@@ -40,7 +40,7 @@ Zwróć uwagę: `classify` **nie zmienia się** — próg 500g wciąż działa d
 (test `misja-4` to potwierdza, i wciąż przechodzi). Zmienia się wyłącznie druga funkcja — teraz
 zwraca `DiverterCommand`, nie `DiverterPosition`.
 
-[`src/controller.cpp`](../../src/controller.cpp) ma pusty szkielet `toDiverterCommand`:
+[`src/controller.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-02-start/src/controller.cpp) ma pusty szkielet `toDiverterCommand`:
 
 ```cpp
 DiverterCommand toDiverterCommand(WeightClass weightClass) {

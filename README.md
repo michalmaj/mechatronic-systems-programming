@@ -27,7 +27,9 @@ naraz i deklaratywne scenariusze testowe. Całość działa na zwykłym komputer
 - Kurs dzieli się na rdzeń (Course Core, moduły 0–9), złożony z 35 misji.
 - Każdy moduł ma swój punkt startowy jako tag Git: `module-XX-start`. Do każdego jest też gotowe
   rozwiązanie, `module-XX-solution` — możesz z niego korzystać, kiedy utkniesz, ale najwięcej
-  zyskujesz, dochodząc do rozwiązania samodzielnie.
+  zyskujesz, dochodząc do rozwiązania samodzielnie. Dokumentację czytasz na `main` — to kanoniczne,
+  aktualne źródło instrukcji; tagi są punktem odniesienia dla kodu i pozostają niezmienne (zobacz
+  [Plan pracy](docs/roadmap.md#skąd-czytać-skąd-brać-kod)).
 - Symulacja jest deterministyczna i sekwencyjna: ten sam scenariusz zawsze daje ten sam wynik, bez
   wątków i bez przypadkowości.
 - CMake i CTest to gotowa infrastruktura — konfigurujesz ją i uruchamiasz, nie budujesz od zera.
@@ -58,8 +60,8 @@ Działa na Windows, Linux i macOS. Do każdego kolejnego modułu zakładasz now�
 - **[Plan pracy studenta](docs/roadmap.md)** — dokładna ścieżka od Modułu 0 do obrony projektu
   końcowego.
 - **[Podręcznik](docs/handbook.md)** — spójny materiał do każdego modułu.
-- **[Materiał modułów](course/README.md)** — zanim klikniesz link do kodu w treści misji, przeczytaj
-  krótką uwagę o tym, kiedy te linki działają poprawnie.
+- **[Materiał modułów](course/README.md)** — misje modułów, wraz z krótką notą o tym, skąd czytać
+  materiał, a skąd brać kod.
 - **[Projekt końcowy](https://github.com/michalmaj/mechatronic-systems-programming/blob/final-project-start/final_project/README.md)** *(dostępny od tagu `final-project-start` — ten link nie zadziała na `main`)* — bufor
   wejściowy dla linii sortującej.
 - **[Zgłoszenia](../../issues)** — błędy w kodzie i testach, problemy w materiale, propozycje.

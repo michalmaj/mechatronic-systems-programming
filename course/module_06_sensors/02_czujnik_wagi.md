@@ -31,9 +31,9 @@ Reguła jest strukturalnie identyczna z `PresenceSensor`:
 
 ## Co już masz gotowe
 
-[`include/psm/weight_sensor.hpp`](../../include/psm/weight_sensor.hpp) — deklaracja kompletna.
+[`include/psm/weight_sensor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/weight_sensor.hpp) — deklaracja kompletna.
 
-[`src/weight_sensor.cpp`](../../src/weight_sensor.cpp) — pusty szkielet.
+[`src/weight_sensor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/src/weight_sensor.cpp) — pusty szkielet.
 
 ## Co masz napisać
 

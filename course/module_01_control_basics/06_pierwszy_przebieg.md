@@ -15,7 +15,7 @@ podglądzie `simulator_cli`, ale to pierwszy raz, kiedy piszesz go sam, do włas
 
 ## Co już masz gotowe
 
-[`apps/simulator_cli/main.cpp`](../../apps/simulator_cli/main.cpp):
+[`apps/simulator_cli/main.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/apps/simulator_cli/main.cpp):
 
 ```cpp
 #include <iostream>
