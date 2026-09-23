@@ -49,16 +49,16 @@ wynosi zero" do celów pamięci.
 
 ## Co już masz gotowe
 
-[`include/psm/controller.hpp`](../../include/psm/controller.hpp) — deklaracje obu nowych funkcji,
-gotowe. [`include/psm/presence_sensor.hpp`](../../include/psm/presence_sensor.hpp)/[`weight_sensor.hpp`](../../include/psm/weight_sensor.hpp)
+[`include/psm/controller.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/controller.hpp) — deklaracje obu nowych funkcji,
+gotowe. [`include/psm/presence_sensor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/presence_sensor.hpp)/[`weight_sensor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/weight_sensor.hpp)
 — sygnatury bez zmian.
 
 ## Co masz napisać
 
-- `updatePresenceConfirmation`/`updateClassification` w [`src/controller.cpp`](../../src/controller.cpp)
+- `updatePresenceConfirmation`/`updateClassification` w [`src/controller.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/controller.cpp)
   zgodnie z dokładną regułą powyżej.
-- `PresenceSensor::read` w [`src/presence_sensor.cpp`](../../src/presence_sensor.cpp) i
-  `WeightSensor::read` w [`src/weight_sensor.cpp`](../../src/weight_sensor.cpp): zamień stan rzeczywisty na
+- `PresenceSensor::read` w [`src/presence_sensor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/presence_sensor.cpp) i
+  `WeightSensor::read` w [`src/weight_sensor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/weight_sensor.cpp): zamień stan rzeczywisty na
   `item.has_value()` (i `item->mass` dla wagi), zachowując resztę logiki Modułu 6 bez zmian.
 
 ## Sprawdź się

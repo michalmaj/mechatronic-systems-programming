@@ -24,13 +24,13 @@ znanych elementów w jednym miejscu.
 
 ## Co już masz gotowe
 
-[`include/psm/loop.hpp`](../../include/psm/loop.hpp):
+[`include/psm/loop.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/include/psm/loop.hpp):
 
 ```cpp
 void runTicks(Plant& plant, int tickCount);
 ```
 
-[`src/loop.cpp`](../../src/loop.cpp) ma pusty szkielet z komentarzem `// TODO`.
+[`src/loop.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/src/loop.cpp) ma pusty szkielet z komentarzem `// TODO`.
 
 ## Co masz napisać
 

@@ -50,9 +50,9 @@ wyczyścił latch, **nie** zadziała w tym ticku. Operator zobaczy `Idle`, a dop
 
 ## Co już masz gotowe
 
-[`include/psm/mode.hpp`](../../include/psm/mode.hpp) — zaktualizowana deklaracja, jak wyżej.
+[`include/psm/mode.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/include/psm/mode.hpp) — zaktualizowana deklaracja, jak wyżej.
 
-[`src/mode.cpp`](../../src/mode.cpp) — logika `Idle`/`Running` z Modułu 4 zostaje **nietknięta i
+[`src/mode.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/src/mode.cpp) — logika `Idle`/`Running` z Modułu 4 zostaje **nietknięta i
 działająca**; dwa nowe komentarze `// TODO` opisują, co dopisać, i gdzie dokładnie (przed resztą
 reguł).
 

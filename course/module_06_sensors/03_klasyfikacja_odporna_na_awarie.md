@@ -24,10 +24,10 @@ wyizolowanej rzeczy: nie klasyfikuj na podstawie odczytu, któremu nie możesz u
 
 ## Co już masz gotowe
 
-[`include/psm/controller.hpp`](../../include/psm/controller.hpp) — deklaracja `decideClassification`
+[`include/psm/controller.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/controller.hpp) — deklaracja `decideClassification`
 już dodana, obok istniejących `classify`/`toDiverterCommand` (te dwie zostają bez zmian).
 
-[`src/controller.cpp`](../../src/controller.cpp) — pusty szkielet `decideClassification` z
+[`src/controller.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/src/controller.cpp) — pusty szkielet `decideClassification` z
 komentarzem `// TODO`; `classify`/`toDiverterCommand` już działają poprawnie.
 
 ## Co masz napisać

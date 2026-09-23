@@ -14,7 +14,7 @@ modułu. Czas ją usunąć.
 
 ## Co już masz gotowe
 
-[`apps/simulator_cli/main.cpp`](../../apps/simulator_cli/main.cpp) wciąż wygląda dokładnie tak, jak
+[`apps/simulator_cli/main.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-03-start/apps/simulator_cli/main.cpp) wciąż wygląda dokładnie tak, jak
 zostawił go Moduł 2 — tworzy własny `Plant`/`Diverter` i ręcznie powtarza kolejność ticka. To Twój
 punkt wyjścia do przepisania, nie coś do zachowania.
 
@@ -32,7 +32,7 @@ To wszystko — cała logika decydowania, ustawiania dywertera i przesuwania pac
 
 ## Moment, w którym `runTicks` przestaje być używany
 
-Od tej misji `runTicks` (w [`src/loop.cpp`](../../src/loop.cpp)) nie ma już żadnego wywołania w
+Od tej misji `runTicks` (w [`src/loop.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-03-start/src/loop.cpp)) nie ma już żadnego wywołania w
 programie — `Engine` przejął jego rolę. Sam plik **zostaje** w repozytorium; jego fizyczne usunięcie
 (i towarzysząca zmiana `CMakeLists.txt`) wykracza poza zakres tej misji i nie jest Twoim zadaniem.
 Nieużywany, wciąż poprawnie skompilowany kod, który czeka na sprzątanie, to normalna, przejściowa

@@ -50,12 +50,12 @@ to, i nic pomiędzy.
 
 ## Co już masz gotowe
 
-[`include/psm/belt_motor_command.hpp`](../../include/psm/belt_motor_command.hpp),
-[`include/psm/belt_motor_state.hpp`](../../include/psm/belt_motor_state.hpp) i
-[`include/psm/belt_motor.hpp`](../../include/psm/belt_motor.hpp) — deklaracje kompletne, dokładnie
+[`include/psm/belt_motor_command.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-04-start/include/psm/belt_motor_command.hpp),
+[`include/psm/belt_motor_state.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-04-start/include/psm/belt_motor_state.hpp) i
+[`include/psm/belt_motor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-04-start/include/psm/belt_motor.hpp) — deklaracje kompletne, dokładnie
 jak wyżej.
 
-[`src/belt_motor.cpp`](../../src/belt_motor.cpp) — puste szkielety trzech metod z komentarzami
+[`src/belt_motor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-04-start/src/belt_motor.cpp) — puste szkielety trzech metod z komentarzami
 `// TODO`.
 
 ## Co masz napisać

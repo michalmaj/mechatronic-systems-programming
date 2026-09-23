@@ -36,7 +36,7 @@ logikę przesuwania od nowa.
 
 ## Co już masz gotowe
 
-[`include/psm/plant.hpp`](../../include/psm/plant.hpp):
+[`include/psm/plant.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/include/psm/plant.hpp):
 
 ```cpp
 struct Plant {
@@ -50,7 +50,7 @@ void advance(Plant& plant, DiverterPosition diverterPosition);
 Zauważ parametr `diverterPosition` w `advance` — na razie go **zignoruj**. Wróci na scenę w Misji 4;
 tutaj wystarczy wiedzieć, że tam jest, żeby sygnatura funkcji nie musiała się później zmieniać.
 
-[`src/plant.cpp`](../../src/plant.cpp) zawiera pusty szkielet obu funkcji z komentarzami `// TODO`.
+[`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/src/plant.cpp) zawiera pusty szkielet obu funkcji z komentarzami `// TODO`.
 
 ## Co masz napisać
 

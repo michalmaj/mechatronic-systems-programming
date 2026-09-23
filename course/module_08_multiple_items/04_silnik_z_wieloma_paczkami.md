@@ -66,10 +66,10 @@ zmian do wprowadzenia. Cała reszta `Engine`'a poza `step()` (flagi wejściowe, 
 
 ## Co masz napisać
 
-- `Engine::step()` w [`src/engine.cpp`](../../src/engine.cpp) — pełna integracja opisana powyżej.
-- `describe(TickResult)` w [`src/tick_result.cpp`](../../src/tick_result.cpp) — format
+- `Engine::step()` w [`src/engine.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/engine.cpp) — pełna integracja opisana powyżej.
+- `describe(TickResult)` w [`src/tick_result.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/tick_result.cpp) — format
   opisany powyżej.
-- [`apps/simulator_cli/main.cpp`](../../apps/simulator_cli/main.cpp) — demonstracja co najmniej
+- [`apps/simulator_cli/main.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/apps/simulator_cli/main.cpp) — demonstracja co najmniej
   trzech paczek o różnych klasyfikacjach jednocześnie w locie (np. Light/Heavy/Light — zobacz ślad w
   materiałach Misji 30), zawierająca co najmniej jeden tick z widocznym "same-tick chain shift":
   odjazd jednej paczki i wejście kolejnej do właśnie zwolnionego slotu w tym samym ticku. Użyj

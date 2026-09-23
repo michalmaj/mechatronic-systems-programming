@@ -36,18 +36,18 @@ enum class DiverterPosition { Straight, Diverted };
 
 ## Co już masz gotowe
 
-[`include/psm/weight_class.hpp`](../../include/psm/weight_class.hpp) i
-[`include/psm/diverter_position.hpp`](../../include/psm/diverter_position.hpp) — oba `enum class` już
+[`include/psm/weight_class.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/include/psm/weight_class.hpp) i
+[`include/psm/diverter_position.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/include/psm/diverter_position.hpp) — oba `enum class` już
 kompletne.
 
-[`include/psm/controller.hpp`](../../include/psm/controller.hpp) deklaruje dwie funkcje:
+[`include/psm/controller.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/include/psm/controller.hpp) deklaruje dwie funkcje:
 
 ```cpp
 WeightClass classify(Grams mass);
 DiverterPosition toDiverterPosition(WeightClass weightClass);
 ```
 
-[`src/controller.cpp`](../../src/controller.cpp) ma ich puste szkielety z komentarzami `// TODO`.
+[`src/controller.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/src/controller.cpp) ma ich puste szkielety z komentarzami `// TODO`.
 
 `src/plant.cpp`'s `advance` z Misji 3 ma **drugi** komentarz `// TODO (Misja 4: ...)` w tym samym
 ciele funkcji, który dziś uzupełnisz — to nie nowa funkcja, tylko rozwinięcie tej, którą zacząłeś

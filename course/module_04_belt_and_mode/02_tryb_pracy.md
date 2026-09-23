@@ -36,10 +36,10 @@ jest jednoznaczna: **`stopRequested` wygrywa**.
 
 ## Co już masz gotowe
 
-[`include/psm/mode.hpp`](../../include/psm/mode.hpp) — `enum class Mode` i deklaracja `modeStep` już
+[`include/psm/mode.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-04-start/include/psm/mode.hpp) — `enum class Mode` i deklaracja `modeStep` już
 gotowe.
 
-[`src/mode.cpp`](../../src/mode.cpp) — pusty szkielet z komentarzem `// TODO`.
+[`src/mode.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-04-start/src/mode.cpp) — pusty szkielet z komentarzem `// TODO`.
 
 ## Co masz napisać
 

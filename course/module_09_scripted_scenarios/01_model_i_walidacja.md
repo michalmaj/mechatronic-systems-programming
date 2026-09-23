@@ -66,16 +66,16 @@ trwania. Powyższe reguły same to gwarantują: żaden `at`/`from` nie może spe
 
 ## Co już masz gotowe
 
-[`include/psm/scenario_input.hpp`](../../include/psm/scenario_input.hpp),
-[`scripted_item_arrival.hpp`](../../include/psm/scripted_item_arrival.hpp),
-[`scripted_sensor_fault.hpp`](../../include/psm/scripted_sensor_fault.hpp),
-[`scripted_diverter_fault.hpp`](../../include/psm/scripted_diverter_fault.hpp),
-[`scenario.hpp`](../../include/psm/scenario.hpp) — wszystkie kształty i sygnatura `isValidScenario`
+[`include/psm/scenario_input.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scenario_input.hpp),
+[`scripted_item_arrival.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scripted_item_arrival.hpp),
+[`scripted_sensor_fault.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scripted_sensor_fault.hpp),
+[`scripted_diverter_fault.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scripted_diverter_fault.hpp),
+[`scenario.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scenario.hpp) — wszystkie kształty i sygnatura `isValidScenario`
 gotowe.
 
 ## Co masz napisać
 
-Uzupełnij ciało `isValidScenario` w [`src/scenario.cpp`](../../src/scenario.cpp) zgodnie z ośmioma
+Uzupełnij ciało `isValidScenario` w [`src/scenario.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/src/scenario.cpp) zgodnie z ośmioma
 regułami powyżej.
 
 ## Sprawdź się

@@ -8,18 +8,18 @@ demonstracja jest prawdziwa i kompletna.
 
 ## Co już masz gotowe
 
-[`apps/simulator_cli/main.cpp`](../../apps/simulator_cli/main.cpp) jest w tym module **w całości
+[`apps/simulator_cli/main.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/apps/simulator_cli/main.cpp) jest w tym module **w całości
 gotowy i niezmienny — to nie jest Twoja misja**. Buduje oba demonstracyjne scenariusze, uruchamia je
 przez `runScenario`, wypisuje każdy tick przez `describe()`, i sam sprawdza wynik: jeśli scenariusz
 odzyskiwania nigdy nie pokaże `Mode::Fault`, albo scenariusz wielu paczek da mniej niż trzy odjazdy,
 program kończy się kodem innym niż `0`.
 
-[`apps/simulator_cli/scenario_demos.hpp`](../../apps/simulator_cli/scenario_demos.hpp) — deklaracje
+[`apps/simulator_cli/scenario_demos.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/apps/simulator_cli/scenario_demos.hpp) — deklaracje
 `recoveryDemoScenario()`/`multiParcelDemoScenario()`, gotowe.
 
 ## Co masz napisać
 
-Oba ciała w [`apps/simulator_cli/scenario_demos.cpp`](../../apps/simulator_cli/scenario_demos.cpp):
+Oba ciała w [`apps/simulator_cli/scenario_demos.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/apps/simulator_cli/scenario_demos.cpp):
 
 ### `recoveryDemoScenario()`
 

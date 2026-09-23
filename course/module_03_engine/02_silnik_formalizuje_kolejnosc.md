@@ -5,7 +5,7 @@ To druga i najważniejsza teoretycznie misja tego modułu — poświęcimy jej t
 ## Problem
 
 Kolejność jednego ticka z Misji 9 Modułu 2 jest poprawna, ale żyje wyłącznie z konwencji — jest ręcznie
-powtórzona i w `runTicks`, i w `main()`. Otwórz [`src/loop.cpp`](../../src/loop.cpp) i zobacz tę
+powtórzona i w `runTicks`, i w `main()`. Otwórz [`src/loop.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-03-start/src/loop.cpp) i zobacz tę
 kolejność na własne oczy — to dokładnie ta sama sekwencja, którą za chwilę zamkniesz w jednym miejscu.
 Nic dziś nie gwarantuje, że dwie osobne kopie tej sekwencji się nie rozjadą, i nic nie udowadnia, że
 są ze sobą zgodne.
@@ -67,9 +67,9 @@ stan sprzed niego.
 
 ## Co już masz gotowe
 
-[`include/psm/engine.hpp`](../../include/psm/engine.hpp) — deklaracje kompletne, jak wyżej.
+[`include/psm/engine.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-03-start/include/psm/engine.hpp) — deklaracje kompletne, jak wyżej.
 
-[`src/engine.cpp`](../../src/engine.cpp) — puste szkielety obu metod z komentarzami `// TODO`.
+[`src/engine.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-03-start/src/engine.cpp) — puste szkielety obu metod z komentarzami `// TODO`.
 
 ## Co masz napisać
 

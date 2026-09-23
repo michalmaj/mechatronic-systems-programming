@@ -59,12 +59,12 @@ zdefiniowana — nie dlatego, że skraca dwuetapowe odzyskiwanie, które znasz z
 
 ## Co już masz gotowe
 
-[`include/psm/scenario.hpp`](../../include/psm/scenario.hpp) — sygnatura `runScenario` gotowa.
+[`include/psm/scenario.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scenario.hpp) — sygnatura `runScenario` gotowa.
 `isValidScenario` z Misji 33 jest już Twoje.
 
 ## Co masz napisać
 
-Uzupełnij ciało `runScenario` w [`src/scenario.cpp`](../../src/scenario.cpp), łącznie z prywatnymi
+Uzupełnij ciało `runScenario` w [`src/scenario.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/src/scenario.cpp), łącznie z prywatnymi
 `activeSensorFault`/`activeDiverterFault`, zgodnie z ustaloną kolejnością powyżej.
 
 ## Sprawdź się

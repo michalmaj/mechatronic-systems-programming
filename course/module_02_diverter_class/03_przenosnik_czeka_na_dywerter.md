@@ -38,7 +38,7 @@ jeden tick.
 
 ## Co już masz gotowe
 
-W [`src/plant.cpp`](../../src/plant.cpp) gałęzie `Infeed`/`PresenceCheck`/`Weighing` (przesuwanie
+W [`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-02-start/src/plant.cpp) gałęzie `Infeed`/`PresenceCheck`/`Weighing` (przesuwanie
 przez `advanceZone`) oraz `OutputLight`/`OutputHeavy` (czyszczenie `plant.item`) są już gotowe i
 działają — to logika z Modułu 1, niezmieniona. Brakuje tylko gałęzi `Diverting`:
 

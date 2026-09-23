@@ -56,10 +56,10 @@ odczyt wagi później **nie wyprodukuje klasyfikacji**.
 
 ## Co już masz gotowe
 
-[`include/psm/controller_state.hpp`](../../include/psm/controller_state.hpp) — deklaracje
+[`include/psm/controller_state.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/controller_state.hpp) — deklaracje
 kompletne, jak wyżej.
 
-[`src/controller_state.cpp`](../../src/controller_state.cpp) — pusty szkielet z komentarzem
+[`src/controller_state.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/src/controller_state.cpp) — pusty szkielet z komentarzem
 `// TODO`, opisującym dokładnie te cztery kroki.
 
 ## Co masz napisać

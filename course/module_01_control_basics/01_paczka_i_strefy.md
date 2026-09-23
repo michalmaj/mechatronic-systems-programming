@@ -36,12 +36,12 @@ struct Item {
 
 ## Co już masz gotowe
 
-Otwórz [`include/psm/zone.hpp`](../../include/psm/zone.hpp) i
-[`include/psm/item.hpp`](../../include/psm/item.hpp). Oba typy — `enum class Zone` i `struct Item`
+Otwórz [`include/psm/zone.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/include/psm/zone.hpp) i
+[`include/psm/item.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/include/psm/item.hpp). Oba typy — `enum class Zone` i `struct Item`
 — są już w pełni zdefiniowane, dokładnie tak, jak wyżej. Nie musisz (i nie powinieneś) ich zmieniać.
 
 To, czego brakuje, to **zachowanie**: sposób zamiany wartości `Zone` na czytelny dla człowieka
-napis. Zobacz [`src/zone.cpp`](../../src/zone.cpp):
+napis. Zobacz [`src/zone.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/src/zone.cpp):
 
 ```cpp
 std::string_view toString(Zone zone) {

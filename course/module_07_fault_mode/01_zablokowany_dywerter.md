@@ -36,12 +36,12 @@ dywertera zamrożonego w połowie przejścia przez blokadę.
 
 ## Co już masz gotowe
 
-[`include/psm/diverter_fault_kind.hpp`](../../include/psm/diverter_fault_kind.hpp) — typ gotowy.
+[`include/psm/diverter_fault_kind.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/include/psm/diverter_fault_kind.hpp) — typ gotowy.
 
-[`include/psm/diverter.hpp`](../../include/psm/diverter.hpp) — sygnatura `resolve` już
+[`include/psm/diverter.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/include/psm/diverter.hpp) — sygnatura `resolve` już
 zaktualizowana.
 
-[`src/diverter.cpp`](../../src/diverter.cpp) — cała dotychczasowa logika trzech stanów obecna i
+[`src/diverter.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/src/diverter.cpp) — cała dotychczasowa logika trzech stanów obecna i
 niezmieniona; brakuje tylko sprawdzenia `Blocked` na samym początku (`// TODO`).
 
 ## Co masz napisać

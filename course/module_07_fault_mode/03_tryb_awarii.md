@@ -77,9 +77,9 @@ spojrzy na `current`. Nawet jeśli `current == Fault`, wciśnięty e-stop natych
 
 ## Co już masz gotowe
 
-[`include/psm/mode.hpp`](../../include/psm/mode.hpp) — `Mode::Fault`, obie sygnatury już obecne.
+[`include/psm/mode.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/include/psm/mode.hpp) — `Mode::Fault`, obie sygnatury już obecne.
 
-[`src/mode.cpp`](../../src/mode.cpp) — istniejące reguły `latch`/`EStopped`/`stopRequested`/
+[`src/mode.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/src/mode.cpp) — istniejące reguły `latch`/`EStopped`/`stopRequested`/
 `startRequested` kompletne i w tej samej kolejności; brakuje tylko reguły 3 (`// TODO`) i całego
 ciała `reactToSystemEvent` (`// TODO`).
 
