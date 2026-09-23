@@ -47,6 +47,27 @@ Orientacyjny budżet czasu całej obowiązkowej ścieżki, od Modułu 0 do obron
 godzin pracy z repozytorium. To punkt odniesienia do planowania, nie sztywna granica — realny czas
 różni się między studentami i będzie doprecyzowany na podstawie pilotażu.
 
+## Skąd czytać, skąd brać kod
+
+Ten dokument i cały pozostały materiał kursu (`course/`, `docs/`) czytasz na gałęzi **`main`** — to
+jest kanoniczne, aktualne źródło instrukcji. Kod piszesz gdzie indziej: na własnej gałęzi, założonej
+z punktu startowego danego modułu.
+
+- **`module-XX-start`** — punkt startowy modułu. Załóż z niego własną gałąź
+  (`git switch -c my-work module-XX-start`) i tam pisz swój kod.
+- **`module-XX-solution`** — checkpoint referencyjny: kompletne, poprawne rozwiązanie danego modułu.
+  Korzystaj z niego swobodnie, kiedy utkniesz, albo porównaj po fakcie swoje podejście.
+- Oba typy tagów są publiczne i **niezmienne** — nie przesuwamy ich ani nie nadpisujemy, nawet gdy
+  poprawiamy materiał na `main`. Kod w tych tagach pozostaje właściwym, aktualnym punktem odniesienia
+  dla danego etapu kursu.
+- Pliki `.md` wewnątrz tych tagów to **zrzut historyczny** z chwili, gdy dany tag powstał — mogą nie
+  zawierać późniejszych poprawek redakcyjnych, które trafiły na `main` już po jego publikacji. Jeśli
+  treść na `main` różni się od tego, co widzisz w danym tagu, traktuj wersję na `main` jako aktualną.
+
+Krótko: **dokumentację czytaj na `main`, kod bierz z tagów.** Linki do kodu źródłowego wewnątrz
+materiałów misji prowadzą wprost do właściwego tagu na GitHubie — nie muszą działać jako linki
+lokalne w Twoim checkoucie, żeby były poprawne.
+
 ## Jak pracować w każdym module
 
 Ten sam schemat powtarza się w Modułach 1–9:
@@ -54,8 +75,9 @@ Ten sam schemat powtarza się w Modułach 1–9:
 1. `git fetch --tags`, żeby mieć najnowsze tagi.
 2. Załóż własną gałąź z punktu startowego modułu: `git switch -c my-work module-XX-start`.
 3. Przeczytaj materiał modułu w [Podręczniku](handbook.md) (odpowiedni rozdział) oraz wprowadzenie w
-   `course/module_XX_.../00_wprowadzenie.md` — jeśli klikasz linki do kodu w tych plikach, zerknij
-   najpierw do [`course/README.md`](../course/README.md).
+   `course/module_XX_.../00_wprowadzenie.md` — czytaj je na `main`, to kanoniczne, aktualne źródło
+   (zobacz [wyżej](#skąd-czytać-skąd-brać-kod)). Linki do kodu wewnątrz tych plików prowadzą wprost
+   do właściwego tagu, więc działają poprawnie niezależnie od tego, skąd je klikasz.
 4. Rozwiązuj misje modułu po kolei — każda to osobny plik `course/module_XX_.../NN_*.md` z
    konkretnym zadaniem.
 5. Po każdej misji uruchom jej test: `ctest --preset test -L misja-N`.
