@@ -29,8 +29,11 @@ Każda z tych trzech komend powinna wypisać numer wersji, nie błąd "command n
 
 ## CLion
 
-1. Pobierz CLion ze strony jetbrains.com/clion — jako student masz prawo do darmowej licencji
-   edukacyjnej (rejestracja przez adres e-mail Twojej uczelni).
+1. Pobierz CLion ze strony jetbrains.com/clion. CLion jest dziś darmowy do użytku niekomercyjnego
+   (nauka, projekty hobbystyczne, open source) — do kursu wystarczy zwykłe konto JetBrains, bez
+   żadnej rejestracji uczelnianej. Alternatywą jest darmowa licencja z programu edukacyjnego
+   JetBrains (rejestracja przez adres e-mail Twojej uczelni) — przydatna, jeśli wolisz mieć licencję
+   związaną ze statusem studenta, ale niepotrzebna, żeby zacząć.
 2. Zainstaluj według instrukcji dla swojej dystrybucji (JetBrains Toolbox App jest najwygodniejszą
    opcją — pozwala też później łatwo aktualizować CLion).
 

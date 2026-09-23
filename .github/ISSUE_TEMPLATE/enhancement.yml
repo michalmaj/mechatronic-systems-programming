@@ -29,17 +29,17 @@ body:
   - type: textarea
     id: impact
     attributes:
-      label: "Impact on existing Core — Wpływ na istniejący Core"
-      description: "Does this touch Course Core 0-9 material, or is it additive only? / Czy to dotyka materiału Course Core 0-9, czy jest wyłącznie addytywne?"
+      label: "Impact on existing Core — Wpływ na istniejący rdzeń kursu"
+      description: "Does this touch Course Core 0-9 material, or is it additive only? / Czy to dotyka materiału rdzenia kursu (moduły 0-9), czy tylko coś dokłada, niczego nie zmieniając?"
     validations:
       required: true
 
   - type: dropdown
     id: scope
     attributes:
-      label: "Core or optional extension? — Core czy optional extension?"
+      label: "Core or optional extension? — Rdzeń kursu czy opcjonalne rozszerzenie?"
       options:
-        - Course Core (Modules 0-9) / Course Core (Moduły 0-9)
+        - Course Core (Modules 0-9) / Rdzeń kursu (moduły 0-9)
         - Final Project optional extension / Opcjonalne rozszerzenie projektu końcowego
         - Documentation / infrastructure only / Wyłącznie dokumentacja / infrastruktura
         - Not sure / Nie jestem pewien/pewna

@@ -37,8 +37,11 @@ cmake --version
 
 ## CLion
 
-1. Pobierz CLion ze strony jetbrains.com/clion — jako student masz prawo do darmowej licencji
-   edukacyjnej (rejestracja przez adres e-mail Twojej uczelni).
+1. Pobierz CLion ze strony jetbrains.com/clion. CLion jest dziś darmowy do użytku niekomercyjnego
+   (nauka, projekty hobbystyczne, open source) — do kursu wystarczy zwykłe konto JetBrains, bez
+   żadnej rejestracji uczelnianej. Alternatywą jest darmowa licencja z programu edukacyjnego
+   JetBrains (rejestracja przez adres e-mail Twojej uczelni) — przydatna, jeśli wolisz mieć licencję
+   związaną ze statusem studenta, ale niepotrzebna, żeby zacząć.
 2. Zainstaluj (JetBrains Toolbox App jest najwygodniejszą opcją do instalacji i późniejszych
    aktualizacji).
 

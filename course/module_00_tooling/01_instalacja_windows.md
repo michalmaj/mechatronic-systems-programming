@@ -4,8 +4,11 @@ Potrzebujesz dwóch rzeczy: Visual Studio 2022 (z odpowiednim zestawem komponent
 
 ## Visual Studio 2022
 
-1. Pobierz instalator ze strony visualstudio.microsoft.com — wystarczy darmowa edycja
-   **Community**.
+1. Kurs celowo trzyma się **Visual Studio 2022** — nie najnowszej wersji, jaka akurat jest
+   dostępna. Ogólna strona visualstudio.microsoft.com/downloads domyślnie proponuje najnowszą
+   edycję (obecnie już nie 2022), więc pobierz instalator z oficjalnej strony historii wydań VS2022:
+   [learn.microsoft.com/visualstudio/releases/2022/release-history](https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-history)
+   — wystarczy darmowa edycja **Community**.
 2. Uruchom instalator. Zobaczysz listę **obciążeń (workloads)** — dużych zestawów komponentów.
    Zaznacz **"Desktop development with C++"** ("Programowanie aplikacji klasycznych w C++").
 3. Po prawej stronie, w panelu "Szczegóły instalacji" (Installation details), upewnij się, że
