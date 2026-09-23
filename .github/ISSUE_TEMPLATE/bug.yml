@@ -1,5 +1,5 @@
 name: "Bug / Błąd"
-description: "Problems with code, the build, tests, or simulator behavior. / Problemy z kodem, buildem, testami lub działaniem symulatora."
+description: "Problems with code, the build, tests, or simulator behavior. / Problemy z kodem, budowaniem projektu, testami lub działaniem symulatora."
 title: "[bug]: "
 labels: ["bug"]
 body:
@@ -64,7 +64,7 @@ body:
     id: log
     attributes:
       label: "Log / output — Log / wynik"
-      description: "Paste relevant build/test output. / Wklej odpowiedni fragment logu builda/testu."
+      description: "Paste relevant build/test output. / Wklej odpowiedni fragment logu budowania/testu."
       render: shell
     validations:
       required: false
