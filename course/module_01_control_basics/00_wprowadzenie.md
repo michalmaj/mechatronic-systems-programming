@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](00_wprowadzenie.en.md)
+
 # 1.0 Wprowadzenie
 
 W Module 0 uruchomiłeś dwa programy: `toolchain_check` i gotowy podgląd `simulator_cli`. Nie

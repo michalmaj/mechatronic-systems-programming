@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](02_ruch_paczki.en.md)
+
 # 1.2 Ruch paczki
 
 ## Problem

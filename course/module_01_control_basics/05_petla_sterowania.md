@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](05_petla_sterowania.en.md)
+
 # 1.5 Pętla sterowania
 
 ## Problem

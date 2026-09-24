@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](06_pierwszy_przebieg.en.md)
+
 # 1.6 Pierwszy przebieg
 
 ## Problem

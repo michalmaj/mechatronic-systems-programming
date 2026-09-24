@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](03_stan_przenosnika.en.md)
+
 # 1.3 Stan przenośnika
 
 ## Problem
