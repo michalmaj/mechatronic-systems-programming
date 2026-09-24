@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](01_instalacja_macos.en.md)
+
 # 0.1 Instalacja: macOS
 
 Potrzebujesz: Xcode Command Line Tools (kompilator + Git), CMake oraz CLion.

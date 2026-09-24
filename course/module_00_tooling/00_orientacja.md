@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](00_orientacja.en.md)
+
 # 0.0 Orientacja: zanim zainstalujemy cokolwiek
 
 Zanim zaczniemy cokolwiek instalować, warto rozłożyć na czynniki pierwsze kilka słów, których

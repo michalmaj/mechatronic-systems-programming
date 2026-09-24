@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](04_decyzja_sortowania.en.md)
+
 # 1.4 Decyzja sortowania
 
 ## Problem

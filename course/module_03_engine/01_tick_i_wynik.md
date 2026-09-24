@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](01_tick_i_wynik.en.md)
+
 # 3.1 Tick i wynik
 
 ## Problem

@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](00_wprowadzenie.en.md)
+
 # 2.0 Wprowadzenie
 
 Moduł 1 zostawił Cię z działającym, ale wyidealizowanym systemem: paczka wjeżdżała, przenośnik

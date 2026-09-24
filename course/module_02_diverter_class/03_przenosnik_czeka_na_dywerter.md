@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](03_przenosnik_czeka_na_dywerter.en.md)
+
 # 2.3 Przenośnik czeka na dywerter
 
 ## Problem

@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](00_wprowadzenie.en.md)
+
 # 3.0 Wprowadzenie
 
 Moduł 2 (misja 9) wprowadził ustaloną kolejność jednego ticka: decyzja Controllera → `setCommand` →

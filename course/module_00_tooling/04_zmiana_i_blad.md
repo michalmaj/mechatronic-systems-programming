@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](04_zmiana_i_blad.en.md)
+
 # 0.4 Zmiana i błąd
 
 Twój program działa. Teraz nauczymy się dwóch rzeczy naraz: jak wygląda zwykła zmiana kodu i jak

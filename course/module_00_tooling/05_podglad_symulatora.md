@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](05_podglad_symulatora.en.md)
+
 # 0.5 Podgląd: dokąd zmierzamy
 
 Ostatni krok tego modułu nie uczy niczego nowego technicznie — to samo budowanie i uruchamianie,

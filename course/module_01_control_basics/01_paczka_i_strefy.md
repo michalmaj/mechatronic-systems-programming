@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](01_paczka_i_strefy.en.md)
+
 # 1.1 Paczka i strefy
 
 ## Problem

@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](02_silnik_formalizuje_kolejnosc.en.md)
+
 # 3.2 Silnik formalizuje kolejność
 
 To druga i najważniejsza teoretycznie misja tego modułu — poświęcimy jej trochę więcej miejsca.
