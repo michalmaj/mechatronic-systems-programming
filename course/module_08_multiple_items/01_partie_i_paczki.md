@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](01_partie_i_paczki.en.md)
+
 # 8.1 Partie i paczki
 
 ## Problem

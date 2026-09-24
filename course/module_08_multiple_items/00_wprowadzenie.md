@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](00_wprowadzenie.en.md)
+
 # Moduł 8: wiele paczek naraz
 
 ## Gdzie jesteśmy

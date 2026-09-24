@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](04_silnik_z_wieloma_paczkami.en.md)
+
 # 8.4 Silnik z wieloma paczkami
 
 ## Problem
