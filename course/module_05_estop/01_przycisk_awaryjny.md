@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](01_przycisk_awaryjny.en.md)
+
 # 5.1 Przycisk awaryjny
 
 ## Problem

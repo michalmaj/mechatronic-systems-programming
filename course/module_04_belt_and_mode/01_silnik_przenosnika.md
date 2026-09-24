@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](01_silnik_przenosnika.en.md)
+
 # 4.1 Silnik przenośnika
 
 ## Problem

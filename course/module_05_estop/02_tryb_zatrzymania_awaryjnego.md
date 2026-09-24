@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](02_tryb_zatrzymania_awaryjnego.en.md)
+
 # 5.2 Tryb zatrzymania awaryjnego
 
 To najważniejsza teoretycznie misja tego modułu — poświęcimy jej trochę więcej miejsca.

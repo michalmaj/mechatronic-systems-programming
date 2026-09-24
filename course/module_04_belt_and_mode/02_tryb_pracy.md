@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](02_tryb_pracy.en.md)
+
 # 4.2 Tryb pracy
 
 ## Problem

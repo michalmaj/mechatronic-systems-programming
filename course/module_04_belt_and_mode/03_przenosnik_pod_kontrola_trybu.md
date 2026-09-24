@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](03_przenosnik_pod_kontrola_trybu.en.md)
+
 # 4.3 Przenośnik pod kontrolą trybu
 
 ## Problem

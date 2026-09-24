@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](02_czujnik_wagi.en.md)
+
 # 6.2 Czujnik wagi
 
 ## Problem

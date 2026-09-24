@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](05_silnik_z_czujnikami.en.md)
+
 # 6.5 Silnik z czujnikami
 
 ## Problem

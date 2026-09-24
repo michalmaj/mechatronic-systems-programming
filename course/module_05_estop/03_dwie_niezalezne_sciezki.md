@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](03_dwie_niezalezne_sciezki.en.md)
+
 # 5.3 Dwie niezależne ścieżki
 
 ## Problem

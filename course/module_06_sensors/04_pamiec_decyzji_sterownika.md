@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](04_pamiec_decyzji_sterownika.en.md)
+
 # 6.4 Pamięć decyzji sterownika
 
 To najważniejsza i najtrudniejsza misja tego modułu. Warto przeczytać ją uważnie od początku do
