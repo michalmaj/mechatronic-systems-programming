@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](03_tryb_awarii.en.md)
+
 # 7.3 Tryb awarii
 
 ## Problem

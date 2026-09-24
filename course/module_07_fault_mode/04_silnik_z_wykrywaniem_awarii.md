@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](04_silnik_z_wykrywaniem_awarii.en.md)
+
 # 7.4 Silnik z wykrywaniem awarii
 
 ## Problem
