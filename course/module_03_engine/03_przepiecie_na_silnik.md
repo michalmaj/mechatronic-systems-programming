@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](03_przepiecie_na_silnik.en.md)
+
 # 3.3 Przepięcie na silnik
 
 ## Problem
