@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](02_dywerter_jako_klasa.en.md)
+
 # 2.2 Dywerter jako klasa
 
 To najważniejsza teoretycznie misja tego modułu — poświęcimy jej trochę więcej miejsca niż zwykle,

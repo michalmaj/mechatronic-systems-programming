@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](01_polecenie_a_rzeczywistosc.en.md)
+
 # 2.1 Polecenie a rzeczywistość
 
 ## Problem
