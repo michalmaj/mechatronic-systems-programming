@@ -77,9 +77,9 @@ The same pattern repeats for Modules 1–9:
 2. Branch off the module's starting point: `git switch -c my-work module-XX-start`.
 3. Read the module's chapter in the [Handbook](handbook.en.md) and the introduction in
    `course/module_XX_.../00_wprowadzenie.md` — read them on `main`, the canonical, current source
-   (see [above](#where-to-read-where-to-get-code); Polish only for now). Source-code links inside
-   those files point straight at the right tag, so they work correctly no matter where you click
-   them from.
+   (see [above](#where-to-read-where-to-get-code)). Every mission file has an English `.en.md`
+   sibling, linked from the top of its Polish version. Source-code links inside those files point
+   straight at the right tag, so they work correctly no matter where you click them from.
 4. Work through the module's missions in order. Each one is its own file,
    `course/module_XX_.../NN_*.md`, with a concrete task.
 5. Run each mission's test as you finish it: `ctest --preset test -L misja-N`.
