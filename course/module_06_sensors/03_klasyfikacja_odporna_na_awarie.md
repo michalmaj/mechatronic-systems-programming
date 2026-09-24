@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](03_klasyfikacja_odporna_na_awarie.en.md)
+
 # 6.3 Klasyfikacja odporna na awarie
 
 ## Problem

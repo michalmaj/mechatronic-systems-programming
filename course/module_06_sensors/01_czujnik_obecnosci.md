@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](01_czujnik_obecnosci.en.md)
+
 # 6.1 Czujnik obecności
 
 ## Problem
