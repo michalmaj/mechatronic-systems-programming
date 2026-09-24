@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](00_wprowadzenie.en.md)
+
 # Moduł 9: scenariusze skryptowane
 
 ## Gdzie jesteśmy

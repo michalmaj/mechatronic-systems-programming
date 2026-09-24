@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](03_integracja_w_cli.en.md)
+
 # 9.3 Integracja w CLI
 
 ## Problem
