@@ -122,23 +122,25 @@ ustala prowadzący.
 
 Krótkie ćwiczenie przed projektem końcowym (kod źródłowy nazywa je Project Kickoff) — pierwszy raz
 piszesz własny test od zera, dla znanej Ci już funkcji z kursu. To nie jest kolejny moduł. Materiał:
-`final_project/00_project_kickoff.md` (dostępny od tagu `final-project-start`).
+[`final_project/00_project_kickoff.md`](../final_project/00_project_kickoff.md).
 
 ## Projekt końcowy
+
+Materiał (ten sam czytany model, co reszta kursu) jest tutaj, na `main`:
+[`final_project/README.md`](../final_project/README.md). Kod startowy — jak zawsze — bierzesz z
+osobnego tagu:
 
 ```bash
 git fetch --tags
 git switch -c my-final-project final-project-start
 ```
 
-Pełny opis: [`final_project/README.md`](https://github.com/michalmaj/mechatronic-systems-programming/blob/final-project-start/final_project/README.md)
-— dostępny dopiero po przejściu na `final-project-start`, bo na `main` ten katalog jeszcze nie
-istnieje. Projekt rozbudowuje dokładnie ten sam symulator, który budowałeś przez cały kurs — nie
-zaczynasz od zera. Gotowe rozwiązanie projektu nie jest publikowane. To zadanie do samodzielnego
-rozwiązania, z przestrzenią na własne decyzje projektowe tam, gdzie opis wprost na to pozwala.
+Projekt rozbudowuje dokładnie ten sam symulator, który budowałeś przez cały kurs — nie zaczynasz od
+zera. Gotowe rozwiązanie projektu nie jest publikowane. To zadanie do samodzielnego rozwiązania, z
+przestrzenią na własne decyzje projektowe tam, gdzie opis wprost na to pozwala.
 
 ## Obrona
 
 Po złożeniu projektu jest krótka, indywidualna obrona: wyjaśniasz własne decyzje i rozwiązujesz małą,
 wcześniej niewidzianą zmianę lub analizę na bazie własnego kodu. Szczegóły w sekcji „Obrona” w
-`final_project/01_final_project_brief.md`.
+[`final_project/01_final_project_brief.md`](../final_project/01_final_project_brief.md).

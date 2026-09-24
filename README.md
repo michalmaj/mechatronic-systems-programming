@@ -62,8 +62,9 @@ Działa na Windows, Linux i macOS. Do każdego kolejnego modułu zakładasz now�
 - **[Podręcznik](docs/handbook.md)** — spójny materiał do każdego modułu.
 - **[Materiał modułów](course/README.md)** — misje modułów, wraz z krótką notą o tym, skąd czytać
   materiał, a skąd brać kod.
-- **[Projekt końcowy](https://github.com/michalmaj/mechatronic-systems-programming/blob/final-project-start/final_project/README.md)** *(dostępny od tagu `final-project-start` — ten link nie zadziała na `main`)* — bufor
-  wejściowy dla linii sortującej.
+- **[Projekt końcowy](final_project/README.md)** — bufor wejściowy dla linii sortującej. Materiał
+  czytasz tu, na `main`; kod startowy bierzesz z tagu `final-project-start`, dokładnie jak przy
+  modułach.
 - **[Zgłoszenia](../../issues)** — błędy w kodzie i testach, problemy w materiale, propozycje.
 
 ## Status
