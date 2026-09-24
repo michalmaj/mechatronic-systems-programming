@@ -15,9 +15,10 @@ całość, teraz dla czterech slotów naraz zamiast jednego. Nic poniżej nie je
 jest tylko to, że wszystko musi zadziałać razem, w jednym wywołaniu `step()`.
 
 **Czujniki i korelacja per paczka.** Każdy czujnik nadal czyta dokładnie ten slot, do którego jest
-fizycznie przypięty (Misja 31). Dwie rzeczy muszą się przy tym zdarzyć: `ControllerState` paczki
-faktycznie obecnej w danym slocie musi się zaktualizować (tylko gdy slot jest zajęty — wywołanie na
-pustym `std::optional<Item>` się nie skompiluje), a `SensorSnapshot` musi zapisać, której paczki
+fizycznie przypięty (Misja 31). Dwie rzeczy muszą się przy tym zdarzyć: stan korelacji paczki
+faktycznie obecnej w danym slocie musi się zaktualizować, przez `updatePresenceConfirmation`/
+`updateClassification` (tylko gdy slot jest zajęty — wywołanie na pustym `std::optional<Item>` się nie
+skompiluje), a `SensorSnapshot` musi zapisać, której paczki
 (`ItemId`) dotyczył dany odczyt — ale tylko gdy odczyt był `Ok` **i** slot faktycznie zajęty. Odczyt
 `Stale` nigdy nie jest przypisywany dzisiejszemu okupantowi slotu, nawet jeśli ktoś tam akurat stoi —
 to powtórzenie wcześniejszej zaufanej wartości, nie świeża obserwacja.
