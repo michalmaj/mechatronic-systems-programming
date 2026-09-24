@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](03_pierwszy_build.en.md)
+
 # 0.3 Pierwszy build
 
 Masz zainstalowane narzędzia i pobrane repozytorium. Czas zbudować pierwszy program.

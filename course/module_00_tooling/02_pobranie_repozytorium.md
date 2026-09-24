@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](02_pobranie_repozytorium.en.md)
+
 # 0.2 Pobranie repozytorium
 
 W tym kroku Git służy wyłącznie jako sposób pobrania plików kursu na dysk. Nie zajmujemy się

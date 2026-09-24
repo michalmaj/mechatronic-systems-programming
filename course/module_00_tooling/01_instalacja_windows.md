@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](01_instalacja_windows.en.md)
+
 # 0.1 Instalacja: Windows
 
 Potrzebujesz dwóch rzeczy: Visual Studio 2022 (z odpowiednim zestawem komponentów) oraz Gita.

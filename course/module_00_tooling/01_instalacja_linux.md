@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](01_instalacja_linux.en.md)
+
 # 0.1 Instalacja: Linux
 
 Potrzebujesz: kompilatora i narzędzi budowania, CMake, Gita oraz CLion.
