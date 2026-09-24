@@ -33,7 +33,7 @@ możesz do niego wrócić.
 
 Moduł składa się z sześciu misji. Każda z nich:
 
-1. stawia konkretny problem związany z naszą stacją sortującą,
+1. stawia konkretny problem związany z naszą komórką sortującą,
 2. wprowadza dokładnie te elementy C++, które są potrzebne, żeby ten problem rozwiązać — nic więcej,
 3. mówi, co już jest gotowe, a co masz dopisać,
 4. daje Ci szybki sposób sprawdzenia się: uruchomienie **tylko testu tej misji**,

@@ -1,4 +1,4 @@
-🇵🇱 Polski *(materiał kursu — wersja angielska jeszcze nie istnieje)*
+🇵🇱 Polski | [🇬🇧 English](README.en.md)
 
 # Materiał kursu
 

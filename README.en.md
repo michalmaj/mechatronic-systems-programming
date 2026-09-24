@@ -60,8 +60,8 @@ Works on Windows, Linux, and macOS. For each following module you branch off the
 
 - **[Roadmap](docs/roadmap.en.md)** — the exact path from Module 0 to the final project defense.
 - **[Handbook](docs/handbook.en.md)** — coherent teaching material for every module.
-- **[Module material](course/README.md)** *(Polish only for now)* — the missions themselves, with a
-  short note on where to read from and where to get code from.
+- **[Module material](course/README.en.md)** — the missions themselves, with a short note on where to
+  read from and where to get code from.
 - **[Final project](https://github.com/michalmaj/mechatronic-systems-programming/blob/final-project-start/final_project/README.md)** *(available from the `final-project-start` tag — this link won't resolve on `main`)* — an
   input buffer for the sorting line.
 - **[Issues](../../issues)** — bugs in code or tests, problems in the material, proposals.

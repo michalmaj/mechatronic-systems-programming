@@ -20,7 +20,7 @@ tick 1: mode=Running, item 1 in zone Infeed
 ...
 ```
 
-To jest symulator małej stacji sortującej paczki — system, który będziesz rozwijał krok po kroku
+To jest symulator małej komórki sortującej paczki — system, który będziesz rozwijał krok po kroku
 przez cały semestr. Na tym etapie **nie musisz rozumieć ani jednej linijki tego, co się dzieje**.
 Zobaczysz w tym wyjściu wzmianki o trybach pracy, strefach, czujnikach — do każdego z tych pojęć
 wrócimy osobno, w swoim czasie, kiedy będą miały znaczenie.

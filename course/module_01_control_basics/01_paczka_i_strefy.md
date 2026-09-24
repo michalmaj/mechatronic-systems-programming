@@ -4,7 +4,7 @@
 
 ## Problem
 
-Nasza stacja sortująca to fizycznie jeden przenośnik podzielony na kilka odcinków — nazwijmy je
+Nasza komórka sortująca to fizycznie jeden przenośnik podzielony na kilka odcinków — nazwijmy je
 **strefami**. Paczka wjeżdża na początku, przechodzi kolejno przez punkt kontrolny obecności,
 wagę, rozjazd (dywerter) i kończy w jednym z dwóch miejsc wyjściowych, zależnie od tego, ile waży.
 
