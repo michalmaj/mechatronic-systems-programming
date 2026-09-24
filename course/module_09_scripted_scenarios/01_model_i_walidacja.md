@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](01_model_i_walidacja.en.md)
+
 # 9.1 Model i walidacja
 
 ## Problem

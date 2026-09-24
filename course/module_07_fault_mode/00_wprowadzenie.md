@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](00_wprowadzenie.en.md)
+
 # 7.0 Wprowadzenie
 
 `Mode::EStopped` od Modułu 5 ma jasny powód istnienia: przycisk awaryjny. `Mode::Fault` istnieje od

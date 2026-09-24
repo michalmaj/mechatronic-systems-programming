@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](02_przesuwanie_partii.en.md)
+
 # 8.2 Przesuwanie partii
 
 To najważniejsza misja tego modułu pod względem teorii. Przeczytaj ją całą, zanim zaczniesz pisać kod.

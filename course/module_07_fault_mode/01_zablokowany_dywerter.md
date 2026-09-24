@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](01_zablokowany_dywerter.en.md)
+
 # 7.1 Zablokowany dywerter
 
 ## Problem

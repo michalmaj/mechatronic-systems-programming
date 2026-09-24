@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](02_odtwarzacz.en.md)
+
 # 9.2 Odtwarzacz
 
 ## Problem

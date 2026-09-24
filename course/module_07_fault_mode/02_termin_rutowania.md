@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](02_termin_rutowania.en.md)
+
 # 7.2 Termin rutowania
 
 To najważniejsza misja tego modułu pod względem teorii. Przeczytaj ją całą, zanim zaczniesz pisać

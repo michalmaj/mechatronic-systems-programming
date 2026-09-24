@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](03_korelacja_per_paczka.en.md)
+
 # 8.3 Korelacja per paczka
 
 ## Problem
