@@ -378,7 +378,7 @@ Najważniejsze pytanie, jakie warto zadać sobie o własnym teście: czy on fakt
 tylko przechodzi? Test, który przejdzie niezależnie od tego, czy kod jest poprawny, niczego nie
 dowodzi. Prosty sposób, żeby to sprawdzić: świadomie zepsuj testowany kod i sprawdź, czy Twój test
 naprawdę się wtedy zaczerwieni. Dokładne ćwiczenie tego kroku znajdziesz w
-`final_project/00_project_kickoff.md`.
+[`final_project/00_project_kickoff.md`](../final_project/00_project_kickoff.md).
 
 To nie jest rozdział o frameworkach testowych — kurs celowo używa jednej, minimalnej funkcji
 (`psmCheck`) przez cały czas, żeby uwaga została przy tym, co i dlaczego testujesz, a nie przy
@@ -390,7 +390,8 @@ narzędziu.
 
 Projekt końcowy stawia Cię po raz pierwszy w sytuacji, w której nikt nie napisał za Ciebie
 architektury. Dostajesz wymaganie domenowe — paczki mogą przybywać szybciej, niż linia jest w stanie
-je przyjąć — i wspólny kontrakt do spełnienia (`final_project/01_final_project_brief.md`). Resztę
+je przyjąć — i wspólny kontrakt do spełnienia
+([`final_project/01_final_project_brief.md`](../final_project/01_final_project_brief.md)). Resztę
 projektujesz sam.
 
 Ten rozdział nie mówi, jak rozwiązać zadanie projektu. To metodyka podejścia do nowego wymagania w
@@ -413,8 +414,8 @@ istniejącym, ugruntowanym systemie, przydatna dużo szerzej niż tylko tutaj:
 8. Uzasadnij swoje decyzje projektowe — krótko, pisemnie. To będzie punktem wyjścia do obrony.
 
 Pełne wymagania, kryteria akceptacji i lista decyzji pozostawionych Tobie:
-[`final_project/01_final_project_brief.md`](https://github.com/michalmaj/mechatronic-systems-programming/blob/final-project-start/final_project/01_final_project_brief.md)
-(dostępne od tagu `final-project-start`).
+[`final_project/01_final_project_brief.md`](../final_project/01_final_project_brief.md). Materiał
+czytasz na `main`; kod startowy — z tagu `final-project-start`.
 
 ---
 

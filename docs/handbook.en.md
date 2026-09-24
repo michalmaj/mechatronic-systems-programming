@@ -385,7 +385,7 @@ the contract runs, it isn't just written down somewhere.
 The question worth asking about any test you write: does it actually catch something, or does it just
 pass? A test that stays green no matter what the code does proves nothing. The simplest way to check:
 break the code on purpose and confirm your test actually turns red. You'll do exactly this in
-`final_project/00_project_kickoff.md`.
+[`final_project/00_project_kickoff.md`](../final_project/00_project_kickoff.en.md).
 
 This isn't a chapter about testing frameworks — the course sticks to one minimal function
 (`psmCheck`) throughout on purpose, so the focus stays on what you're testing and why, not on the
@@ -397,7 +397,9 @@ tooling.
 
 The final project is the first time nobody has handed you an architecture to fill in. You get a
 domain requirement — parcels can arrive faster than the line can accept them — and a shared contract
-to satisfy (`final_project/01_final_project_brief.md`). Everything else is your call.
+to satisfy
+([`final_project/01_final_project_brief.md`](../final_project/01_final_project_brief.en.md)).
+Everything else is your call.
 
 This chapter doesn't tell you how to solve the project. It's a way of approaching a new requirement in
 an existing, working system, and it's useful well beyond this one case:
@@ -421,8 +423,8 @@ an existing, working system, and it's useful well beyond this one case:
    for the defense.
 
 Full requirements, acceptance criteria, and the list of decisions left up to you:
-[`final_project/01_final_project_brief.md`](https://github.com/michalmaj/mechatronic-systems-programming/blob/final-project-start/final_project/01_final_project_brief.md),
-available from the `final-project-start` tag.
+[`final_project/01_final_project_brief.md`](../final_project/01_final_project_brief.en.md). You read
+the material on `main`; the starting code comes from the `final-project-start` tag.
 
 ---
 
