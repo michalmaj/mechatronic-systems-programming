@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](04_silnik_pod_ochrona.en.md)
+
 # 5.4 Silnik pod ochroną
 
 ## Problem

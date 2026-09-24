@@ -1,3 +1,5 @@
+🇵🇱 Polski | [🇬🇧 English](00_wprowadzenie.en.md)
+
 # 5.0 Wprowadzenie
 
 Do tej pory bezpieczeństwo systemu opierało się wyłącznie na tym, żeby `Mode`, `Controller` i reszta
