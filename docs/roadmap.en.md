@@ -124,24 +124,27 @@ format.
 
 A short exercise before the final project (the source tree calls it Project Kickoff) — the first time
 you write a test yourself, from scratch, for a function you already know from the course. It isn't
-another module. Material: `final_project/00_project_kickoff.md`, available from the
-`final-project-start` tag.
+another module. Material:
+[`final_project/00_project_kickoff.md`](../final_project/00_project_kickoff.en.md).
 
 ## Final project
+
+The material (the same read-here model as the rest of the course) lives here, on `main`:
+[`final_project/README.md`](../final_project/README.en.md). The starting code, as always, comes from
+a separate tag:
 
 ```bash
 git fetch --tags
 git switch -c my-final-project final-project-start
 ```
 
-Full description: [`final_project/README.md`](https://github.com/michalmaj/mechatronic-systems-programming/blob/final-project-start/final_project/README.md)
-— available only once you've switched to `final-project-start`, since that directory doesn't exist
-on `main`. The project builds on the exact same simulator you've been working on throughout the
-course; you're not starting over. Its reference solution isn't published — this one you solve on your own, with room
+The project builds on the exact same simulator you've been working on throughout the course; you're
+not starting over. Its reference solution isn't published — this one you solve on your own, with room
 for your own design decisions wherever the brief explicitly leaves them open.
 
 ## Defense
 
 After you submit the project, there's a short, individual defense: you explain your own decisions and
 work through a small, previously unseen change or question based on your own code. Details are in the
-"Defense" section of `final_project/01_final_project_brief.md`.
+"Defense" section of
+[`final_project/01_final_project_brief.md`](../final_project/01_final_project_brief.en.md).

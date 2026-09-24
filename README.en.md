@@ -62,8 +62,9 @@ Works on Windows, Linux, and macOS. For each following module you branch off the
 - **[Handbook](docs/handbook.en.md)** — coherent teaching material for every module.
 - **[Module material](course/README.en.md)** — the missions themselves, with a short note on where to
   read from and where to get code from.
-- **[Final project](https://github.com/michalmaj/mechatronic-systems-programming/blob/final-project-start/final_project/README.md)** *(available from the `final-project-start` tag — this link won't resolve on `main`)* — an
-  input buffer for the sorting line.
+- **[Final project](final_project/README.en.md)** — an input buffer for the sorting line. You read
+  the material here, on `main`; the starting code comes from the `final-project-start` tag, exactly
+  like the modules.
 - **[Issues](../../issues)** — bugs in code or tests, problems in the material, proposals.
 
 ## Status
