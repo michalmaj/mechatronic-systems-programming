@@ -424,7 +424,7 @@ an existing, working system, and it's useful well beyond this one case:
 
 Full requirements, acceptance criteria, and the list of decisions left up to you:
 [`final_project/01_final_project_brief.md`](../final_project/01_final_project_brief.en.md). You read
-the material on `main`; the starting code comes from the `final-project-start-v2` tag.
+the material on `main`; the starting code comes from the `final-project-start-v3` tag.
 
 ---
 
