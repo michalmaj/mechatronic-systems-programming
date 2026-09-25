@@ -64,9 +64,11 @@ Niezależnie od podjętych decyzji projektowych, poniższe musi być prawdziwe w
   gwarantuje, że dwie aktywne paczki o tym samym `ItemId` nie mogą jednocześnie istnieć w buforze ani w
   żadnej strefie — niezależnie od tego, czy wywołanie pochodzi ze `Scenario`, czy z kodu
   imperatywnego.
-- **Obserwowalność.** Ślad (`TickResult`) musi udostępniać co najmniej: liczbę paczek aktualnie
-  czekających w buforze oraz `ItemId` paczki na czele kolejki. To minimum wystarczające do
-  jednoznacznego zweryfikowania FIFO na przestrzeni śladu — bez rozdymania `TickResult` ponad to.
+- **Obserwowalność — wymagany kontrakt nazw.** Ślad (`TickResult`) musi udostępniać dwa nowe pola,
+  pod dokładnie tymi nazwami: `bufferedCount` (liczba paczek aktualnie czekających w buforze) oraz
+  `bufferHeadItemId` (`std::optional<ItemId>` — id paczki na czele kolejki, `std::nullopt` gdy bufor
+  jest pusty). To minimum wystarczające do jednoznacznego zweryfikowania FIFO na przestrzeni śladu —
+  bez rozdymania `TickResult` ponad to.
 - **Determinizm.** Ten sam, poprawny `Scenario` uruchomiony dwa razy musi dać semantycznie identyczny
   ślad.
 - **Brak nowej semantyki bezpieczeństwa.** Przyjmowanie przybyć do bufora podczas E-Stop/Fault to
@@ -162,8 +164,6 @@ indywidualnej obrony (patrz niżej).
 - **Dokładna wartość pojemności powyżej minimum 2** i sposób jej ustawienia (stała czy pole
   konfigurowalne).
 - **Dokładna nazwa nowego API przybyć** (`acceptArrival` jest sugerowane, ale wybór należy do Ciebie).
-- **Dokładne nazwy i typy nowych pól `TickResult`** — informacja (liczba czekających + id głowy
-  kolejki) jest wymagana, nazewnictwo nie.
 - **Wewnętrzna reprezentacja bufora** — o ile pozostaje prywatna i chroni FIFO/pojemność.
 - **Nazewnictwo i dekompozycja** nowych funkcji pomocniczych.
 
