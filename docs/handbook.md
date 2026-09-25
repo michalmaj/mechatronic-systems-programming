@@ -415,7 +415,7 @@ istniejącym, ugruntowanym systemie, przydatna dużo szerzej niż tylko tutaj:
 
 Pełne wymagania, kryteria akceptacji i lista decyzji pozostawionych Tobie:
 [`final_project/01_final_project_brief.md`](../final_project/01_final_project_brief.md). Materiał
-czytasz na `main`; kod startowy — z tagu `final-project-start`.
+czytasz na `main`; kod startowy — z tagu `final-project-start-v2`.
 
 ---
 

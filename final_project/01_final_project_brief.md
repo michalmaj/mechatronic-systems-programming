@@ -12,7 +12,7 @@ Jeśli Infeed jest zajęty, `runScenario()` kończy się `std::nullopt` — cał
 Zadaniem tego projektu jest to zmienić: samo chwilowe zajęcie Infeed nie powinno automatycznie
 oznaczać błędu. Przybywająca paczka powinna móc poczekać przed linią.
 
-To jest capstone po rdzeniu kursu (Moduły 0–9). Startujesz z `final-project-start` —
+To jest capstone po rdzeniu kursu (Moduły 0–9). Startujesz z `final-project-start-v2` —
 funkcjonalnie tym samym kodem symulatora co `module-09-solution`. Rozszerzasz go tam, gdzie to zadanie
 tego wymaga. Nie przepisujesz systemu od zera i nie obchodzisz istniejących abstrakcji równoległą
 implementacją.
@@ -183,7 +183,7 @@ zamierzona, nie warto robić wszystkich naraz:
 
 ## Praca w Git i złożenie projektu
 
-- Punktem startowym jest tag `final-project-start` na osobistej gałęzi.
+- Punktem startowym jest tag `final-project-start-v2` na osobistej gałęzi.
 - Historia commitów powinna pokazywać realny postęp — kilka commitów odzwierciedlających kolejne
   kroki (np. szkic typu bufora, integracja z resztą linii, rozszerzenie śladu, własne testy, scenariusz
   akceptacyjny), nie jeden gigantyczny commit na końcu. Nie jest wymagany żaden zaawansowany workflow
