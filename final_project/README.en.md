@@ -10,6 +10,6 @@ Start here:
    required behavior, invariants, acceptance criteria, your own tests, design choices, optional
    extensions, Git workflow, and the defense.
 
-The starting code at this point (`final-project-start-v2`) is functionally equivalent to
+The starting code at this point (`final-project-start-v3`) is functionally equivalent to
 `module-09-solution` — this directory contains only the project's starting material, not a solution
 or a `TODO`-filled skeleton.

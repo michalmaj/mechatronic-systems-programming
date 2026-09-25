@@ -63,7 +63,7 @@ Działa na Windows, Linux i macOS. Do każdego kolejnego modułu zakładasz now�
 - **[Materiał modułów](course/README.md)** — misje modułów, wraz z krótką notą o tym, skąd czytać
   materiał, a skąd brać kod.
 - **[Projekt końcowy](final_project/README.md)** — bufor wejściowy dla linii sortującej. Materiał
-  czytasz tu, na `main`; kod startowy bierzesz z tagu `final-project-start-v2`, dokładnie jak przy
+  czytasz tu, na `main`; kod startowy bierzesz z tagu `final-project-start-v3`, dokładnie jak przy
   modułach.
 - **[Zgłoszenia](../../issues)** — błędy w kodzie i testach, problemy w materiale, propozycje.
 

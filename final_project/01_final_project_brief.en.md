@@ -12,7 +12,7 @@ Infeed is occupied, `runScenario()` ends with `std::nullopt` — the whole scena
 job is to change that: a momentarily occupied Infeed shouldn't automatically mean failure. An
 arriving parcel should be able to wait in front of the line.
 
-This is your capstone after the course core (Modules 0–9). You start from `final-project-start-v2` —
+This is your capstone after the course core (Modules 0–9). You start from `final-project-start-v3` —
 functionally the same simulator code as `module-09-solution`. You extend it where this task requires
 it. You don't rewrite the system from scratch, and you don't work around existing abstractions with a
 parallel implementation.
@@ -181,7 +181,7 @@ deliberate, don't try to do all of them:
 
 ## Git workflow and submitting the project
 
-- Your starting point is the `final-project-start-v2` tag, on your own branch.
+- Your starting point is the `final-project-start-v3` tag, on your own branch.
 - Your commit history should show real progress — several commits reflecting successive steps (e.g. a
   sketch of the buffer type, integration with the rest of the line, extending the trace, your own
   tests, the acceptance scenario), not one giant commit at the end. No advanced Git workflow is

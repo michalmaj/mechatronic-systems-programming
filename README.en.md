@@ -63,7 +63,7 @@ Works on Windows, Linux, and macOS. For each following module you branch off the
 - **[Module material](course/README.en.md)** — the missions themselves, with a short note on where to
   read from and where to get code from.
 - **[Final project](final_project/README.en.md)** — an input buffer for the sorting line. You read
-  the material here, on `main`; the starting code comes from the `final-project-start-v2` tag,
+  the material here, on `main`; the starting code comes from the `final-project-start-v3` tag,
   exactly like the modules.
 - **[Issues](../../issues)** — bugs in code or tests, problems in the material, proposals.
 

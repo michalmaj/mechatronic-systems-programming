@@ -132,7 +132,7 @@ osobnego tagu:
 
 ```bash
 git fetch --tags
-git switch -c my-final-project final-project-start-v2
+git switch -c my-final-project final-project-start-v3
 ```
 
 Projekt rozbudowuje dokładnie ten sam symulator, który budowałeś przez cały kurs — nie zaczynasz od

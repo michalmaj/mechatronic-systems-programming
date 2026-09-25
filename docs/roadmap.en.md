@@ -135,7 +135,7 @@ a separate tag:
 
 ```bash
 git fetch --tags
-git switch -c my-final-project final-project-start-v2
+git switch -c my-final-project final-project-start-v3
 ```
 
 The project builds on the exact same simulator you've been working on throughout the course; you're
