@@ -12,7 +12,7 @@ Infeed is occupied, `runScenario()` ends with `std::nullopt` — the whole scena
 job is to change that: a momentarily occupied Infeed shouldn't automatically mean failure. An
 arriving parcel should be able to wait in front of the line.
 
-This is your capstone after the course core (Modules 0–9). You start from `final-project-start` —
+This is your capstone after the course core (Modules 0–9). You start from `final-project-start-v2` —
 functionally the same simulator code as `module-09-solution`. You extend it where this task requires
 it. You don't rewrite the system from scratch, and you don't work around existing abstractions with a
 parallel implementation.
@@ -63,10 +63,11 @@ Regardless of the design decisions you make, the following must hold in your sol
 - **Active `ItemId` uniqueness.** The public `Engine` API (`spawnItem` and your new arrival API)
   guarantees that two active parcels with the same `ItemId` can never coexist in the buffer or in any
   zone — regardless of whether the call comes from `Scenario` or from imperative code.
-- **Observability.** The trace (`TickResult`) must expose at least: the number of parcels currently
-  waiting in the buffer, and the `ItemId` of the parcel at the head of the queue. That's the minimum
-  needed to unambiguously verify FIFO order across a trace — without bloating `TickResult` beyond
-  that.
+- **Observability — a required naming contract.** The trace (`TickResult`) must expose two new
+  fields, under exactly these names: `bufferedCount` (the number of parcels currently waiting in the
+  buffer) and `bufferHeadItemId` (`std::optional<ItemId>` — the id of the parcel at the head of the
+  queue, `std::nullopt` when the buffer is empty). That's the minimum needed to unambiguously verify
+  FIFO order across a trace — without bloating `TickResult` beyond that.
 - **Determinism.** The same valid `Scenario`, run twice, must produce a semantically identical trace.
 - **No new safety semantics.** Accepting arrivals into the buffer during E-Stop/Fault is a deliberate,
   pedagogical assumption about an external input stream — it is not a model of real, safety-rated
@@ -160,8 +161,6 @@ the starting point for your individual defense.
 - **The exact capacity value above the minimum of 2**, and how it's set (a constant, or a configurable
   field).
 - **The exact name of the new arrival API** (`acceptArrival` is suggested, but the choice is yours).
-- **The exact names and types of the new `TickResult` fields** — the information (count waiting + the
-  head-of-queue id) is required; the naming isn't.
 - **The buffer's internal representation** — as long as it stays private and protects FIFO order and
   capacity.
 - **The naming and decomposition of new helper functions.**
@@ -182,7 +181,7 @@ deliberate, don't try to do all of them:
 
 ## Git workflow and submitting the project
 
-- Your starting point is the `final-project-start` tag, on your own branch.
+- Your starting point is the `final-project-start-v2` tag, on your own branch.
 - Your commit history should show real progress — several commits reflecting successive steps (e.g. a
   sketch of the buffer type, integration with the rest of the line, extending the trace, your own
   tests, the acceptance scenario), not one giant commit at the end. No advanced Git workflow is
