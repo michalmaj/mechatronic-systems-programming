@@ -1,11 +1,12 @@
-# Słownik stylu — dokumentacja PL
+# Słownik stylu dokumentacji polskiej
 
 Wewnętrzny dokument dla osób redagujących `README.md`, `docs/roadmap.md`, `docs/handbook.md` i
-podobny materiał. Nie jest to dokument studencki — nie linkujemy go z README ani z planu pracy.
+podobne materiały. Nie jest to dokument dla studentów, dlatego nie odsyłamy do niego z README ani z
+planu pracy.
 
 Zasada ogólna: tekst ma brzmieć jak dobry prowadzący tłumaczący problem studentowi przy stanowisku,
-nie jak dosłowne tłumaczenie z angielskiego. Nazwy z kodu (typy, funkcje, enumy, komendy) zawsze
-zostają po angielsku — tego się nie tłumaczy.
+nie jak dosłowne tłumaczenie z angielskiego. Nazwy z kodu, takie jak typy, funkcje, wartości typów
+wyliczeniowych i polecenia, zawsze zostają po angielsku.
 
 ## Preferowane polskie terminy zamiast kalek
 
@@ -25,6 +26,13 @@ zostają po angielsku — tego się nie tłumaczy.
 | admission / admitować | przejście z bufora na Infeed / wprowadzić na linię | zależnie od zdania |
 | drain the backlog | opróżnić bufor / obsłużyć oczekujące paczki | nie „drenować zaległość” |
 | source of truth | punkt odniesienia / miejsce określające format | dobierz do kontekstu |
+| defense (projekt zaliczeniowy) | rozmowa podsumowująca / rozmowa o projekcie | „obrona” tylko w znaczeniu formalnej obrony pracy dyplomowej lub rozprawy |
+| checkpoint | rozmowa sprawdzająca / sprawdzenie postępów | dobierz nazwę do faktycznej formy zajęć |
+| orchestration | koordynacja / ustalanie kolejności | „orkiestracja” tylko w utrwalonym znaczeniu technicznym |
+| getter | metoda do odczytu / metoda zwracająca... | użyj angielskiego terminu tylko wtedy, gdy jest przedmiotem nauki |
+| framework testowy | biblioteka testowa / narzędzie do testów | zależnie od opisywanego rozwiązania |
+| public API | publiczny interfejs | `API` może zostać w nazwie sekcji technicznej lub bezpośrednim cytacie |
+| safety-rated / functional safety | spełniający normy bezpieczeństwa / bezpieczeństwo funkcjonalne | nie zostawiaj angielskiego określenia bez wyjaśnienia |
 | checked out (git) | opisz efekt wprost, np. „na właściwym tagu” | unikaj czasownikowej kalki „wyewidencjonować” |
 | Course Core (po pierwszym wystąpieniu w dokumencie) | rdzeń kursu | pierwsze wystąpienie w dokumencie może zostać jako nazwa własna |
 | Final Project (w zwykłej prozie) | projekt końcowy | nazwy plików/tagów (`final_project/`, `final-project-start`) zostają bez zmian |
@@ -33,32 +41,35 @@ zostają po angielsku — tego się nie tłumaczy.
 
 ## Terminy pozostawione po angielsku
 
-- **Wszystkie nazwy z kodu**: typy, klasy, funkcje, enumy i ich składowe — `Plant`, `Item`, `Engine`,
-  `TickResult`, `Scenario`, `Diverter`, `BeltMotor`, `Mode`, `EStopLatchState`, `ReadingStatus`,
-  `SystemEventKind`, `ItemId` i tak dalej. Nigdy nie tłumaczymy identyfikatorów.
-- **Nazwy komend i narzędzi**: `cmake`, `ctest`, `git`, `git switch`, `CLI`, `build`.
-- **`tick`** — zostaje jako termin domenowy kursu; nie tłumaczymy na „takt” ani podobne, bo słowo
+- **Wszystkie nazwy z kodu**: typy, klasy, funkcje, typy wyliczeniowe i ich wartości, np. `Plant`,
+  `Item`, `Engine`, `TickResult`, `Scenario`, `Diverter`, `BeltMotor`, `Mode`, `EStopLatchState`,
+  `ReadingStatus`, `SystemEventKind` i `ItemId`. Nigdy nie tłumaczymy identyfikatorów.
+- **Nazwy poleceń i narzędzi**: `cmake`, `ctest`, `git`, `git switch`, `CLI`. Słowo `build` zostaje
+  tylko w nazwach poleceń, presetów i elementów interfejsu. W zwykłym tekście piszemy „budowanie”.
+- **`tick`** zostaje jako termin używany w kursie. Nie tłumaczymy go na „takt”, ponieważ słowo
   jest już częścią nazw z kodu (`Tick`, `TickResult`).
-- **`commit`, `branch`, `merge`** w kontekście Git — standardowy żargon polskich programistów,
+- **`commit`, `branch`, `merge`** w kontekście Git to standardowy żargon polskich programistów,
   brzmi naturalnie, zostaje.
 - **Nazwy tagów i plików**: `module-XX-start`, `module-XX-solution`, `final-project-start`,
-  `final_project/`, `course/` — to identyfikatory, nie tłumaczymy ich.
+  `final_project/`, `course/`. Są identyfikatorami, więc ich nie tłumaczymy.
 - **`E-Stop` jako nazwa z kodu** (`Mode::EStopped`) zostaje bez zmian. W zwykłej prozie preferujemy
   „awaryjny stop”, ale nazwa enumeratora się nie zmienia.
 
 ## Inne zasady stylu stosowane w tej redakcji
 
-- Bez seryjnego znakowania obu rodzajów („zrobiłeś/aś”, „gotowy/a”) — zdania przepisane neutralnie,
+- Bez seryjnego znakowania obu rodzajów („zrobiłeś/aś”, „gotowy/a”). Zdania zapisujemy neutralnie,
   bez zwracania się po rodzaju w ogóle, tam gdzie to możliwe („masz gotowe”, „piszesz”, zamiast
   „zrobiłeś/aś”).
-- Bold tylko tam, gdzie ma funkcję strukturalną (etykiety, metadane modułu) — nie jako rytmiczne
-  podkreślenie w prozie.
-- Unikaj powtarzalnych znaczników w rodzaju „kluczowe”, „dokładnie”, „to celowo”, „to ważne” jako
-  pustych wzmacniaczy — zostają tylko tam, gdzie faktycznie coś wnoszą (np. „dokładnie to znaczy X”
-  jako idiom, nie jako tik).
-- Unikaj konstrukcji „nie X, tylko Y” jako domyślnego sposobu kontrastowania — zdania kontrastowe
+- Pogrubienie tylko tam, gdzie ma funkcję strukturalną, np. w etykietach i metadanych modułu. Nie
+  służy jako rytmiczne podkreślenie w prozie.
+- Unikaj powtarzalnych znaczników w rodzaju „kluczowe”, „dokładnie”, „to celowo”, „to ważne”. Mogą
+  zostać tylko tam, gdzie faktycznie coś wnoszą, np. w zwrocie „dokładnie to znaczy X”
+  jako idiom, nie jako tik.
+- Unikaj konstrukcji „nie X, tylko Y” jako domyślnego sposobu kontrastowania. Zdania kontrastowe
   formułuj różnymi sposobami zamiast jednego powtarzalnego szablonu.
 - Nie opowiadaj o intencji autora, jeśli można podać wymaganie albo skutek. Zamiast „test celowo
   sprawdza X” napisz „test sprawdza X”; zamiast „to nie przypadek” wyjaśnij zależność przyczynową.
-- Preferuj krótsze zdania z jednym głównym wątkiem. Wielopiętrowe dopowiedzenia po myślnikach często
-  zdradzają składnię przeniesioną z angielskiego.
+- Preferuj krótsze zdania z jednym głównym wątkiem.
+- Znaku „—” używaj wyjątkowo. W zwykłej prozie wybierz kropkę, przecinek albo dwukropek. Nie zastępuj
+  nim automatycznie angielskiego myślnika ani nie buduj za jego pomocą wielopiętrowych dopowiedzeń.
+  Znak „–” pozostaje poprawny w zakresach liczbowych, np. „moduły 0–9”.

@@ -2,7 +2,7 @@
 
 # Materiał kursu
 
-← [README](../README.md) · [Roadmap](../docs/roadmap.md) · [Handbook](../docs/handbook.md)
+← [README](../README.md) · [Plan pracy](../docs/roadmap.md) · [Podręcznik](../docs/handbook.md)
 
 ## Zanim zaczniesz czytać dowolny moduł
 
@@ -20,6 +20,5 @@ odpowiedniego tagu na GitHubie, a nie z Twojego lokalnego katalogu. Plik do edyc
 pod tą samą ścieżką (`src/...`, `include/psm/...`).
 
 Plik Markdown w tagu `module-XX-start` jest kopią materiału z chwili publikacji tagu i może nie
-zawierać późniejszych poprawek redakcyjnych. Jeśli
-coś w treści wygląda na niespójne z kodem albo z tym, co pamiętasz z zajęć, sprawdź aktualną wersję
-tego pliku na `main`, zanim zgłosisz błąd.
+zawierać późniejszych poprawek redakcyjnych. Jeśli coś w treści wygląda na niespójne z kodem albo z
+tym, co pamiętasz z zajęć, sprawdź aktualną wersję tego pliku na `main`, zanim zgłosisz błąd.
