@@ -14,24 +14,18 @@ git fetch --tags
 git switch -c <nazwa-twojego-brancha> module-04-start
 ```
 
-Ważna różnica względem struktury tego modułu: **`Engine::step()` zostaje dokładnie taki, jaki
-zostawił go Moduł 3, aż do ostatniej misji.** Najpierw budujesz `BeltMotor` (Misja 13) i `Mode`
-(Misja 14) jako samodzielne, osobno testowalne elementy — tak, jak w prawdziwej historii
-tego projektu budowano tego typu elementy przed jakąkolwiek integracją. Dopiero Misja 15 spina
-wszystko razem.
+Do ostatniej misji nie zmieniaj `Engine::step()`. Najpierw zbudujesz i osobno przetestujesz
+`BeltMotor` (misja 13) oraz `Mode` (misja 14). Połączysz je z `Engine` dopiero w misji 15.
 
 ## O teście `misja-11`
 
-Zauważysz, że test `misja-11` (odziedziczony po Module 3) wygląda inaczej, niż mógłbyś pamiętać —
-sprawdza teraz tylko, że licznik ticków działa poprawnie na pustym `Engine`, nic więcej. To celowe i
-trwałe zawężenie: jego poprzedni, szczegółowy kontrakt (dokładne strefy paczki w konkretnych tickach)
-zakładał natychmiastowy ruch bez żadnej bramki na pasie — coś, co ten moduł świadomie zmienia. Nie
-musisz nic w tym teście poprawiać ani rozumieć, dlaczego jest inny niż wcześniej — po prostu jest
-teraz taki, jaki ma być.
+Test `misja-11` sprawdza teraz jedynie licznik ticków pustego `Engine`. Poprzednia wersja oczekiwała
+konkretnych stref w kolejnych tickach, zakładając natychmiastowy ruch paczki. Po dodaniu napędu takie
+założenie przestaje obowiązywać, dlatego test został zawężony.
 
 ## Mapa modułu
 
-1. **Silnik przenośnika** — `BeltMotor`, drugie użycie wzorca komenda-a-rzeczywistość z Modułu 2.
+1. **Silnik przenośnika** — `BeltMotor`, drugie użycie wzorca komenda-a-rzeczywistość z modułu 2.
 2. **Tryb pracy** — `Mode`, pierwsze pojęcie dotyczące całego systemu, i pierwszy przypadek, w którym
    *nie* budujemy klasy.
 3. **Przenośnik pod kontrolą trybu** — moment, w którym wszystko się spina: paczka rusza dopiero, gdy

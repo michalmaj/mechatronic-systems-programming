@@ -4,16 +4,14 @@
 
 ## Problem
 
-W kolejnej misji zbudujesz `Engine` — coś, co wykonuje jeden pełny cykl symulacji na raz. Zanim to
-zrobisz, potrzebujesz sposobu, żeby opisać **wynik** takiego cyklu: jeden, niezmienny zestaw
-informacji o tym, co się właśnie wydarzyło. I skoro taki opis będzie istniał, przyda się też sposób,
-żeby zamienić go na czytelny dla człowieka tekst.
+W kolejnej misji zbudujesz `Engine`, który wykonuje jeden pełny cykl symulacji. Najpierw potrzebny
+jest typ opisujący wynik takiego cyklu oraz funkcja zamieniająca go na czytelny tekst.
 
 ## Nowe elementy C++
 
 **`using Tick = std::uint64_t;`** — alias typu. `Tick` to wciąż zwykła liczba całkowita (bez znaku,
-64-bitowa — licznik ticków nigdy nie powinien "przekręcić się" z powrotem do zera), ale nazwa `Tick`
-mówi czytelnikowi kodu dokładnie, co ta liczba reprezentuje, zamiast zostawiać go z gołym `int`.
+64-bitowa — licznik ticków nie powinien przepełnić się podczas symulacji), ale nazwa `Tick` wyjaśnia
+znaczenie liczby lepiej niż zwykły `int`.
 
 **`struct TickResult`** — migawka jednego ticka:
 
@@ -26,10 +24,9 @@ struct TickResult {
 };
 ```
 
-To zwykły `struct`, bez żadnego niezmiennika do ochrony — czysto bierny zestaw danych, taki sam
-wybór jak `Item` czy `Plant` w Module 1. Zwróć uwagę, że migawka zawiera **oba** elementy rozróżnienia
-poznanego w Module 2: `diverterCommand` (czego chcieliśmy) i `diverterActual` (co faktycznie się
-stało) — gdyby zabrakło jednego z nich, wynik nie pokazywałby całej prawdy o tym ticku.
+To zwykła struktura przechowująca dane, podobnie jak `Item` i `Plant` w module 1. Zawiera zarówno
+`diverterCommand` (wydane polecenie), jak i `diverterActual` (rzeczywiste położenie). Bez jednej z
+tych wartości nie dałoby się odtworzyć pełnego wyniku ticku.
 
 ## Co już masz gotowe
 
@@ -55,15 +52,14 @@ std::string describe(const TickResult& result) {
 
 Uzupełnij `describe`, żeby zwracał:
 - `"tick T: item ID in zone Z"`, gdy `result.item` ma wartość (`T` = `result.tick`, `ID` =
-  `result.item->id`, `Z` = `psm::toString(result.item->zone)` z Modułu 1),
+  `result.item->id`, `Z` = `psm::toString(result.item->zone)` z modułu 1),
 - `"tick T: empty"`, gdy `result.item` nie ma wartości.
 
 Będziesz potrzebować `#include <psm/zone.hpp>` (dla `psm::toString`) oraz zamiany liczb na tekst —
 `std::to_string` z `<string>` (już dołączonego przez `tick_result.hpp`) załatwia to bez dodatkowego
 wysiłku.
 
-`describe` nie ma jeszcze żadnego wywołania w programie — to celowe. Dostanie swojego pierwszego
-użytkownika dopiero w Misji 12.
+Funkcja `describe` zostanie podłączona do programu dopiero w misji 12.
 
 ## Sprawdź się
 

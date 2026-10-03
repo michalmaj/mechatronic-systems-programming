@@ -4,7 +4,7 @@
 
 ## Problem
 
-`Plant` do tej pory mieścił dokładnie jedną paczkę. Druga próba `spawnItem` była po cichu ignorowana.
+`Plant` mieścił do tej pory jedną paczkę, a kolejna próba `spawnItem` była odrzucana.
 Żeby modelować kilka paczek naraz, `Plant` potrzebuje osobnego miejsca na każdą strefę — i sposobu,
 żeby jednoznacznie odróżnić od siebie paczki, które są w nim jednocześnie.
 
@@ -22,7 +22,7 @@ struct Item {
 
 `Item` nie ma już pola `zone`. Skoro `Plant` będzie miał osobne pole na każdą strefę, przynależność do
 strefy to fakt wynikający z tego, w którym polu leży dana paczka — trzymanie dodatkowego pola `zone`
-obok tego byłoby dwoma źródłami tej samej prawdy, które mogłyby się rozjechać.
+obok tego powielałoby tę samą informację i groziło niespójnością.
 
 ```cpp
 struct Plant {
@@ -64,8 +64,8 @@ kolejnym ticku i za wybór id, które się nie koliduje — nie ma tu wewnętrzn
 [`include/psm/plant.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/plant.hpp) — nowy kształt `Plant`, `ItemDeparture`,
 `AdvanceResult`, sygnatury `spawnItem`/`advance` — wszystko gotowe.
 
-[`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/plant.cpp) — `advance()` na razie celowo nic nie robi (to praca Misji 30,
-nie tej) — nie polegaj na tym, że cokolwiek przesuwa, dopóki nie napiszesz Misji 30. Ciało `spawnItem`
+[`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/plant.cpp) — `advance()` zostanie zaimplementowane w misji 30. Do tego czasu
+nie przesuwa paczek. Ciało `spawnItem`
 jest `// TODO`.
 
 ## Co masz napisać
@@ -89,13 +89,13 @@ kolejne wywołanie z id, które nie koliduje, udaje się mimo obecności innej p
   `diverting` musi być odrzucona równie stanowczo.
 - **Ręczne zerowanie `presenceConfirmed`/`classification`/`divertingWaitTicks` po konstrukcji** —
   niepotrzebne: `Item{id, mass}` już bierze resztę pól z ich domyślnych wartości w klasie.
-- **Próba przyjęcia całego `Item` zamiast `ItemId`/`Grams`** — to dokładnie ta niejednoznaczność
+- **Próba przyjęcia całego `Item` zamiast `ItemId`/`Grams`** — prowadzi to do niejasności
   ("co znaczy przekazać 'używany' `Item`?"), której zawężona sygnatura ma unikać.
 
 ## Pytanie do zastanowienia
 
-`spawnItem` nie ma wewnętrznej kolejki — druga nieudana próba po prostu przepada, chyba że wywołujący
-spróbuje ponownie. Dlaczego to jest właściwa odpowiedzialność dla wywołującego (np. `Engine` albo CLI),
+`spawnItem` nie ma wewnętrznej kolejki. Po nieudanej próbie wywołujący musi spróbować ponownie.
+Dlaczego jest to właściwa odpowiedzialność dla wywołującego (np. `Engine` albo CLI),
 a nie dla samego `Plant`?
 
 **Dalej:** [Misja 30: przesuwanie partii](./02_przesuwanie_partii.md).

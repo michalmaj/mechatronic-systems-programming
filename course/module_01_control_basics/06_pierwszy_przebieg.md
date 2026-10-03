@@ -39,17 +39,16 @@ W `main()`:
    gramów, żeby zobaczyć trasę przez `OutputHeavy`, albo coś poniżej `500`, żeby zobaczyć
    `OutputLight`).
 2. Napisz pętlę (np. na 6 ticków), która w każdym obiegu: jeśli `plant.item` ma wartość, liczy
-   `WeightClass` i `DiverterPosition` (dokładnie tak, jak w `runTicks` z Misji 5), wywołuje
+   `WeightClass` i `DiverterPosition` (tak jak `runTicks` z misji 5), wywołuje
    `advance(plant, ...)`, a następnie **wypisuje** numer ticku oraz aktualną strefę paczki (albo
    napis w rodzaju `"empty"`, jeśli `plant.item` już nie ma wartości). Do zamiany strefy na tekst
    użyj `psm::toString(zone)` z Misji 1 — pamiętaj o `#include <psm/zone.hpp>`.
 
-Ta pętla **celowo nie wywołuje `runTicks`** z Misji 5 — `runTicks` nic nie wypisuje (jest czysty,
-łatwy do przetestowania), a Ty właśnie potrzebujesz wypisywania po każdym kroku. Napisz własną,
-niewielką pętlę w `main()`, korzystając z tych samych `classify`/`toDiverterPosition`/`advance`, co
-poprzednio.
+Nie korzystaj tutaj z `runTicks`, ponieważ ta funkcja nie udostępnia wyniku po każdym kroku. Napisz
+w `main()` niewielką pętlę, która używa tych samych funkcji `classify`, `toDiverterPosition` i
+`advance`, a po każdym ticku wypisuje stan.
 
-Przykładowy kształt jednej linii wyjścia (dokładny format zależy od Ciebie):
+Przykładowy format wyjścia (możesz wybrać inny):
 
 ```
 tick 0: zone=PresenceCheck
@@ -66,7 +65,7 @@ Najpierw smoke test — sprawdza tylko, że program się uruchamia i kończy bez
 ctest --preset test -L misja-6
 ```
 
-Ale to nie wystarczy — uruchom program naprawdę i **przeczytaj wynik**:
+Następnie uruchom program i **przeczytaj wynik**:
 
 ```bash
 cmake --build --preset dev
@@ -110,8 +109,8 @@ git commit -m "..."
 
 ## Pytanie do zastanowienia
 
-Spójrz na kod w `main()` i na `runTicks` z Misji 5 obok siebie. Co dokładnie się powtarza między
-nimi, a co jest różne? Czy ta odrobina duplikacji Ci przeszkadza — i dlaczego (albo dlaczego nie) na
+Porównaj kod w `main()` z `runTicks` z misji 5. Co się w nich powtarza, a co jest różne? Czy ta
+odrobina duplikacji Ci przeszkadza — i dlaczego (albo dlaczego nie) na
 tym etapie projektu jest to akceptowalne?
 
 ## Koniec modułu 1

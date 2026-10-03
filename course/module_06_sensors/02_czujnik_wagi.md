@@ -4,7 +4,7 @@
 
 ## Problem
 
-Waga ma dokładnie tę samą fizyczną ograniczoność co czujnik obecności z poprzedniej misji — tyle że
+Waga ma takie samo ograniczenie jak czujnik obecności z poprzedniej misji, ale
 zamontowana jest w innym miejscu: widzi paczkę wyłącznie w strefie `Weighing`.
 
 ## Nowy element C++
@@ -58,8 +58,7 @@ Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`.
 
 ## Pytanie do zastanowienia
 
-Gdyby ktoś zaproponował, żeby `WeightSensor` w ogóle nie sprawdzał strefy — po prostu zwracał
-`item->mass`, kiedykolwiek paczka istnieje, niezależnie gdzie — co dokładnie by to zepsuło w dalszych
-misjach tego modułu?
+Co zepsułoby się w dalszych misjach, gdyby `WeightSensor` zwracał `item->mass` zawsze, gdy paczka
+istnieje, bez sprawdzania jej strefy?
 
 **Dalej:** [Misja 22: klasyfikacja odporna na awarie](./03_klasyfikacja_odporna_na_awarie.md).

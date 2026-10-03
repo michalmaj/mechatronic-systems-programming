@@ -4,13 +4,13 @@
 
 ## Problem
 
-Cały przenośnik porusza się dzięki jednemu silnikowi napędzającemu pas. Tak jak rozjazd z Modułu 2 nie
+Cały przenośnik porusza się dzięki jednemu silnikowi napędzającemu pas. Tak jak rozjazd z modułu 2 nie
 przeskakiwał natychmiast między pozycjami, tak i ten silnik nie osiąga pełnej prędkości ani nie
 zatrzymuje się w jednej chwili — potrzebuje czasu na rozpędzenie i na zatrzymanie.
 
 ## Nowy element C++
 
-**`class BeltMotor`** — drugie użycie wzorca komenda-a-rzeczywistość z Modułu 2 (`Diverter`), tym
+**`class BeltMotor`** — drugie użycie wzorca komenda-a-rzeczywistość z modułu 2 (`Diverter`), tym
 razem na maszynie z **czterema** stanami zamiast trzech:
 
 ```cpp
@@ -30,7 +30,7 @@ private:
 ```
 
 To już drugi raz budujesz tę samą kombinację: `class`, prywatny stan, publiczny interfejs, komenda
-oddzielona od rzeczywistości. Tym razem dostajesz mniej gotowego niż przy `Diverter` w Module 2 —
+oddzielona od rzeczywistości. Tym razem dostajesz mniej gotowego niż przy `Diverter` w module 2 —
 zamiast pełnej tabeli przejść, samą regułę, opisaną słowami. Spróbuj samodzielnie przełożyć ją na
 `switch`, tak jak zrobiłeś to poprzednio.
 
@@ -45,17 +45,14 @@ zamiast pełnej tabeli przejść, samą regułę, opisaną słowami. Spróbuj sa
 
 Każde `resolve()` przesuwa stan o co najwyżej jeden krok.
 
-**Ważne zastrzeżenie:** `RampingUp`/`RampingDown` to uproszczony model **opóźnienia** rozruchu i
-zatrzymania — nie model prędkości fizycznej. Nigdzie w tej klasie nie ma liczby opisującej, jak szybko
-faktycznie jedzie pas. Paczka porusza się wyłącznie wtedy, gdy `actualState() == Running` — dokładnie
-to, i nic pomiędzy.
+`RampingUp` i `RampingDown` modelują jedynie **opóźnienie** rozruchu i zatrzymania, a nie prędkość
+taśmy. Paczka porusza się wyłącznie wtedy, gdy `actualState() == Running`.
 
 ## Co już masz gotowe
 
 [`include/psm/belt_motor_command.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-04-start/include/psm/belt_motor_command.hpp),
 [`include/psm/belt_motor_state.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-04-start/include/psm/belt_motor_state.hpp) i
-[`include/psm/belt_motor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-04-start/include/psm/belt_motor.hpp) — deklaracje kompletne, dokładnie
-jak wyżej.
+[`include/psm/belt_motor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-04-start/include/psm/belt_motor.hpp) — kompletne deklaracje pokazane wyżej.
 
 [`src/belt_motor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-04-start/src/belt_motor.cpp) — puste szkielety trzech metod z komentarzami
 `// TODO`.

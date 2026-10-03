@@ -2,15 +2,14 @@
 
 # 6.0 Wprowadzenie
 
-Do tej pory `Controller` bezwarunkowo ufał `Item::mass` — masa paczki była po prostu prawdą,
-zawsze dostępną, zawsze poprawną. Ten moduł to zmienia: paczka jest teraz ważona przez prawdziwy
+Do tej pory `Controller` bezwarunkowo ufał `Item::mass`: masa była zawsze dostępna i poprawna.
+Teraz paczka będzie ważona przez
 czujnik, który może się zepsuć, i wykrywana przez czujnik obecności, który też może się zepsuć.
 
-Ważna różnica względem aktuatorów z wcześniejszych modułów: czujnik w tym module **nie jest
-wszechwiedzący**. Jest fizycznie zamontowany w jednym konkretnym miejscu przenośnika — czujnik
+W odróżnieniu od dotychczasowego modelu czujnik **nie zna stanu całej linii**. Jest zamontowany w
+jednym miejscu przenośnika: czujnik
 obecności widzi paczkę wyłącznie w strefie `PresenceCheck`, czujnik wagi wyłącznie w `Weighing`.
-To nie jest szczegół implementacyjny — to jest właśnie ten problem, który ten moduł uczy rozwiązywać:
-skoro te dwie strefy są różne i sekwencyjne, żadna paczka nigdy nie jest w obu naraz. Oznacza to, że
+Ponieważ te strefy są osobne i występują kolejno, paczka nigdy nie znajduje się w obu naraz. Dlatego
 klasyfikacja obliczona podczas ważenia musi zostać **zapamiętana** aż do chwili, gdy paczka dotrze do
 `Diverting` — to prawdziwa, umotywowana potrzeba pamięci między tickami, nie sztuczny wymóg.
 
@@ -21,8 +20,7 @@ git fetch --tags
 git switch -c <nazwa-twojego-brancha> module-06-start
 ```
 
-Jak zawsze: `Engine::step()` i zachowanie `Plant::advance()` zostają dokładnie takie, jakie zostawił
-je Moduł 5, aż do ostatniej misji.
+Do ostatniej misji pozostaw `Engine::step()` i `Plant::advance()` w wersji z modułu 5.
 
 ## Mapa modułu
 

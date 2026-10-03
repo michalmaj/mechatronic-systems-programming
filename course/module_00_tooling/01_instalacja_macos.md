@@ -2,7 +2,7 @@
 
 # 0.1 Instalacja: macOS
 
-Potrzebujesz: Xcode Command Line Tools (kompilator + Git), CMake oraz CLion.
+Potrzebujesz Xcode Command Line Tools (kompilator i Git), CMake oraz CLion.
 
 ## Xcode Command Line Tools
 
@@ -12,8 +12,8 @@ Otwórz Terminal (Aplikacje → Narzędzia → Terminal) i wpisz:
 xcode-select --install
 ```
 
-Pojawi się okno systemowe z prośbą o instalację — potwierdź. To zainstaluje kompilator Clang oraz
-Git, bez potrzeby instalowania pełnego Xcode ze Sklepu App Store.
+Potwierdź instalację w oknie systemowym. W ten sposób zainstalujesz Clang i Gita bez pobierania
+pełnego Xcode z App Store.
 
 Sprawdź, czy się udało:
 
@@ -24,7 +24,7 @@ git --version
 
 ## CMake
 
-Najprościej przez Homebrew (menedżer pakietów dla macOS). Jeśli nie masz jeszcze Homebrew:
+Najprościej zainstalować CMake przez menedżer pakietów Homebrew. Jeśli jeszcze go nie masz:
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -39,14 +39,11 @@ cmake --version
 
 ## CLion
 
-1. Pobierz CLion ze strony jetbrains.com/clion. CLion jest dziś darmowy do użytku niekomercyjnego
-   (nauka, projekty hobbystyczne, open source) — do kursu wystarczy zwykłe konto JetBrains, bez
-   żadnej rejestracji uczelnianej. Alternatywą jest darmowa licencja z programu edukacyjnego
-   JetBrains (rejestracja przez adres e-mail Twojej uczelni) — przydatna, jeśli wolisz mieć licencję
-   związaną ze statusem studenta, ale niepotrzebna, żeby zacząć.
-2. Zainstaluj (JetBrains Toolbox App jest najwygodniejszą opcją do instalacji i późniejszych
-   aktualizacji).
+1. Pobierz CLion ze strony jetbrains.com/clion. Do nauki i projektów niekomercyjnych wystarczy zwykłe
+   konto JetBrains. Możesz też skorzystać z licencji edukacyjnej przypisanej do uczelnianego adresu
+   e-mail.
+2. Zainstaluj program. JetBrains Toolbox ułatwia zarówno instalację, jak i późniejsze aktualizacje.
 
-CLion domyślnie wykrywa zainstalowany kompilator i CMake automatycznie przy pierwszym uruchomieniu.
+Przy pierwszym uruchomieniu CLion powinien sam wykryć kompilator i CMake.
 
 **Dalej:** [pobranie repozytorium](./02_pobranie_repozytorium.md).

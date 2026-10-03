@@ -7,7 +7,7 @@ logiki działały poprawnie. Ten moduł dodaje coś fundamentalnie innego: przyc
 **drugą, niezależną** ścieżkę bezpieczeństwa — niezależną od Controllera, niezależną od tego, czy
 reszta logiki routingu w ogóle działa poprawnie.
 
-**Ważne zastrzeżenie na start:** przycisk awaryjny, który tu zbudujesz, to uproszczony model
+Przycisk awaryjny, który tu zbudujesz, jest uproszczonym modelem
 dydaktyczny zachowania systemu — uczy kształtu problemu (druga, niezależna ścieżka; bezwzględny
 priorytet; brak cichego automatycznego wznowienia), na małej, czytelnej maszynie stanów. To **nie**
 jest projekt spełniający normy bezpieczeństwa dla prawdziwej maszyny. Prawdziwe obwody bezpieczeństwa
@@ -20,8 +20,8 @@ git fetch --tags
 git switch -c <nazwa-twojego-brancha> module-05-start
 ```
 
-Tak jak w poprzednim module: **`Engine::step()` zostaje dokładnie taki, jaki zostawił go Moduł 4, aż
-do ostatniej misji.** Najpierw budujesz przycisk awaryjny, rozszerzony `Mode` i funkcje bezpieczeństwa
+Do ostatniej misji pozostaw `Engine::step()` w wersji z modułu 4. Najpierw zbudujesz przycisk
+awaryjny, rozszerzony `Mode` i funkcje bezpieczeństwa
 jako samodzielne, osobno testowalne elementy — dopiero ostatnia misja spina je z działającym
 `Engine`.
 

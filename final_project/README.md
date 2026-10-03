@@ -10,6 +10,5 @@ Zacznij tutaj:
    obowiązkowe, niezmienniki, kryteria akceptacji, własne testy, decyzje projektowe, rozszerzenia
    opcjonalne, zasady pracy w Git i obrony.
 
-Kod startowy w tym punkcie (`final-project-start-v3`) jest funkcjonalnie równoważny
-`module-09-solution` — ten katalog zawiera wyłącznie materiały startowe projektu, nie rozwiązanie ani
-szkielet z gotowymi `TODO`.
+Kod w tagu `final-project-start-v3` działa tak samo jak `module-09-solution`. Ten katalog zawiera
+opis zadania, a nie rozwiązanie ani szkielet z gotowymi `TODO`.

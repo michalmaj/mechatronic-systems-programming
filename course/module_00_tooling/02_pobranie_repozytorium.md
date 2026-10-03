@@ -2,9 +2,8 @@
 
 # 0.2 Pobranie repozytorium
 
-W tym kroku Git służy wyłącznie jako sposób pobrania plików kursu na dysk. Nie zajmujemy się
-jeszcze commitami, branchami ani niczym innym — do tego wrócimy w późniejszym module, kiedy
-będziesz mieć własną, wartą zapisania zmianę.
+Na razie Git posłuży tylko do pobrania plików kursu. Do commitów i branchy wrócimy, gdy pojawią się
+pierwsze własne zmiany do zapisania.
 
 ## Ścieżka podstawowa: git clone
 
@@ -19,9 +18,9 @@ Powstanie folder `mechatronic-systems-programming` z pełną zawartością repoz
 
 ## Ścieżka awaryjna: Download ZIP
 
-Jeśli instalacja Gita się nie powiodła albo wolisz na razie jej nie rozwiązywać — nie blokuj się
-na tym. Wejdź na stronę repozytorium na GitHubie, kliknij zielony przycisk **Code**, a następnie
-**Download ZIP**. Rozpakuj archiwum w wybranym miejscu na dysku.
+Jeśli instalacja Gita się nie powiodła, możesz tymczasowo pobrać pliki jako archiwum. Na stronie
+repozytorium w GitHubie kliknij zielony przycisk **Code**, wybierz **Download ZIP** i rozpakuj
+archiwum w wybranym miejscu.
 
 **To rozwiązanie tymczasowe.** Folder z rozpakowanego ZIP-a nie jest repozytorium Git — nie da się
 w nim aktualizować zmian ani ich zapisywać w historii. Wystarczy do przejścia przez ten moduł;

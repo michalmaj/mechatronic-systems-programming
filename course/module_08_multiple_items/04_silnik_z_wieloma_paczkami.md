@@ -5,52 +5,53 @@
 ## Problem
 
 Wszystkie kawałki istnieją osobno — nowy `Plant`, `advance()`, dwie funkcje korelacji — ale nic w
-`Engine::step()` jeszcze ich nie łączy. Startowy szkielet tej misji celowo nic nie robi: kompiluje
-się, ale nigdy nie wywołuje `advance()`, więc żadna paczka się nie porusza.
+`Engine::step()` jeszcze ich nie łączy. Startowy szkielet kompiluje się, ale nie wywołuje
+`advance()`, więc paczki pozostają w miejscu.
 
 ## Integracja: odpowiedzialności i ograniczenia
 
-To nie jest nowa logika — to złożenie mechanizmów z Modułów 6 i 7 oraz reszty tego modułu w jedną
-całość, teraz dla czterech slotów naraz zamiast jednego. Nic poniżej nie jest nowym pomysłem; nowe
-jest tylko to, że wszystko musi zadziałać razem, w jednym wywołaniu `step()`.
+Zadanie łączy mechanizmy z modułów 6 i 7 z kodem napisanym wcześniej w tym module. Tym razem muszą
+zadziałać razem dla czterech stref w jednym wywołaniu `step()`.
 
-**Czujniki i korelacja per paczka.** Każdy czujnik nadal czyta dokładnie ten slot, do którego jest
-fizycznie przypięty (Misja 31). Dwie rzeczy muszą się przy tym zdarzyć: stan korelacji paczki
-faktycznie obecnej w danym slocie musi się zaktualizować, przez `updatePresenceConfirmation`/
-`updateClassification` (tylko gdy slot jest zajęty — wywołanie na pustym `std::optional<Item>` się nie
+**Czujniki i korelacja dla każdej paczki.** Każdy czujnik nadal odczytuje strefę, do której jest
+fizycznie przypisany (misja 31). Dwie rzeczy muszą się przy tym zdarzyć: stan korelacji paczki
+faktycznie obecnej w danej strefie musi się zaktualizować przez `updatePresenceConfirmation` lub
+`updateClassification` (tylko gdy strefa jest zajęta — wywołanie na pustym `std::optional<Item>` się nie
 skompiluje), a `SensorSnapshot` musi zapisać, której paczki
-(`ItemId`) dotyczył dany odczyt — ale tylko gdy odczyt był `Ok` **i** slot faktycznie zajęty. Odczyt
-`Stale` nigdy nie jest przypisywany dzisiejszemu okupantowi slotu, nawet jeśli ktoś tam akurat stoi —
+(`ItemId`) dotyczył dany odczyt — ale tylko gdy odczyt był `Ok` **i** strefa faktycznie zajęta. Odczyt
+`Stale` nigdy nie jest przypisywany paczce znajdującej się obecnie w tej strefie —
 to powtórzenie wcześniejszej zaufanej wartości, nie świeża obserwacja.
 
 **Polecenie dywertera.** Musi pochodzić **wyłącznie** z paczki, która w tym momencie jest w
 `plant_.diverting` — nigdy z paczki właśnie sklasyfikowanej w `plant_.weighing` w tym samym ticku
-(Misja 30 wyjaśniła, dlaczego to jedyny poprawny wybór: taka paczka fizycznie nie może jeszcze być w
-`diverting`). Bramka jest ta sama co w Module 7 (brak override'u, `diverterMayMove(modeForTick)`), z
-dwoma dodatkowymi warunkami: slot `diverting` musi być zajęty, i ta paczka musi już mieć klasyfikację.
+(misja 30 wyjaśniła, dlaczego to jedyny poprawny wybór: taka paczka fizycznie nie może jeszcze być w
+`diverting`). Obowiązuje ten sam warunek co w module 7 (brak wymuszenia,
+`diverterMayMove(modeForTick)`), uzupełniony o dwa wymagania: pole `diverting` musi być zajęte, a
+paczka musi już mieć klasyfikację.
 Ten sam warunek decyduje jednocześnie o tym, czy w ogóle wolno wydać polecenie dywertera, i o wartości
 `routingReady`, którą trzeba przekazać do `advance()` — to jeden warunek, nie dwa niezależne.
 
 **Kolejność, która ma znaczenie.** Odczyt czujników, korelacja i decyzja o poleceniu dywertera muszą
-się zdarzyć, zanim `advance()` cokolwiek przesunie — inaczej sprawdzałbyś zajętość slotów po ruchu,
-nie przed nim. `advance()` z kolei musi się zdarzyć, zanim policzysz `Mode` po raz drugi — jak w Module 7, bo ten
+się zdarzyć, zanim `advance()` cokolwiek przesunie — inaczej sprawdzałbyś zajętość stref po ruchu,
+nie przed nim. `advance()` z kolei musi się zdarzyć, zanim policzysz `Mode` po raz drugi — jak w
+module 7, bo ten
 drugi rachunek potrzebuje zdarzenia z `AdvanceResult`, którego `advance()` jeszcze nie zwrócił.
-Wszystko inne (flagi wejściowe, `latch_`, `decision`, pierwsze liczenie `modeForTick`, bramkowanie
-pasa) zostaje dokładnie tak, jak w Module 7.
+Wszystko inne (flagi wejściowe, `latch_`, `decision`, pierwsze liczenie `modeForTick`, warunek ruchu
+pasa) pozostaje takie jak w module 7.
 
-**Czego musi dowodzić `TickResult`.** Kompletny stan wszystkich czterech slotów w tym ticku, wynik
+**Co musi zawierać `TickResult`.** Kompletny stan wszystkich czterech stref w tym ticku, wynik
 `advance()` (`event`, `departure`), i pełną korelację `ItemId` w `SensorSnapshot` — dokładny format
-opisuje sekcja niżej. To jedyne źródło prawdy, jakiego używają testy i CLI; żaden z nich nie sięga do
+opisuje sekcja niżej. To jedyny punkt odniesienia dla testów i CLI; żaden z nich nie sięga do
 wewnętrznego stanu `Engine` w trakcie ticku.
 
 ## Rozszerzony `TickResult` i `describe()`
 
 `SensorSnapshot` niesie teraz `presenceObservedItemId`/`weightObservedItemId` — ustawiane tylko, gdy
-odczyt jest `Ok` **i** slot jest faktycznie zajęty. Odczyt `Stale` powtarza *wcześniejszą* zaufaną
-wartość i nigdy nie jest przypisywany dzisiejszemu okupantowi slotu — nawet jeśli ktoś tam akurat stoi.
+odczyt jest `Ok` **i** strefa jest faktycznie zajęta. Odczyt `Stale` powtarza *wcześniejszą* zaufaną
+wartość i nigdy nie jest przypisywany paczce znajdującej się obecnie w tej strefie.
 
-`describe(TickResult)` staje się jedynym źródłem prawdy o pełnym śladzie tekstowym ticku, w dokładnie
-tym formacie (jedna linia):
+`describe(TickResult)` określa tekstową postać pełnego wyniku ticku. Jedna linia ma następujący
+format:
 
 ```text
 tick <N>: mode=<M> belt=<B> latch=<L> diverter=<cmd>/<pos>@<id|-> event=<e|-> infeed=<id|->
@@ -74,8 +75,8 @@ zmian do wprowadzenia. Cała reszta `Engine`'a poza `step()` (flagi wejściowe, 
   opisany powyżej.
 - [`apps/simulator_cli/main.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/apps/simulator_cli/main.cpp) — demonstracja co najmniej
   trzech paczek o różnych klasyfikacjach jednocześnie w locie (np. Light/Heavy/Light — zobacz ślad w
-  materiałach Misji 30), zawierająca co najmniej jeden tick z widocznym "same-tick chain shift":
-  odjazd jednej paczki i wejście kolejnej do właśnie zwolnionego slotu w tym samym ticku. Użyj
+  materiałach misji 30), zawierająca co najmniej jeden tick z widocznym przesunięciem łańcuchowym:
+  odjazd jednej paczki i wejście kolejnej do właśnie zwolnionej strefy w tym samym ticku. Użyj
   `psm::describe()` do wypisywania każdego ticku.
 
 ## Sprawdź się
@@ -86,7 +87,7 @@ ctest --preset test -L misja-32
 
 To dedykowany test tej misji (`multiple_items_engine_test`), sprawdzający, że trzy paczki o masach
 100g/800g/150g, utworzone jedna po drugiej przez `spawnItem`, odjeżdżają w tej samej kolejności, każda
-z poprawnym, niezależnym rutowaniem (Light/Heavy/Light) — złapie dokładnie regresję do współdzielonej
+z poprawnym, niezależnym rutowaniem (Light/Heavy/Light) — wykryje powrót do współdzielonej
 klasyfikacji.
 
 Uzupełnienie `Engine::step()` jednocześnie odblokowuje każdy pozostały test na poziomie `Engine` —
@@ -115,15 +116,15 @@ git commit -m "..."
 
 ## Częste błędy
 
-- **Wyliczanie polecenia dywertera z `plant_.weighing`** — dokładnie ta pomyłka, przed którą Misja 30
+- **Wyliczanie polecenia dywertera z `plant_.weighing`** — przed tą pomyłką ostrzega misja 30
   i sekcja "Polecenie dywertera" powyżej ostrzegają.
 - **Wołanie `updatePresenceConfirmation`/`updateClassification` bez sprawdzenia `.has_value()`** —
   wywołanie na pustym `std::optional<Item>` się nie skompiluje (brak czego dereferencjonować) — ale
   łatwo przeoczyć samą bramkę `if`, jeśli kopiuje się kod bez zastanowienia.
-- **Ustawianie `presenceObservedItemId`/`weightObservedItemId` niezależnie od `.has_value()` slotu** —
-  odczyt może być `Ok`, a slot i tak pusty (potwierdzony pusty odczyt); korelacja musi to rozróżniać.
-- **Rozszerzenie `describe()` o inny format destination niż `"Light"`/`"Heavy"`** — test sprawdza
-  dokładnie te dwa literały, nie pełne nazwy `Zone`.
+- **Ustawianie `presenceObservedItemId`/`weightObservedItemId` bez sprawdzenia `.has_value()`** —
+  odczyt może być `Ok`, choć strefa jest pusta; korelacja musi to rozróżniać.
+- **Inny zapis miejsca docelowego w `describe()` niż `"Light"`/`"Heavy"`** — test sprawdza
+  te dwa literały, a nie pełne nazwy `Zone`.
 
 ## Koniec modułu 8
 

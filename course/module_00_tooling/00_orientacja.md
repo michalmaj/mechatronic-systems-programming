@@ -2,9 +2,9 @@
 
 # 0.0 Orientacja: zanim zainstalujemy cokolwiek
 
-Zanim zaczniemy cokolwiek instalować, warto rozłożyć na czynniki pierwsze kilka słów, których
-będziemy używać przez cały semestr. Jeśli już je znasz — świetnie, przejrzyj pobieżnie i przejdź
-dalej. Jeśli nie — to jest dokładnie ten moment, żeby się nie spieszyć.
+Zanim przejdziemy do instalacji, uporządkujmy kilka pojęć używanych przez cały semestr. Jeśli są Ci
+znane, wystarczy szybka lektura. Jeśli widzisz je po raz pierwszy, poświęć chwilę na zrozumienie
+różnic między nimi.
 
 ## System operacyjny
 
@@ -13,17 +13,13 @@ pamięcią, urządzeniami, innymi programami. Wszystko inne, o czym mówimy niż
 
 ## Terminal (konsola, wiersz poleceń)
 
-Terminal to program, w którym wydajesz polecenia tekstem, zamiast klikać myszą. Nie jest ani
-straszny, ani "dla zaawansowanych" — to po prostu inny sposób rozmowy z komputerem. W tym module
-prawie go nie użyjemy — pracujemy głównie przez IDE. Ale terminal będzie się pojawiał coraz
-częściej, więc oswajamy się z jego istnieniem od razu.
+Terminal to program, w którym wydajesz polecenia tekstem zamiast wybierać je myszą. W tym module
+większość pracy wykonasz w IDE, ale z czasem terminal będzie pojawiał się coraz częściej.
 
 ## Kompilator
 
-Kompilator to program, który tłumaczy kod źródłowy (tekst, który piszesz — pliki `.cpp`) na kod
-zrozumiały dla procesora. Bez kompilatora Twój plik `.cpp` to tylko tekst — nic się nie
-"uruchamia" wprost z pliku źródłowego. Kompilator jest osobnym programem, zainstalowanym na
-Twoim komputerze, niezależnym od edytora, w którym piszesz kod.
+Kompilator tłumaczy kod źródłowy z plików `.cpp` na kod zrozumiały dla procesora. Sam plik `.cpp`
+jest tekstem, a nie gotowym programem. Kompilator działa niezależnie od edytora, w którym piszesz.
 
 ## CMake
 
@@ -43,8 +39,8 @@ z kompilatora i CMake, żebyś nie musiał wpisywać poleceń ręcznie w termina
 
 Kiedy kompilator skończy pracę, powstaje **plik wykonywalny** (na Windows: `.exe`, na Linux/macOS:
 plik bez rozszerzenia, oznaczony jako uruchamialny) — gotowy program, leżący na dysku.
-Kiedy uruchamiasz ten plik (przez IDE, dwuklik albo z terminala), system operacyjny tworzy
-**proces** — działającą, żywą instancję tego programu, z własną pamięcią, działającą "teraz".
+Kiedy uruchamiasz ten plik przez IDE, dwuklikiem albo z terminala, system operacyjny tworzy
+**proces**, czyli działający egzemplarz programu z własną pamięcią.
 Ten sam plik wykonywalny możesz uruchomić wiele razy — za każdym razem powstanie osobny proces.
 
 ## Dlaczego to wszystko ma znaczenie

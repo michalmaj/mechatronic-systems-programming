@@ -5,7 +5,7 @@
 ## Problem
 
 Masz już `DiverterCommand` (Misja 7) i działający `Diverter` (Misja 8). Ale `Plant` wciąż nic o nich
-nie wie — w Module 1 dostawał gotową pozycję i natychmiast kierował paczkę. Teraz, gdy rozjazd może
+nie wie — w module 1 dostawał gotową pozycję i natychmiast kierował paczkę. Teraz, gdy rozjazd może
 potrzebować kilku ticków, żeby się ustawić, `Plant` musi to uszanować: jeśli paczka dotarła do
 `Diverting`, a dywerter jeszcze się nie ustawił, paczka **czeka**.
 
@@ -21,9 +21,8 @@ jego stan, nigdy go nie modyfikuje.
 
 ## Minimalna kolejność jednego ticka
 
-To jeszcze nie docelowy silnik symulacji (do tego dojdziemy w dalszych modułach) — ale coś musi
-ustalić kolejność, inaczej testy staną się niejednoznaczne. W tym module obowiązuje dokładnie taka
-kolejność, używana zarówno przez `runTicks`, jak i przez `main()`:
+Nie mamy jeszcze docelowego silnika symulacji, ale musimy ustalić jednoznaczną kolejność operacji.
+Zarówno `runTicks`, jak i `main()` wykonują w tym module następujące kroki:
 
 1. **Decyzja Controllera** — jeśli `plant.item` ma wartość: `classify(mass)`, potem
    `toDiverterCommand(...)`.
@@ -32,7 +31,7 @@ kolejność, używana zarówno przez `runTicks`, jak i przez `main()`:
 4. **`advance(plant, diverter)`** — `Plant` reaguje na stan dywertera **po** tym `resolve()`,
    nie sprzed niego.
 5. **Obserwacja** (tylko w `main()`) — wypisanie wyniku; `runTicks` pozostaje czystą funkcją bez
-   wypisywania, tak jak w Module 1.
+   wypisywania, tak jak w module 1.
 
 Kolejność kroków 3 i 4 nie jest przypadkowa: gdybyś je zamienił, `Plant::advance` widziałby pozycję
 dywertera sprzed tego ticku zamiast aktualnej — każda decyzja o routingu przesunęłaby się cicho o
@@ -42,7 +41,7 @@ jeden tick.
 
 W [`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-02-start/src/plant.cpp) gałęzie `Infeed`/`PresenceCheck`/`Weighing` (przesuwanie
 przez `advanceZone`) oraz `OutputLight`/`OutputHeavy` (czyszczenie `plant.item`) są już gotowe i
-działają — to logika z Modułu 1, niezmieniona. Brakuje tylko gałęzi `Diverting`:
+działają — to logika z modułu 1, niezmieniona. Brakuje tylko gałęzi `Diverting`:
 
 ```cpp
 case Zone::Diverting:
@@ -70,8 +69,8 @@ teraz własnego, lokalnego obiektu `Diverter`, prowadzonego zgodnie z kolejnośc
 Jeśli Controller decyduje **od razu**, od ticku 0 (tak jak robi to `runTicks`), dywerter zawsze zdąży
 się ustawić, zanim paczka w ogóle dotrze do `Diverting` — 3 tiki podróży zawsze starczą na 2 tiki
 ustawiania się. W takim scenariuszu oczekiwanie nigdy nie jest widoczne z zewnątrz! Dlatego
-dostarczony test, oprócz sprawdzenia zwykłej, "chętnej" ścieżki (dokładnie tej samej matematyki co w
-Module 1: 4 tiki do `OutputHeavy`), zawiera też scenariusz, w którym polecenie `Divert` wydawane jest
+dostarczony test, oprócz sprawdzenia zwykłej ścieżki (4 ticki do `OutputHeavy`, jak w module 1),
+zawiera też scenariusz, w którym polecenie `Divert` wydawane jest
 **dopiero, gdy paczka już czeka w `Diverting`** — to jedyny sposób, żeby naprawdę zobaczyć, jak
 przenośnik czeka na urządzenie.
 
@@ -108,8 +107,8 @@ git commit -m "..."
 
 ## Częste błędy
 
-- **Zamieniona kolejność `resolve()`/`advance()`** — patrz sekcja o kolejności ticka wyżej; to
-  najłatwiejszy błąd do popełnienia w tej misji i jedyny, który zmieni wyniki o dokładnie jeden tick.
+- **Zamieniona kolejność `resolve()`/`advance()`** — spójrz ponownie na kolejność ticka. Taki błąd
+  przesunie wyniki o jeden tick.
 - **`runTicks` bez własnego `Diverter`** — dywerter musi żyć przez cały czas trwania pętli (żeby
   pamiętać swój stan między tickami), nie może być tworzony od nowa w każdej iteracji.
 - **Sprawdzanie `diverter.isSettled()` przed `resolve()`** zamiast po — pamiętaj, `Plant::advance`
@@ -117,10 +116,9 @@ git commit -m "..."
 
 ## Pytanie do zastanowienia
 
-Dostarczony test celowo używa dwóch różnych scenariuszy — "chętnego" i "spóźnionego" — żeby w ogóle
-zaobserwować oczekiwanie. Czy sam test integracyjny oparty tylko o `runTicks` (który zawsze decyduje
-chętnie) wystarczyłby, żeby wykryć błąd w Twojej implementacji gałęzi `Diverting`? Dlaczego tak albo
-dlaczego nie?
+Test używa dwóch scenariuszy: z poleceniem wydanym wcześnie i z poleceniem spóźnionym. Czy test
+integracyjny oparty wyłącznie na `runTicks`, które zawsze wydaje polecenie wcześnie, wykryłby błąd w
+gałęzi `Diverting`? Dlaczego?
 
 ## Koniec modułu 2
 

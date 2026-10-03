@@ -72,13 +72,13 @@ czwartym — nadal w `Diverting`.
 
 ## Częste błędy
 
-- **Brak przypadku dla `Diverting`** — jeśli go pominiesz, `switch` bez `default` po prostu nic nie
-  zrobi dla tej wartości, co akurat tutaj daje poprawny efekt, ale lepiej dodać go jawnie
-  (`case Zone::Diverting: break;`), żeby było widać, że to świadoma decyzja, a nie przeoczenie.
+- **Brak przypadku dla `Diverting`** — pominięcie go przypadkiem daje poprawny efekt, ponieważ
+  `switch` bez `default` nic wtedy nie wykona. Dodaj jednak `case Zone::Diverting: break;`, aby
+  czytelnik wiedział, że zatrzymanie paczki jest zamierzone.
 - **Zmiana `item` zamiast `item.zone`** — pamiętaj, że modyfikujesz tylko pole `zone`, nie całą
   paczkę (`id` i `mass` mają zostać bez zmian).
-- **Próba "przeskoczenia" `Diverting` od razu do strefy wyjściowej** — to nie jest zadanie tej misji;
-  taka pokusa to dobry sygnał, że dotknąłeś problemu, który rozwiąże dopiero Misja 4.
+- **Próba przejścia z `Diverting` od razu do strefy wyjściowej** — wybór wyjścia pojawi się dopiero
+  w misji 4.
 
 ## Pytanie do zastanowienia
 

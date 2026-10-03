@@ -34,13 +34,12 @@ Na dole ekranu (w oknie "Output" lub "Run") powinieneś zobaczyć:
 toolchain check: compiler, CMake, and IDE are wired together correctly.
 ```
 
-Jeśli to widzisz — gratulacje. Twój kompilator, CMake i IDE poprawnie ze sobą współpracują. To
-jest dokładnie ten sam mechanizm, którego użyjesz do zbudowania każdego kolejnego programu w tym
-kursie, aż po symulator sortowni, który zobaczysz na końcu tego modułu.
+Jeśli widzisz ten komunikat, kompilator, CMake i IDE poprawnie ze sobą współpracują. W ten sam sposób
+będziesz budować wszystkie kolejne programy w kursie, w tym symulator sortowni.
 
 ## Jeśli coś poszło nie tak
 
-Najczęstsze przyczyny:
+Najczęstsze przyczyny problemów:
 - **IDE nie rozpoznaje projektu jako CMake** — upewnij się, że otworzyłeś *folder*
   `mechatronic-systems-programming` (ten zawierający `CMakeLists.txt`), a nie jakiś folder
   wewnątrz niego.

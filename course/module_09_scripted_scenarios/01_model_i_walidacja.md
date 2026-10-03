@@ -32,7 +32,7 @@ bool isValidScenario(const Scenario& scenario);
 ```
 
 `ScriptedSensorFault`/`ScriptedDiverterFault` są dwoma **osobnymi** typami, nie jednym wspólnym
-"usterka + cel" — dokładnie ta sama decyzja co `SensorFaultKind`/`DiverterFaultKind` w Module 7:
+„usterka + cel”. Podobnie jak przy `SensorFaultKind` i `DiverterFaultKind` w module 7,
 nielegalna kombinacja ma być niewyrażalna w typach, nie odrzucana dopiero w trakcie działania programu.
 
 `duration` żyje na `Scenario`, nie jako osobny parametr — scenariusz ma być kompletnym opisem
@@ -48,9 +48,9 @@ wartości `at`/`from`/`until` zapisane w danych, nie przez pozycję w wektorze.
    Nakładanie się dla *różnych* targetów jest w porządku.
 3. Żadne dwie `ScriptedDiverterFault` nie mogą się nakładać (jest jeden dywerter).
 4. Wejścia operatora, per tick: żaden powtórzony `ScenarioInputKind` na tym samym ticku; co najwyżej
-   dwa różne rodzaje na tym samym ticku, i tylko jeśli to dokładnie `{EmergencyStopReleased, Reset}`.
+   dwa różne rodzaje na tym samym ticku, ale wyłącznie para `{EmergencyStopReleased, Reset}`.
    **To węższy kontrakt niż sam `Engine`** — `nextEStopLatchState`/`modeStep` obsługują `Reset` i
-   `StartRequested` ustawione jednocześnie bezpiecznie (niezmienione od Modułu 5), ale odporność `Engine`
+   `StartRequested` ustawione jednocześnie bezpiecznie (niezmienione od modułu 5), ale odporność `Engine`
    na kombinację flag to inny kontrakt niż to, co dobrze napisany `Scenario` powinien *mówić*. Scenariusz,
    który chce obu efektów, zapisuje je na osobnych tickach.
 5. Każde `operatorInputs.at` musi być `< duration`.
@@ -58,8 +58,8 @@ wartości `at`/`from`/`until` zapisane w danych, nie przez pozycję w wektorze.
 7. Żadne dwa `arrivals` nie mogą dzielić tego samego `at` — to zawsze niewykonalne (Infeed mieści
    jedną paczkę), więc wykrywalne statycznie.
 8. Każdy `ItemId` w `arrivals` musi być unikalny globalnie w całym `Scenario` — nie tylko "unikalny
-   wśród aktualnie obecnych" (słabszy invariant `Plant` z Modułu 8). To celowe uproszczenie: autor
-   scenariusza nie musi rozumować o dokładnym momencie odjazdu, żeby wiedzieć, czy ponowne użycie id
+   wśród aktualnie obecnych” (słabszy niezmiennik `Plant` z modułu 8). To uproszczenie sprawia, że
+   autor scenariusza nie musi znać momentu odjazdu, aby stwierdzić, czy ponowne użycie id
    jest bezpieczne.
 
 `duration == 0` jest jawnie poprawnym, granicznym przypadkiem — pusty scenariusz o zerowym czasie

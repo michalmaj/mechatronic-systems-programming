@@ -13,7 +13,7 @@ system powinien czekać na jawne potwierdzenie, zanim uzna, że można wznowić.
 
 **`enum class EStopLatchState { Released, Engaged, Armed }`** + wolna funkcja
 **`nextEStopLatchState(previous, pressed, released, resetRequested)`** — trzeci przykład wzorca
-enum+funkcja w tym kursie (po `Mode` w Module 4).
+para enum i funkcja w tym kursie (po `Mode` w module 4).
 
 ## Reguła
 
@@ -58,8 +58,8 @@ Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test przechodzi 
   tego, co jeszcze jest prawdziwe.
 - **Reagowanie na `resetRequested` w stanie `Engaged`** — reset ma sens wyłącznie w `Armed`; w
   `Engaged` (przycisk wciąż wciśnięty) nie ma czego resetować.
-- **Zwrócenie `Released` zamiast `Armed`** dla przypadku `released`+`resetRequested` naraz — to
-  dokładnie przypadek opisany wyżej.
+- **Zwrócenie `Released` zamiast `Armed`** dla jednoczesnych `released` i `resetRequested` — reguła
+  opisana wyżej wymaga `Armed`.
 
 ## Pytanie do zastanowienia
 

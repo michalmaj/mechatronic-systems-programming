@@ -20,7 +20,7 @@ Nowe pola prywatne `presenceSensor_`, `weightSensor_`, `controllerState_`, `pres
 
 ## Błąd, który ta misja naprawia: `nullopt` nie może cicho zamienić się w `HoldStraight`
 
-To ważne, żeby zrozumieć wprost, zanim napiszesz kod. Naiwne podejście wyglądałoby tak: "jeśli
+Przed napisaniem kodu rozważ błędne podejście: „jeśli
 `controllerState_.classification` ma wartość, użyj jej; w przeciwnym razie zostaw domyślną komendę
 dywertera (`HoldStraight`)." **To jest błąd.** `HoldStraight` to prawidłowa komenda — dywerter by się
 ustawił, i paczka **pojechałaby dalej**, mimo że nigdy nie została naprawdę sklasyfikowana. Brak
@@ -33,12 +33,12 @@ void advance(Plant& plant, const Diverter& diverter, bool routingReady = true);
 ```
 
 Używany **wyłącznie** w gałęzi `Diverting` — reszta stref rusza się bez zmian. Gdy `routingReady`
-jest fałszywe, paczka zostaje w `Diverting`, dokładnie tak samo, jakby dywerter nie był jeszcze
+jest fałszywe, paczka zostaje w `Diverting`, tak samo jak wtedy, gdy dywerter nie jest jeszcze
 ustawiony.
 
 ## Rozszerzona kolejność `step()`
 
-Kroki 1–4 (żądania, `latch_`, ścieżka awaryjna, `Mode`) zostają bez zmian względem Modułu 5. Nowe:
+Kroki 1–4 (żądania, `latch_`, ścieżka awaryjna, `Mode`) zostają bez zmian względem modułu 5. Nowe:
 
 5. **Odczytaj oba czujniki, bezwarunkowo, co tick** — niezależnie od `Mode` czy override:
    `presenceSensor_.read(plant_.item, presenceFault_)`, `weightSensor_.read(plant_.item,
@@ -46,7 +46,7 @@ Kroki 1–4 (żądania, `latch_`, ścieżka awaryjna, `Mode`) zostają bez zmian
 6. **Wywołaj `updateControllerState`** (Misja 23) z bieżącą paczką i świeżymi odczytami.
 7. **Policz `routingReady`:**
    `!decision.overrideActive && diverterMayMove(mode_) && controllerState_.classification.has_value()`.
-8. **Decyzja dywertera** (wciąż bramkowana przez `!decision.overrideActive && diverterMayMove(mode_)`,
+8. **Decyzja dywertera** (nadal wykonywana tylko przy `!decision.overrideActive && diverterMayMove(mode_)`,
    bez zmian) — ale teraz na podstawie `controllerState_.classification`, nie bezpośredniego
    `classify(item->mass)`.
 9. **Wywołaj `psm::advance(plant_, diverter_, routingReady)`** — pierwsze w tym module wywołanie z
@@ -66,8 +66,7 @@ tam zatrzymana.
 ## Co już masz gotowe
 
 `include/psm/engine.hpp` ma już wszystkie potrzebne pola i deklaracje. `src/engine.cpp` ma puste
-szkielety `injectFault`/`clearFault`; ciało `step()` wciąż wygląda dokładnie tak, jak zostawił je
-Moduł 5 — to Twoje zadanie, żeby je rozszerzyć.
+szkielety `injectFault`/`clearFault`; ciało `step()` ma wersję z modułu 5, którą teraz rozszerzysz.
 
 ## Co masz napisać
 
@@ -110,19 +109,19 @@ git commit -m "..."
 
 ## Częste błędy
 
-- **Cicha zamiana `nullopt` na `HoldStraight`** — dokładnie błąd opisany wyżej. Sprawdź, czy
+- **Cicha zamiana `nullopt` na `HoldStraight`** — sprawdź, czy
   `routingReady` naprawdę dociera do `psm::advance`.
 - **Bramkowanie tylko przez `Mode`, bez `controllerState_.classification.has_value()`** —
   `routingReady` musi łączyć wszystkie trzy warunki naraz.
 - **Aktualizowanie `ControllerState` tylko czasami** (np. tylko gdy `diverterMayMove` jest
   prawdziwe) — odczyt czujników i aktualizacja stanu muszą się dziać co tick, bezwarunkowo; to
-  bramkowanie decyzji o ruchu jest osobne.
+  decyzja o dopuszczeniu ruchu jest osobna.
 
 ## Pytanie do zastanowienia
 
 Ta misja wprowadza `routingReady` jako trzeci, generyczny parametr `Plant::advance` — nie
 `WeightClass` ani `DiverterCommand`. Dlaczego to jest właściwy poziom szczegółowości dla tej
-konkretnej granicy między `Plant` a `Controller`, skoro `Plant` od Modułu 1 nigdy nic nie wiedział o
+konkretnej granicy między `Plant` a `Controller`, skoro `Plant` od modułu 1 nigdy nic nie wiedział o
 klasyfikacji?
 
 ## Koniec modułu 6

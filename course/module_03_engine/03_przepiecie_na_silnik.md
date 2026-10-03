@@ -4,21 +4,19 @@
 
 ## Problem
 
-`main()` wciąż ręcznie orkiestruje `Plant`/`Diverter`/Controller bezpośrednio — dokładnie ta
-duplikacja, którą `Engine` ma wyeliminować, i którą oglądałeś obok `Engine` od samego początku tego
-modułu. Czas ją usunąć.
+`main()` nadal sam wywołuje funkcje związane z `Plant`, `Diverter` i Controllerem. `Engine` zawiera
+już tę samą kolejność, więc można usunąć duplikację z CLI.
 
 ## Nowe elementy C++
 
 Żadnych nowych elementów składniowych — ta misja polega na **złożeniu** już poznanych elementów
-(`Engine`, `describe`) w działający program, tak jak Misja 6 w Module 1 była Twoim pierwszym własnym
+(`Engine`, `describe`) w działający program, tak jak misja 6 w module 1 była Twoim pierwszym własnym
 `main()`.
 
 ## Co już masz gotowe
 
-[`apps/simulator_cli/main.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-03-start/apps/simulator_cli/main.cpp) wciąż wygląda dokładnie tak, jak
-zostawił go Moduł 2 — tworzy własny `Plant`/`Diverter` i ręcznie powtarza kolejność ticka. To Twój
-punkt wyjścia do przepisania, nie coś do zachowania.
+[`apps/simulator_cli/main.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-03-start/apps/simulator_cli/main.cpp) nadal tworzy własny `Plant` i
+`Diverter` oraz ręcznie powtarza kolejność ticka. Ten kod zastąpisz wywołaniami `Engine`.
 
 ## Co masz napisać
 
@@ -29,8 +27,8 @@ Przepisz `main()` tak, żeby:
 3. w pętli (np. 8 ticków) wywoływać `engine.step()` i wypisywać wynik przez
    `std::cout << psm::describe(result) << '\n';`.
 
-To wszystko — cała logika decydowania, ustawiania dywertera i przesuwania paczki jest już w
-`Engine::step()`. `main()` po przepisaniu powinien być krótszy niż wcześniej, nie dłuższy.
+Logika wyboru trasy, ustawiania dywertera i przesuwania paczki znajduje się już w `Engine::step()`.
+Po zmianie `main()` powinien być krótszy.
 
 ## Moment, w którym `runTicks` przestaje być używany
 
@@ -43,7 +41,7 @@ być potrzebna.
 
 ## Sprawdź się
 
-Ta misja nie ma osobnej etykiety `ctest` — tak jak w Misji 6 Modułu 1, prawdziwym testem jest
+Ta misja nie ma osobnej etykiety `ctest` — tak jak w misji 6 modułu 1, prawdziwym testem jest
 uruchomienie programu i przeczytanie wyniku:
 
 ```bash
@@ -90,7 +88,7 @@ tylko w jednym miejscu? Dlaczego to jest właśnie ten problem, który `Engine` 
 
 ## Koniec modułu 3
 
-`Engine` jest teraz jedynym miejscem, gdzie fizyczna kolejność jednego ticka w ogóle istnieje w
-kodzie — `main()` o niej nic nie wie, po prostu woła `step()`. W kolejnych modułach `Engine` będzie
+`Engine` jest teraz jedynym miejscem, które zna kolejność operacji w ticku. `main()` wywołuje tylko
+`step()`. W kolejnych modułach `Engine` będzie
 rósł: dołączą tryby pracy systemu, bezpieczeństwo i drugi aktuator (silnik przenośnika), którego
-wprowadzenie odłożyliśmy jeszcze w Module 2.
+wprowadzenie odłożyliśmy jeszcze w module 2.

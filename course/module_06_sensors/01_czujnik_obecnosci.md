@@ -28,7 +28,7 @@ private:
 Zwróć uwagę: `lastKnownOccupied_` to `std::optional<bool>`, nie goły `bool`. Gdyby to był zwykły
 `bool`, musiałby mieć jakąś wartość początkową (`false`?) — ale `false` oznaczałoby zarówno "sensor
 naprawdę zaobserwował brak paczki", jak i "sensor jeszcze niczego nie zaobserwował" — dwie zupełnie
-różne sytuacje, którym `bool` nie pozwala się odróżnić. `std::optional<bool>` rozwiązuje to wprost:
+różne sytuacje, których `bool` nie pozwala odróżnić. `std::optional<bool>` zachowuje tę informację:
 pusty `std::optional` znaczy "nigdy nic wiarygodnego nie widziałem."
 
 ## Dokładna reguła
@@ -67,14 +67,14 @@ Uzupełnij ciało `PresenceSensor::read` zgodnie z dokładną regułą powyżej.
 ctest --preset test -L misja-20
 ```
 
-Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test celowo sprawdza, że odczyt "gdzie
+Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test sprawdza również, że odczyt „gdzie
 indziej" (paczka w `Weighing`, nie `PresenceCheck`) **nie** psuje wcześniej zapamiętanego dobrego
 odczytu — dopiero potem `Stale` powtarza tamtą, wcześniejszą wartość.
 
 ## Częste błędy
 
-- **Aktualizowanie `lastKnownOccupied_` na `false`, gdy paczka jest gdzie indziej** — to dokładnie
-  błąd, którego ten test wyłapuje. Pamięć aktualizuje się wyłącznie z odczytu **w** `PresenceCheck`.
+- **Aktualizowanie `lastKnownOccupied_` na `false`, gdy paczka jest gdzie indziej** — pamięć może
+  być aktualizowana wyłącznie na podstawie odczytu **w** `PresenceCheck`.
 - **`Stale` zwracające jakąś wartość domyślną** zamiast degradować do `Missing`, gdy
   `lastKnownOccupied_` jest puste.
 - **Sprawdzanie `item.has_value()` bez sprawdzenia strefy** — sam fakt istnienia paczki nigdzie w

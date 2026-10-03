@@ -2,8 +2,8 @@
 
 # 0.5 Podgląd: dokąd zmierzamy
 
-Ostatni krok tego modułu nie uczy niczego nowego technicznie — to samo budowanie i uruchamianie,
-które już znasz z `toolchain_check`. Chcemy Ci tylko pokazać, dokąd zmierzamy.
+W ostatnim kroku ponownie zbudujesz i uruchomisz program, tym razem po to, by zobaczyć efekt końcowy
+kursu.
 
 ## Uruchom `simulator_cli`
 
@@ -20,15 +20,12 @@ tick 1: mode=Running, item 1 in zone Infeed
 ...
 ```
 
-To jest symulator małej komórki sortującej paczki — system, który będziesz rozwijał krok po kroku
-przez cały semestr. Na tym etapie **nie musisz rozumieć ani jednej linijki tego, co się dzieje**.
-Zobaczysz w tym wyjściu wzmianki o trybach pracy, strefach, czujnikach — do każdego z tych pojęć
-wrócimy osobno, w swoim czasie, kiedy będą miały znaczenie.
+To symulator niewielkiej komórki sortującej, który będziesz rozwijać przez cały semestr. Nie próbuj
+jeszcze analizować każdej linii. Tryby pracy, strefy i czujniki zostaną wyjaśnione w kolejnych
+modułach.
 
-To, co ważne teraz, to jedno spostrzeżenie: uruchomiłeś właśnie ten sam projekt, w którym przed
-chwilą naprawiałeś brakujący średnik. Jeden projekt C++ — od najmniejszego możliwego programu
-(`toolchain_check`) po coś, co wygląda już jak prawdziwy system. Cały kurs to właśnie to: ten sam
-projekt, rosnący krok po kroku.
+Oba programy należą do tego samego projektu C++: prosty `toolchain_check` i znacznie większy
+symulator. W następnych modułach będziesz stopniowo budować ten drugi.
 
 ## Koniec modułu 0
 

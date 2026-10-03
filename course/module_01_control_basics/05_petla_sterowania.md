@@ -21,8 +21,8 @@ for (int i = 0; i < tickCount; ++i) {
 }
 ```
 
-Nic więcej nowego nie wprowadzamy w tej misji — cała trudność polega na poprawnym **złożeniu** już
-znanych elementów w jednym miejscu.
+W tej misji nie pojawią się inne nowe elementy języka. Zadanie polega na poprawnym **złożeniu**
+poznanych funkcji w jednym miejscu.
 
 ## Co już masz gotowe
 
@@ -44,8 +44,7 @@ Wypełnij `runTicks` tak, żeby dla każdego z `tickCount` "ticków" wykonać:
    wartość (jeśli `plant.item` jest puste, `advance` i tak nic nie zrobi, więc możesz podać
    dowolną wartość, np. `DiverterPosition::Straight`, gdy paczki nie ma).
 
-Innymi słowy: `runTicks` **spina w jedną całość** to, co wcześniej testowałeś osobno — Controller i
-`Plant::advance` — i robi to `tickCount` razy z rzędu.
+Funkcja `runTicks` łączy Controller z `Plant::advance` i powtarza ten krok `tickCount` razy.
 
 ## Sprawdź się
 
@@ -57,11 +56,10 @@ Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test tworzy `Pla
 750-gramową paczką, wywołuje `runTicks(plant, 4)` i sprawdza, że paczka dotarła do `OutputHeavy`, a
 kolejny tick czyści ją z systemu.
 
-## Wciąż "Controller", nie klasa
+## Dlaczego Controller nadal nie jest klasą
 
-Nazywamy `classify` + `toDiverterPosition` razem "Controllerem" — to nazwa dla pary współpracujących
-funkcji, nie zapowiedź klasy. Ten sam brak potrzeby enkapsulacji, o którym mówiliśmy przy `Plant` w
-Misji 3, dotyczy też tutaj: żadna z tych funkcji nie ma własnego stanu do ochrony.
+Nazwą Controller obejmujemy dwie współpracujące funkcje: `classify` i `toDiverterPosition`. Żadna z
+nich nie przechowuje stanu, więc klasa z prywatnymi polami niczego by tu nie chroniła.
 
 ## Częste błędy
 

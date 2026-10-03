@@ -6,7 +6,7 @@ To najważniejsza teoretycznie misja tego modułu — poświęcimy jej trochę w
 
 ## Problem
 
-`Mode` z Modułu 4 nic nie wie o istnieniu przycisku awaryjnego. Musi się dowiedzieć — i musi
+`Mode` z modułu 4 nic nie wie o istnieniu przycisku awaryjnego. Musi się dowiedzieć — i musi
 przejmować się nim **bardziej** niż czymkolwiek innym, co dziś sprawdza.
 
 ## Nowe elementy C++
@@ -42,7 +42,7 @@ wygrywa zawsze.
 
 **Odzyskanie po `EStopped` zawsze ląduje w `Idle`, nigdy automatycznie w `Running`.** W chwili, gdy
 `latch` wreszcie znowu czyta `Released`, `Mode` staje się `Idle` — wznowienie pracy wymaga od
-operatora jawnego, osobnego `requestStart()`, dokładnie tak samo jak przy starcie od zera.
+operatora osobnego `requestStart()`, tak samo jak przy pierwszym uruchomieniu.
 
 **Przypadek brzegowy: `resetRequested` i `startRequested` prawdziwe w tym samym ticku.** Wynikiem
 wciąż jest `Idle`, nigdy `Running`. Sprawdzenie "właśnie wróciłem z `EStopped`" ma pierwszeństwo przed
@@ -54,8 +54,8 @@ wyczyścił latch, **nie** zadziała w tym ticku. Operator zobaczy `Idle`, a dop
 
 [`include/psm/mode.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/include/psm/mode.hpp) — zaktualizowana deklaracja, jak wyżej.
 
-[`src/mode.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/src/mode.cpp) — logika `Idle`/`Running` z Modułu 4 zostaje **nietknięta i
-działająca**; dwa nowe komentarze `// TODO` opisują, co dopisać, i gdzie dokładnie (przed resztą
+[`src/mode.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/src/mode.cpp) — logika `Idle`/`Running` z modułu 4 zostaje **nietknięta i
+działająca**; dwa nowe komentarze `// TODO` opisują, co dopisać i w którym miejscu (przed resztą
 reguł).
 
 ## Co masz napisać
@@ -83,13 +83,13 @@ nic w nim nie zmieniłeś.
 - **Sprawdzenie `stopRequested`/`startRequested` przed sprawdzeniem `latch`** — e-stop musi wygrywać
   zawsze, bez wyjątków.
 - **Zwrócenie `Mode::Running` zamiast `Mode::Idle`** przy powrocie z `EStopped`, gdy `startRequested`
-  jest akurat prawdziwe w tym samym wywołaniu — to dokładnie ten przypadek konfliktu.
+  jest prawdziwe w tym samym wywołaniu — reguła konfliktu wymaga powrotu do `Idle`.
 - **Umieszczenie nowych sprawdzeń na końcu funkcji** zamiast na początku — kolejność ma znaczenie,
   e-stop musi być sprawdzony pierwszy.
 
 ## Pytanie do zastanowienia
 
-Gdyby `latch` był drugim parametrem `modeStep`, bez wartości domyślnej, co dokładnie musiałoby się
+Gdyby `latch` był drugim parametrem `modeStep`, bez wartości domyślnej, co musiałoby się
 zmienić w tym module — i w ilu miejscach?
 
 **Dalej:** [Misja 18: dwie niezależne ścieżki](./03_dwie_niezalezne_sciezki.md).

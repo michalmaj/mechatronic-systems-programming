@@ -4,14 +4,12 @@
 
 ## Cel
 
-Przez cały rdzeń kursu (Moduły 0–9) testy istniały gotowe — pisane przez kurs, uruchamiane przez
-`ctest`, czytane jako kontrakt do zrozumienia. Zanim zacznie się projekt końcowy, potrzebna jest jedna
-nowa umiejętność: **napisanie własnego testu, od zera, dla funkcji, którą już znasz.**
+W modułach 0–9 korzystasz z gotowych testów. Przed projektem końcowym napiszesz pierwszy własny test
+dla znanej już funkcji.
 
-To nie jest Moduł 10. To krótkie, ograniczone ćwiczenie pomostowe — jedna funkcja, jeden wzorzec CMake
-do skopiowania, dwa-trzy przypadki testowe. CMake pozostaje mechaniką dostarczoną przez kurs, dokładnie
-tak jak przez cały rdzeń — nie jest tu nowym celem nauki, tylko czymś, co powtarza się wg gotowego
-wzorca.
+To krótkie ćwiczenie przed projektem, a nie moduł 10. Obejmuje jedną funkcję, kilka przypadków
+testowych i gotowy fragment CMake do skopiowania. CMake nadal jest dostarczoną częścią infrastruktury,
+nie tematem zadania.
 
 ## 1. Anatomia istniejącego testu
 
@@ -30,7 +28,7 @@ int main() {
 }
 ```
 
-Cztery rzeczy, które warto tu zobaczyć wprost:
+Zwróć uwagę na cztery rzeczy:
 
 - Test to zwykły plik `.cpp` z `main()` — żaden framework, żadna makro-magia. To, co uruchamia
   `ctest`, to zwykły plik wykonywalny.
@@ -39,15 +37,15 @@ Cztery rzeczy, które warto tu zobaczyć wprost:
   przerywa test natychmiast, reszta się nie wykonuje.
 - `return 0;` na końcu `main()` to sygnał sukcesu dla `ctest` — test, który dotarł do końca bez
   wywołania `std::exit(1)`, zaliczył się.
-- Przypadki są dobrane celowo, nie losowo: `100` i `499` (środek zakresu Light), `500` (dokładnie na
-  granicy — to *tutaj* najłatwiej o błąd o jeden), `999` (środek zakresu Heavy). Granica progu jest
-  przetestowana wprost, nie tylko „typowe” wartości.
+- Przypadki obejmują wartości z obu zakresów oraz granicę: `100` i `499` należą do Light, `500`
+  sprawdza sam próg, a `999` leży w zakresie Heavy. Test wartości granicznej wykrywa typowy błąd w
+  operatorze porównania.
 
 ## 2. Zadanie: test dla `decideClassification`
 
 `controller_test.cpp` testuje `classify(Grams mass) -> WeightClass` — czystą funkcję bez żadnego
 warunku brzegowego poza samym progiem. Obok niej, w tym samym pliku `include/psm/controller.hpp`,
-mieszka funkcja o bogatszym kontrakcie, stabilna od Modułu 6:
+mieszka funkcja o bogatszym kontrakcie, stabilna od modułu 6:
 
 ```cpp
 std::optional<WeightClass> decideClassification(WeightReading weight);
@@ -99,9 +97,8 @@ target_link_libraries(support_your_first_test PRIVATE psm_core)
 add_test(NAME support_your_first_test COMMAND support_your_first_test)
 ```
 
-To jest **cały** wzorzec — te same trzy linie, zmieniona tylko nazwa, dla każdego testu w tym pliku od
-`zone_test` po `engine_routing_deadline_test`. Nie trzeba rozumieć CMake głębiej niż to, żeby go
-skopiować i podmienić nazwę — to dostarczona przez kurs mechanika, nie nowy cel nauki.
+Każdy test od `zone_test` po `engine_routing_deadline_test` jest rejestrowany tymi samymi trzema
+poleceniami. Skopiuj wzorzec i zmień nazwę; głębsza znajomość CMake nie jest tu potrzebna.
 
 Warto tu zwrócić uwagę na jedną rzecz: `add_executable`/`add_test` rejestrują **jeden plik `.cpp` jako
 jeden wykonywalny test CTest** — ale nic nie stoi na przeszkodzie, żeby ten jeden plik zawierał
@@ -131,8 +128,8 @@ wcale.
 
 ## 6. „Test przechodzi” a „test faktycznie coś wykrywa”
 
-Zielony test niczego nie dowodzi sam z siebie — dowodzi dopiero razem z dowodem, że **umiałby też
-zaczerwienić się**, gdyby kod był zepsuty. Warto sprawdzić to teraz, celowo:
+Sam zielony wynik nie wystarcza. Trzeba jeszcze sprawdzić, czy test **wykrywa błąd**. Zrób to w
+kontrolowany sposób:
 
 1. Tymczasowo zepsuj `decideClassification` w `src/controller.cpp` — np. usuń warunek `status` i
    zawsze wywołuj `classify(weight.grams)`, niezależnie od statusu.
@@ -143,9 +140,8 @@ zaczerwienić się**, gdyby kod był zepsuty. Warto sprawdzić to teraz, celowo:
 4. Cofnij zepsucie (`git checkout -- src/controller.cpp` albo ręcznie), upewnij się, że test znowu
    przechodzi na poprawnym kodzie.
 
-To jest różnica między „test przechodzi” a „test rzeczywiście coś wykrywa” — i dokładnie to samo
-pytanie będzie towarzyszyć każdemu testowi pisanemu w projekcie końcowym (patrz brief projektu, sekcja
-o własnych testach).
+Tak samo oceniaj każdy test napisany w projekcie końcowym: powinien nie tylko przechodzić dla
+poprawnego kodu, lecz także odrzucać błędną implementację.
 
 ## Co dalej
 
