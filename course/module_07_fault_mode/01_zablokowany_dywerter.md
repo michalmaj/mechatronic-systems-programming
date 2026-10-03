@@ -15,7 +15,7 @@ enum class DiverterFaultKind { Blocked };
 ```
 
 Zwróć uwagę: to **osobny** typ od `SensorFaultKind` (`Missing`/`Stale` — to, co do niedawna nazywało
-się po prostu `FaultKind`, zanim ten moduł rozdzielił nazwę na `SensorFaultKind`, żeby jej zakres był
+się `FaultKind`, zanim ten moduł rozdzielił nazwę na `SensorFaultKind`, aby zakres był
 jawny w samej nazwie). Gdyby dywerter dzielił jeden wspólny typ usterki z czujnikami, nic nie
 broniłoby przed wywołaniem w rodzaju "zablokowany czujnik obecności" albo "brakujący dywerter" —
 kombinacji bez żadnego sensu, które i tak by się skompilowały. Osobny typ sprawia, że taka pomyłka po
@@ -29,11 +29,11 @@ void resolve(std::optional<DiverterFaultKind> fault = std::nullopt);
 
 Gdy `fault == DiverterFaultKind::Blocked`, `resolve()` **nic nie robi** — `actual_` nie zmienia się
 wcale, nawet w stronę `Moving`. W przeciwnym razie zachowanie jest identyczne jak
-dotychczas — cała logika trzech stanów z Modułu 2 zostaje bez zmian, tylko poprzedzona tym jednym
+dotychczas — cała logika trzech stanów z modułu 2 zostaje bez zmian, tylko poprzedzona tym jednym
 sprawdzeniem.
 
 `isSettled()` **nie wymaga żadnej zmiany**. Już teraz porównuje `actual_` z celem *aktualnego
-polecenia* — a to jest dokładnie to, czego potrzeba, żeby poprawnie zgłosić "nieustawiony" dla
+polecenia*, czego potrzeba, aby poprawnie zgłosić „nieustawiony” dla
 dywertera zamrożonego w połowie przejścia przez blokadę.
 
 ## Co już masz gotowe
@@ -58,9 +58,9 @@ ctest --preset test -L misja-25
 ```
 
 Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test sprawdza, że przy `Blocked`
-`resolve()` nic nie robi (łącznie z zamrożeniem dokładnie w stanie `Moving`, jeśli usterka pojawia się
+`resolve()` nic nie robi (łącznie z zatrzymaniem w stanie `Moving`, jeśli usterka pojawia się
 w połowie przejścia),
-i że zwykłe, nieusterkowe działanie pozostaje dokładnie takie jak w Module 2.
+i że działanie bez usterki pozostaje takie jak w module 2.
 
 ## Częste błędy
 

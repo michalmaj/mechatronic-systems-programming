@@ -4,7 +4,7 @@
 
 ## Gdzie jesteśmy
 
-Od Modułu 1 każdy ślad `TickResult` powstawał z ręcznie splecionych wywołań `request*()`/`inject*()`/
+Od modułu 1 każdy ślad `TickResult` powstawał z ręcznie splecionych wywołań `request*()`/`inject*()`/
 `clear*()`/`spawnItem()`, wplecionych między kolejne `step()`. Ten moduł dodaje deklaratywną
 alternatywę: wartość `Scenario`, opisującą cały eksperyment z góry (wejścia operatora, przybycia
 paczek, okna usterek czujników/dywertera, czas trwania), oraz `runScenario()`, która odtwarza go na
@@ -13,10 +13,10 @@ paczek, okna usterek czujników/dywertera, czas trwania), oraz `runScenario()`, 
 ## Co się zmienia — i co się NIE zmienia
 
 `Engine` pozostaje **całkowicie niezmieniony** — żadnego nowego konstruktora, żadnych nowych pól.
-Skryptowanie to warstwa NAD publicznym API `Engine`, która woła dokładnie te same metody, których
-każdy dotychczasowy test i CLI już używa. To świadomie inny wybór niż w referencyjnym symulatorze,
+Skryptowanie jest warstwą nad publicznym API `Engine` i wywołuje te same metody co dotychczasowe
+testy oraz CLI. To inny wybór niż w referencyjnym symulatorze,
 gdzie `Engine` w ogóle nie ma `request*()`/`inject*()`/`clear*()` — tam skrypt *zastępuje*
-imperatywne API. Tutaj skrypt jest opcjonalną nakładką, nie zamiennikiem.
+bezpośrednie API. Tutaj skrypt jest opcjonalną nakładką, nie zamiennikiem.
 
 `Scenario` to jedna nazwana wartość: `operatorInputs`, `arrivals`, `sensorFaults`, `diverterFaults`,
 `duration`. `isValidScenario` sprawdza ją statycznie, przed uruchomieniem czegokolwiek. `runScenario`
@@ -30,14 +30,14 @@ buduje świeży `Engine` i odtwarza scenariusz tick po ticku, zwracając `std::o
 - **Misja 34 — odtwarzacz.** `runScenario`: świeży `Engine`, ustalona kolejność ticka, kontrakt
   odtwarzalności.
 - **Misja 35 — integracja w CLI.** Dwie demonstracje w `apps/simulator_cli`: odtworzenie mechanizmu i
-  osi czasu ze śladu odzyskiwania z Modułu 7, oraz nowy scenariusz z zaplanowanymi przybyciami wielu
+  osi czasu ze śladu odzyskiwania z modułu 7, oraz nowy scenariusz z zaplanowanymi przybyciami wielu
   paczek.
 
 ## Zanim zaczniesz
 
 Ten moduł niczego istniejącego nie modyfikuje na poziomie domeny — `Item`, `Plant`, `Engine`,
-`TickResult` zostają dokładnie takie, jakie są. `apps/simulator_cli/main.cpp` jest jednak w tym module
-całkiem nowy (nie kontynuacja CLI z Modułu 8) i **nie jest** żadną z Twoich misji — to gotowy, prosty
+`TickResult` pozostają bez zmian. `apps/simulator_cli/main.cpp` jest jednak w tym module
+całkiem nowy (nie kontynuacja CLI z modułu 8) i **nie jest** żadną z Twoich misji — to gotowy, prosty
 program, który buduje dwa scenariusze, uruchamia je i sam sprawdza, czy wyszło coś sensownego. Twoja
 praca to `isValidScenario`, `runScenario`, i zawartość dwóch funkcji budujących
 konkretne demonstracyjne scenariusze.

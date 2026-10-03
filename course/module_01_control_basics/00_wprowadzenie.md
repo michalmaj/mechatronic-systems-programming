@@ -2,7 +2,7 @@
 
 # 1.0 Wprowadzenie
 
-W Module 0 uruchomiłeś dwa programy: `toolchain_check` i gotowy podgląd `simulator_cli`. Nie
+W module 0 uruchomiłeś dwa programy: `toolchain_check` i gotowy podgląd `simulator_cli`. Nie
 napisałeś ani jednej linijki logiki — chodziło wyłącznie o to, żeby Twoje środowisko działało.
 
 Teraz zaczyna się właściwa praca. W tym module zbudujesz od zera mały, ale kompletny system:
@@ -24,19 +24,18 @@ git fetch --tags
 git switch -c <nazwa-twojego-brancha> module-01-start
 ```
 
-`module-01-start` to **tag** — nieruchomy punkt w historii Gita, nie branch. `git switch -c` tworzy
-nowy, Twój własny branch, który zaczyna się dokładnie w tym punkcie. Dzięki temu masz gdzie
-bezpiecznie zapisywać własną pracę (`git add`, `git commit`) — sam tag się nie zmienia i zawsze
-możesz do niego wrócić.
+`module-01-start` to **tag**, czyli stały punkt w historii Gita, a nie branch. Polecenie
+`git switch -c` tworzy w tym miejscu Twój branch. Możesz na nim zapisywać pracę przez `git add` i
+`git commit`, nie zmieniając samego tagu.
 
 ## Jak wygląda jedna misja
 
 Moduł składa się z sześciu misji. Każda z nich:
 
 1. stawia konkretny problem związany z naszą komórką sortującą,
-2. wprowadza dokładnie te elementy C++, które są potrzebne, żeby ten problem rozwiązać — nic więcej,
+2. wprowadza elementy C++ potrzebne do rozwiązania tego problemu,
 3. mówi, co już jest gotowe, a co masz dopisać,
-4. daje Ci szybki sposób sprawdzenia się: uruchomienie **tylko testu tej misji**,
+4. kończy się uruchomieniem **testu tej misji**,
 5. na końcu (w ostatniej misji) prosi o uruchomienie **całego** zestawu testów naraz.
 
 Testy do wszystkich sześciu misji już istnieją w projekcie — napisał je kurs, nie Ty. Twoja rola to

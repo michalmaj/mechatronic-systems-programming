@@ -1,6 +1,6 @@
 🇵🇱 Polski | [🇬🇧 English](03_korelacja_per_paczka.en.md)
 
-# 8.3 Korelacja per paczka
+# 8.3 Korelacja dla każdej paczki
 
 ## Problem
 
@@ -34,17 +34,17 @@ nigdy nie resetuje `presenceConfirmed` z powrotem na `false`.
 któregokolwiek z tych dwóch warunków oznacza brak zapisu — `classification` zostaje takie, jakie
 było wcześniej (dla świeżej paczki: `std::nullopt`).
 
-`Engine::step()` (Misja 32) wywoła każdą z nich tylko wtedy, gdy odpowiedni slot jest faktycznie
+`Engine::step()` (misja 32) wywoła każdą z nich tylko wtedy, gdy odpowiednia strefa jest faktycznie
 zajęty — nie ma tu żadnej gałęzi "resetuj przy braku paczki", bo `Item` utworzony przez `spawnItem`
 już zaczyna z domyślnym, czystym stanem (`presenceConfirmed = false`, `classification =
 std::nullopt`) — nie ma nic do zerowania.
 
 ## Uproszczenie czujników
 
-Skoro `PresenceSensor::read`/`WeightSensor::read` dostają teraz dokładnie ten slot, do którego są
-fizycznie przypięte, stan rzeczywisty to po prostu `item.has_value()` — dawne porównanie `item->zone ==
-Zone::PresenceCheck` nie tylko nie jest już potrzebne, jest niemożliwe (`Item` nie ma już `zone`).
-Reszta logiki z Modułu 6 zostaje bez zmian, i to jest tu ważne: gdy slot jest pusty i nie ma usterki,
+`PresenceSensor::read` i `WeightSensor::read` dostają teraz pole odpowiadające miejscu montażu
+czujnika, więc stan rzeczywisty wyraża `item.has_value()`. Dawne porównanie `item->zone ==
+Zone::PresenceCheck` nie jest już możliwe, ponieważ `Item` nie ma pola `zone`.
+Reszta logiki z modułu 6 zostaje bez zmian, i to jest tu ważne: gdy strefa jest pusta i nie ma usterki,
 sensor nadal zwraca `{Ok, 0}`/`{Ok, false}`, **nie** aktualizując `lastKnownMass_`/`lastKnownOccupied_`.
 Potwierdzony pusty odczyt to prawdziwa, zaufana obserwacja — nigdy nie jest traktowany jako "masa
 wynosi zero" do celów pamięci.
@@ -61,7 +61,7 @@ gotowe. [`include/psm/presence_sensor.hpp`](https://github.com/michalmaj/mechatr
   zgodnie z dokładną regułą powyżej.
 - `PresenceSensor::read` w [`src/presence_sensor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/presence_sensor.cpp) i
   `WeightSensor::read` w [`src/weight_sensor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/weight_sensor.cpp): zamień stan rzeczywisty na
-  `item.has_value()` (i `item->mass` dla wagi), zachowując resztę logiki Modułu 6 bez zmian.
+  `item.has_value()` (i `item->mass` dla wagi), zachowując resztę logiki modułu 6 bez zmian.
 
 ## Sprawdź się
 
@@ -86,7 +86,7 @@ pamięci.
 ## Pytanie do zastanowienia
 
 Gdyby `updateClassification` przyjmowała `bool presenceConfirmed` jako osobny parametr zamiast czytać
-je z `itemAtWeighing`, dawałoby to dokładnie ten sam wynik dzisiaj. Dlaczego mimo to czytanie go
+je z `itemAtWeighing`, dawałoby obecnie ten sam wynik. Dlaczego mimo to czytanie go
 bezpośrednio z paczki jest tu lepszym wyborem projektowym?
 
 **Dalej:** [Misja 32: silnik z wieloma paczkami](./04_silnik_z_wieloma_paczkami.md).

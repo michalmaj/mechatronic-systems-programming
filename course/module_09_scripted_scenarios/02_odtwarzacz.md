@@ -47,9 +47,9 @@ na poziomie API warunek, nie błąd programisty do pominięcia w Release. Dwa pr
 **Dla dowolnego poprawnego `Scenario`, który da się odtworzyć do końca, dwa osobne wywołania
 `runScenario(scenario)` dają sekwencje `TickResult` semantycznie identyczne, pole po polu.** ("Pole po
 polu", nie "bajt po bajcie" — to twierdzenie o wartościach, nie o reprezentacji pamięciowej obiektów
-C++.) Wynika to wprost z tego, że `runScenario` buduje świeży `Engine` przy każdym wywołaniu, oraz z
+C++.) Jest to możliwe, ponieważ `runScenario` buduje świeży `Engine` przy każdym wywołaniu, a
 fundamentalnej, projektowej gwarancji determinizmu (brak zegara systemowego, brak losowości, brak
-ukrytego stanu globalnego — prawda od Modułu 0).
+ukrytego stanu globalnego — zasada obowiązująca od modułu 0).
 
 ## Dlaczego `{EmergencyStopReleased, Reset}` na tym samym ticku jest bezpieczne
 
@@ -57,7 +57,7 @@ Wynika to z zachowania prawdziwego, niezmienionego `nextEStopLatchState` (Moduł
 ustawienie `released` i `resetRequested` jednocześnie, startując z `Engaged`, trafia w gałąź
 `previous == Engaged` (sprawdzaną jako pierwszą) — `resetRequested` nie jest w ogóle konsultowane tym
 wywołaniem. Zatrzask trafia do `Armed`, nie `Released`. Para jest dozwolona, bo jest bezpieczna i dobrze
-zdefiniowana — nie dlatego, że skraca dwuetapowe odzyskiwanie, które znasz z Modułu 5.
+zdefiniowana — nie dlatego, że skraca dwuetapowe odzyskiwanie znane z modułu 5.
 
 ## Co już masz gotowe
 
@@ -76,7 +76,7 @@ ctest --preset test -L misja-34
 ```
 
 Oczekiwany wynik: `100% tests passed`. Test buduje tę samą, krótką sekwencję dwa razy — raz
-imperatywnie, raz przez `Scenario`+`runScenario` — i porównuje wyniki pole po polu, zamiast zgadywać
+bezpośrednio, a drugi raz przez `Scenario` i `runScenario`. Następnie porównuje wyniki pole po polu
 nowy ślad ręcznie. Sprawdza też: `{EmergencyStopReleased, Reset}` na tym samym ticku; przybycie na
 zajęty `Infeed` zwracające `std::nullopt`; statycznie nieprawidłowy scenariusz zwracający `std::nullopt`
 bez uruchamiania czegokolwiek; `duration == 0` zwracające pusty, ale obecny ślad; oraz niezmienniczość
@@ -86,8 +86,7 @@ względem kolejności elementów w wektorach.
 
 - **Śledzenie "czy usterka była aktywna poprzednio"** — niepotrzebne, `inject*`/`clear*` są
   idempotentne; przelicz stan na nowo na każdym ticku.
-- **Automatyczne ponawianie nieudanego przybycia** — to dokładnie to, czego ta misja świadomie nie
-  robi.
+- **Automatyczne ponawianie nieudanego przybycia** — odtwarzacz nie ma tego robić.
 - **Upublicznienie `activeSensorFault`/`activeDiverterFault`** — zostają prywatne w `scenario.cpp`.
 
 ## Pytanie do zastanowienia

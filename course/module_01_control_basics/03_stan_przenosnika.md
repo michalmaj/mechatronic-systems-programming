@@ -9,17 +9,17 @@ przenośnik bywa pusty — zanim pierwsza paczka wjedzie, albo po tym, jak ostat
 sam w sobie nie potrafi wyrazić "nic tu nie ma" — to zawsze *jakaś* konkretna paczka, z konkretnym
 `id`, `zone` i `mass`.
 
-Potrzebujesz też czegoś, co reprezentuje **cały przenośnik**, a nie tylko pojedynczą paczkę — miejsca,
-gdzie ta ewentualna paczka mieszka.
+Potrzebny jest również obiekt reprezentujący **cały przenośnik** i przechowujący paczkę, jeśli ta
+znajduje się na linii.
 
 ## Nowe elementy C++
 
 **`std::optional<Item>`** — typ, który albo zawiera wartość `Item`, albo jest pusty (`std::nullopt`).
-To dokładnie odpowiada pytaniu "czy coś tu jest": `std::optional<Item>` z wartością znaczy "tak, oto
-ona"; pusty — "nie, przenośnik jest wolny". Bez `std::optional` musiałbyś wymyślać sztuczne
-rozwiązania w rodzaju "specjalne id oznaczające brak paczki", co łatwo pomylić z prawdziwą paczką.
+`std::optional<Item>` z wartością oznacza obecność paczki, a pusty — wolny przenośnik. Bez
+`std::optional` trzeba byłoby umówić się na specjalne `id` oznaczające brak paczki, które łatwo
+pomylić z prawidłową wartością.
 
-**`struct Plant`** — grupuje stan przenośnika. Na razie to dokładnie jedno pole:
+**`struct Plant`** — grupuje stan przenośnika. Na razie zawiera jedno pole:
 
 ```cpp
 struct Plant {
@@ -27,10 +27,8 @@ struct Plant {
 };
 ```
 
-To celowo zwykły `struct`, nie `class` z prywatnymi polami i metodami. Na tym etapie nic nie musimy
-chronić przed niepoprawnym użyciem — enkapsulacja ma sens wtedy, gdy istnieje jakiś niezmiennik do
-pilnowania, a na razie takiego nie mamy. Gdy taki niezmiennik się pojawi (w dalszych modułach), to
-będzie konkretny powód do przejścia na `class` — nie wcześniej.
+Zwykły `struct` wystarcza, ponieważ nie ma jeszcze niezmiennika wymagającego ochrony przez prywatne
+pola. Klasa pojawi się później, gdy taki niezmiennik rzeczywiście będzie potrzebny.
 
 **Funkcje wolne działające na `Plant&`** — tak jak `advanceZone` z Misji 2 działała na `Item&`, teraz
 piszesz funkcje działające na `Plant&`, i **ponownie wykorzystujesz `advanceZone`** zamiast pisać
@@ -49,16 +47,16 @@ void spawnItem(Plant& plant, Item item);
 void advance(Plant& plant, DiverterPosition diverterPosition);
 ```
 
-Zauważ parametr `diverterPosition` w `advance` — na razie go **zignoruj**. Wróci na scenę w Misji 4;
-tutaj wystarczy wiedzieć, że tam jest, żeby sygnatura funkcji nie musiała się później zmieniać.
+Parametr `diverterPosition` w `advance` nie będzie jeszcze używany. Przyda się w misji 4; jest już
+w sygnaturze, aby nie trzeba było jej później zmieniać.
 
 [`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/src/plant.cpp) zawiera pusty szkielet obu funkcji z komentarzami `// TODO`.
 
 ## Co masz napisać
 
 **`spawnItem(Plant&, Item)`** — jeśli `plant.item` jest teraz puste, umieść w nim przekazaną paczkę
-(na strefie `Infeed`). Jeśli przenośnik jest już zajęty, nic nie rób — nowa paczka po prostu czeka
-(w tym module nie modelujemy kolejki wejściowej, tylko odrzucamy próbę).
+(w strefie `Infeed`). Jeśli przenośnik jest już zajęty, odrzuć próbę dodania paczki. W tym module nie
+modelujemy jeszcze kolejki wejściowej.
 
 **`advance(Plant&, DiverterPosition)`** — jeśli `plant.item` ma wartość i ta paczka **nie** jest
 jeszcze w `Diverting`, przesuń ją o jedną strefę (użyj `advanceZone` z Misji 2, wywołanej na

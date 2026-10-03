@@ -4,14 +4,11 @@
 
 ## Problem
 
-W Module 1 Controller zwracał `DiverterPosition` bezpośrednio — funkcja `toDiverterPosition`
-odpowiadała jednym słowem: "rozjazd MA BYĆ w pozycji X". To działało, bo rozjazd i tak zawsze
-natychmiast tam trafiał. Ale skoro w tym module rozjazd zaczyna **potrzebować czasu**, żeby się
-przestawić, ta sama nazwa przestaje mieć sens: `DiverterPosition` powinno opisywać, gdzie rozjazd
-**faktycznie jest w tej chwili**, a nie gdzie sterownik chciałby, żeby był.
+W module 1 Controller zwracał bezpośrednio `DiverterPosition`. Mogło to działać, dopóki rozjazd
+natychmiast osiągał zadaną pozycję. Teraz `DiverterPosition` będzie opisywać jego rzeczywiste
+położenie, a polecenie sterownika otrzyma osobny typ.
 
-Innymi słowy: "czego chcemy" i "co fizycznie istnieje" to dwie różne rzeczy, i mylenie ich było
-błędem, który ten moduł naprawia.
+Rozdzielamy więc wartość zadaną od stanu fizycznego urządzenia.
 
 ## Nowy element C++
 
@@ -21,10 +18,8 @@ błędem, który ten moduł naprawia.
 enum class DiverterCommand { HoldStraight, Divert };
 ```
 
-To jest jedyny nowy element składniowy w tej misji — sam enum niczym nie różni się od tych, które już
-znasz z Modułu 1. Nowość leży w **pojęciu**, nie w składni: od teraz w kodzie będą istnieć obok siebie
-dwa osobne typy, `DiverterCommand` (żądanie) i `DiverterPosition` (rzeczywistość), i nigdy nie wolno
-ich mylić.
+Składnię `enum class` znasz już z modułu 1. Nowe jest rozróżnienie pojęć: `DiverterCommand` opisuje
+żądanie, a `DiverterPosition` rzeczywiste położenie.
 
 ## Co już masz gotowe
 
@@ -38,7 +33,7 @@ WeightClass classify(Grams mass);
 DiverterCommand toDiverterCommand(WeightClass weightClass);
 ```
 
-Zwróć uwagę: `classify` **nie zmienia się** — próg 500g wciąż działa dokładnie tak, jak w Module 1
+Funkcja `classify` **nie zmienia się** — próg 500 g działa tak samo jak w module 1
 (test `misja-4` to potwierdza, i wciąż przechodzi). Zmienia się wyłącznie druga funkcja — teraz
 zwraca `DiverterCommand`, nie `DiverterPosition`.
 
@@ -68,7 +63,7 @@ Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`.
 
 ## Częste błędy
 
-- **Zamiana kierunków** — sprawdź dokładnie, które słowo mapuje się na które (Light→HoldStraight,
+- **Zamiana kierunków** — sprawdź przyporządkowanie wartości (Light→HoldStraight,
   Heavy→Divert), test sprawdza obie strony.
 - **Próba użycia starego `toDiverterPosition`** — ta funkcja już nie istnieje w tym module; jeśli Twój
   edytor podpowiada ją ze starej pamięci albo z innego pliku, to znak, że coś jest pomieszane.

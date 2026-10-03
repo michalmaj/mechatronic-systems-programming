@@ -17,10 +17,8 @@ Nowe pole prywatne `latch_`.
 
 ## Dwie niezależne ścieżki, naprawdę niezależne
 
-To jest miejsce, gdzie łatwo popełnić subtelny błąd architektoniczny — i warto go nazwać wprost, żeby
-go uniknąć. **Nie wystarczy** obliczyć `Mode::EStopped` i potem bramkować dywerter/pas *wyłącznie
-przez* `Mode`. Gdyby tak zrobić, ścieżka awaryjna zależałaby od poprawności `modeStep` — dokładnie tej
-zależności ta reguła zabrania (przyszły błąd w kolejności sprawdzeń `modeStep` mógłby cicho
+**Nie wystarczy** obliczyć `Mode::EStopped` i uzależnić ruch dywertera oraz pasa wyłącznie od `Mode`.
+Wtedy ścieżka awaryjna zależałaby od poprawności `modeStep`, a przyszły błąd w kolejności sprawdzeń mógłby
 unieważnić działanie przycisku awaryjnego). Dlatego `Engine::step()` sprawdza
 `checkEmergencyOverride(latch_)` **bezpośrednio**, i rozgałęzia się na tej podstawie jawnie: gdy
 override jest aktywny, rutynowa logika pasa/dywertera **w ogóle się nie wykonuje** w tym ticku — nie
@@ -34,18 +32,18 @@ override jest aktywny, rutynowa logika pasa/dywertera **w ogóle się nie wykonu
 2. Policz `const SafetyDecision decision = checkEmergencyOverride(latch_);` — czytane bezpośrednio z
    `latch_`, nie wyprowadzane z `Mode`.
 3. Policz `mode_ = modeStep(mode_, startRequested, stopRequested, latch_)` — `Mode` wciąż jest
-   potrzebny (to on jest obserwowalny i steruje ścieżką *rutynową*), po prostu ścieżka awaryjna już
+   potrzebny (to on jest obserwowalny i steruje ścieżką *rutynową*), lecz ścieżka awaryjna już
    mu nie ufa.
 4. **Pas, jako `if`/`else`, nigdy oba naraz:** gdy `decision.overrideActive` jest prawdziwe, wywołaj
-   wyłącznie `beltMotor_.forceStop()` i nic więcej. W przeciwnym razie zachowaj się dokładnie tak, jak
-   w Module 4: `beltMotor_.setCommand(mode_ == Mode::Running ? BeltMotorCommand::Run :
+   wyłącznie `beltMotor_.forceStop()` i nic więcej. W przeciwnym razie zachowaj logikę z modułu 4:
+   `beltMotor_.setCommand(mode_ == Mode::Running ? BeltMotorCommand::Run :
    BeltMotorCommand::Stop)`, a potem `beltMotor_.resolve()`.
-5. **Dywerter, bramkowany oboma sygnałami bezpośrednio, nie wyłącznie przez `Mode`:**
+5. **Dywerter zależny bezpośrednio od obu sygnałów, a nie wyłącznie od `Mode`:**
    `if (!decision.overrideActive && diverterMayMove(mode_))` — dopiero wtedy wykonuje się decyzja
    Controllera → `diverter_.setCommand` → `diverter_.resolve()`. W przeciwnym razie dywerter
    pozostaje **całkowicie nietknięty** w tym ticku, zamrożony tam, gdzie jest.
 6. Brama na `psm::advance(plant_, diverter_)` według `beltMotor_.actualState() == Running`, bez
-   zmian względem Modułu 4.
+   zmian względem modułu 4.
 7. Złóż `TickResult` (teraz z polem `latch`), zwiększ `tick_`.
 
 ## Przykładowy przebieg
@@ -60,8 +58,8 @@ Misji 17) → wznowienie wymaga świeżego `requestStart()`.
 ## Co już masz gotowe
 
 `include/psm/engine.hpp` ma już wszystkie potrzebne pola i deklaracje. `src/engine.cpp` ma puste
-szkielety `requestEStop()`/`releaseEStop()`/`requestReset()`; ciało `step()` wciąż wygląda dokładnie
-tak, jak zostawił je Moduł 4 — to Twoje zadanie, żeby je rozszerzyć.
+szkielety `requestEStop()`/`releaseEStop()`/`requestReset()`; ciało `step()` ma wersję z modułu 4,
+którą teraz rozszerzysz.
 
 ## Co masz napisać
 
@@ -104,8 +102,8 @@ git commit -m "..."
 
 ## Częste błędy
 
-- **Wywołanie rutynowej logiki pasa/dywertera nawet gdy `decision.overrideActive`** — to dokładnie
-  luka w niezależności, którą ta misja naprawia. Sprawdź, czy Twój `if`/`else` naprawdę się
+- **Wywołanie rutynowej logiki pasa/dywertera nawet gdy `decision.overrideActive`** — narusza to
+  niezależność ścieżki awaryjnej. Sprawdź, czy Twój `if`/`else` rzeczywiście się
   wyklucza.
 - **Bramkowanie dywertera wyłącznie przez `diverterMayMove(mode_)`**, bez `!decision.overrideActive`
   — to ponownie ta sama luka, tym razem po stronie dywertera.

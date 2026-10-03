@@ -8,16 +8,15 @@ Od Misji 2 masz paczkę utykającą w `Diverting`. Czas ją stamtąd uwolnić �
 lekkie paczki mają jechać na jedno wyjście, ciężkie na drugie. Innymi słowy: potrzebujesz **decyzji**,
 a nie tylko ruchu.
 
-To dobry moment, żeby nazwać podział odpowiedzialności, który będzie obowiązywał przez resztę
-modułu: **`Plant` opisuje stan fizyczny** (gdzie jest paczka), a **decyzja o tym, dokąd ją skierować,
-to osobna sprawa** — nazwiemy ją zbiorczo "Controllerem". To na razie tylko nazwa dla kilku funkcji,
-nie żadna nowa klasa (więcej o tym niżej).
+Od tej chwili rozdzielamy dwie odpowiedzialności. `Plant` opisuje stan fizyczny, czyli położenie
+paczki. Funkcje nazywane wspólnie Controllerem wybierają jej trasę. Controller nie jest jeszcze
+klasą.
 
 ## Nowe elementy C++
 
 **`enum class WeightClass`** — nazwany wynik decyzji (`Light`/`Heavy`) zamiast gołego `bool`.
 `bool` typu `true`/`false` nie mówi nic o *znaczeniu* — trzeba by pamiętać, czy `true` znaczy
-"lekka", czy "ciężka". `WeightClass::Light` mówi to wprost, w miejscu użycia.
+„lekka”, czy „ciężka”. Nazwa `WeightClass::Light` nie pozostawia tej wątpliwości.
 
 ```cpp
 enum class WeightClass { Light, Heavy };
@@ -51,9 +50,8 @@ DiverterPosition toDiverterPosition(WeightClass weightClass);
 
 [`src/controller.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/src/controller.cpp) ma ich puste szkielety z komentarzami `// TODO`.
 
-`src/plant.cpp`'s `advance` z Misji 3 ma **drugi** komentarz `// TODO (Misja 4: ...)` w tym samym
-ciele funkcji, który dziś uzupełnisz — to nie nowa funkcja, tylko rozwinięcie tej, którą zacząłeś
-w poprzedniej misji.
+W funkcji `advance` z misji 3 znajdziesz drugi komentarz `// TODO (Misja 4: ...)`. Uzupełnisz
+istniejącą funkcję, zamiast pisać nową.
 
 ## Co masz napisać
 
@@ -82,17 +80,14 @@ przechodzić, mimo że dopisałeś kod do tej samej funkcji `advance`.
 
 ## Dlaczego "Controller", a nie klasa
 
-Moglibyśmy teraz zapakować `classify` i `toDiverterPosition` w klasę `Controller` z metodami. Na tym
-etapie to niepotrzebna komplikacja: obie funkcje nie trzymają żadnego własnego stanu między
-wywołaniami — dostają dane wejściowe, zwracają wynik, koniec. "Controller" to na razie wygodna nazwa
-dla tej pary funkcji, nie sygnał, że trzeba je zamknąć w klasie. Ten sam wzorzec — decyzja jako
-zestaw funkcji bez stanu — jest zresztą tym, jak wygląda moduł decyzyjny w prawdziwym, znacznie
-większym projekcie tego symulatora.
+Nie ma jeszcze powodu, aby `classify` i `toDiverterPosition` umieszczać w klasie `Controller`. Żadna
+z tych funkcji nie przechowuje stanu między wywołaniami: przyjmuje dane i zwraca wynik. Nazwa
+„Controller” oznacza tu grupę funkcji odpowiedzialnych za decyzję.
 
 ## Częste błędy
 
-- **Próg jako `<=` zamiast `<`** — dokładnie 500g ma być `Heavy`, nie `Light`. Test to jawnie
-  sprawdza.
+- **Próg jako `<=` zamiast `<`** — paczka o masie 500 g należy do `Heavy`. Test obejmuje tę wartość
+  graniczną.
 - **Zapomniane wyczyszczenie `plant.item` po dotarciu do strefy wyjściowej** — bez tego paczka
   "utknie" tym razem już na dobre, w `OutputLight`/`OutputHeavy`.
 - **Zmiana sygnatury `advance`** — parametr `diverterPosition` już tam jest od Misji 3; nie musisz

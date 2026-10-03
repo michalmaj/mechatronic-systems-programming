@@ -4,7 +4,7 @@
 
 ## Gdzie jesteśmy
 
-Od Modułu 1 `Plant` modelował dokładnie jedną paczkę na raz — `std::optional<Item> item`, jedno pole.
+Od modułu 1 `Plant` modelował jedną paczkę za pomocą pola `std::optional<Item> item`.
 Prawdziwa taśma sortująca tak nie działa: kilka paczek jest fizycznie w locie jednocześnie, każda w
 innej strefie, każda na innym etapie procesu. Ten moduł to zmienia.
 
@@ -35,16 +35,15 @@ paczka, która wyjeżdża, jest zgłaszana jako `ItemDeparture` i znika z `Plant
 
 - **Misja 29 — partie i paczki.** Nowy kształt `Item`/`Plant`, `spawnItem(id, mass)`.
 - **Misja 30 — przesuwanie partii.** Pełny algorytm `advance()`, w kolejności od wyjścia do wejścia.
-- **Misja 31 — korelacja per paczka.** `ControllerState` odchodzi; dwie nowe, jawnie rozdzielone
+- **Misja 31 — korelacja dla każdej paczki.** `ControllerState` odchodzi; dwie nowe, rozdzielone
   funkcje korelacji zajmują jego miejsce.
 - **Misja 32 — silnik z wieloma paczkami.** Pełna integracja w `Engine::step()`, rozszerzony
   `TickResult`/`describe()`, demonstracja w CLI.
 
 ## Zanim zaczniesz
 
-Ten moduł nie da się zbudować przyrostowo tak, jak poprzednie — `Engine::step()` z Modułu 7 odwołuje
-się wprost do `Plant::item` i `Item::zone`, które w ogóle już nie istnieją. Dlatego start tego modułu
-wygląda inaczej: kompiluje się od razu, ale `Engine::step()` celowo jeszcze nic nie robi — nie
-przesuwa żadnej paczki, dopóki nie napiszesz Misji 32. To normalne i zamierzone, nie błąd w starcie.
+Tego modułu nie da się budować przyrostowo tak jak poprzednich — `Engine::step()` z modułu 7 odwołuje
+się do usuniętych pól `Plant::item` i `Item::zone`. Dlatego punkt startowy wygląda inaczej:
+kompiluje się, ale `Engine::step()` nie przesuwa paczek aż do misji 32. Nie jest to błąd szkieletu.
 
 **Dalej:** [Misja 29: partie i paczki](./01_partie_i_paczki.md).

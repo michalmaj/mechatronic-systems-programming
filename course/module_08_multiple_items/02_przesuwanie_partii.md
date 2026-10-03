@@ -31,11 +31,11 @@ ustawiane tylko przy udanym rutowaniu — z konstrukcji obu tych pól nigdy nie 
 
 ## Reguły przejść, w wymaganej kolejności
 
-`advance()` musi wykonać cztery przejścia, **każde dokładnie raz na wywołanie**, w tej ustalonej
+`advance()` musi wykonać cztery przejścia, **każde raz na wywołanie**, w ustalonej
 kolejności — od wyjścia do wejścia:
 
-**1. Rozstrzygnięcie w `diverting`** (tylko gdy slot jest zajęty). To dokładnie reguła terminu
-rutowania z Misji 26 — z tą różnicą, że licznik `divertingWaitTicks` żyje teraz na samej paczce
+**1. Rozstrzygnięcie w `diverting`** (tylko gdy strefa jest zajęta). Obowiązuje reguła terminu
+rutowania z misji 26, ale licznik `divertingWaitTicks` należy teraz do paczki
 (`Item::divertingWaitTicks`), nie gdzieś obok w `Engine`:
 - gdy `routingReady` jest `false`, licznik paczki wraca do zera i na tym przejście się kończy w tym
   ticku (paczka zostaje w `diverting`, bez zdarzenia);
@@ -44,7 +44,7 @@ rutowania z Misji 26 — z tą różnicą, że licznik `divertingWaitTicks` żyj
   `SystemEventKind::DiverterNotReady` przy pierwszym takim ticku licznika, a
   `SystemEventKind::RoutingDeadlineMissed` przy każdym kolejnym;
 - gdy dywerter jest ustawiony, paczka odjeżdża: `result.departure` dostaje jej id i miejsce docelowe
-  (`Zone::OutputLight` dla pozycji `Straight`, `Zone::OutputHeavy` w przeciwnym razie), a slot
+  (`Zone::OutputLight` dla pozycji `Straight`, `Zone::OutputHeavy` w przeciwnym razie), a pole
   `diverting` zostaje zwolniony.
 
 **2–4. Trzy przejścia między sąsiednimi strefami** — `weighing`→`diverting`,
@@ -57,10 +57,10 @@ odliczania.
 
 ## Dlaczego to gwarantuje "co najwyżej jeden ruch na paczkę na tick"
 
-Nie dlatego, że każdy *slot* jest dotknięty tylko raz — slot jest odczytywany jako źródło przez jedno
-przejście i sprawdzany jako cel przez sąsiednie, więc jest odwoływany więcej niż raz. Gwarancja bierze
+Nie dlatego, że każde pole jest używane tylko raz — jedno przejście odczytuje je jako źródło, a
+sąsiednie sprawdza jako cel. Gwarancja bierze
 się z tego, że każde z czterech *przejść* (rozstrzygnięcie w `Diverting`, `Weighing`→`Diverting`,
-`PresenceCheck`→`Weighing`, `Infeed`→`PresenceCheck`) jest wykonywane **dokładnie raz na wywołanie, w
+`PresenceCheck`→`Weighing`, `Infeed`→`PresenceCheck`) jest wykonywane **raz na wywołanie, w
 tej ustalonej kolejności, od wyjścia do wejścia**. Paczka, która trafia do strefy przez jedno
 przejście, nie może zostać podjęta przez *wcześniejsze* przejście w tym samym wywołaniu — bo to
 wcześniejsze przejście już się wykonało. Jednocześnie każde przejście sprawdza zajętość swojego celu w
@@ -128,7 +128,7 @@ poleceniem dywertera zadanym późno (`plant_diverter_test`); pełny termin ruto
 
 ## Pytanie do zastanowienia
 
-Gdyby `advance()` przetwarzał strefy w odwrotnej kolejności (od wejścia do wyjścia), które dokładnie
-zachowanie z przebiegu powyżej by się zepsuło, i na czym konkretnie by to polegało?
+Które zachowanie z powyższego przebiegu zepsułoby się, gdyby `advance()` przetwarzał strefy od
+wejścia do wyjścia? Na czym polegałby błąd?
 
-**Dalej:** [Misja 31: korelacja per paczka](./03_korelacja_per_paczka.md).
+**Dalej:** [Misja 31: korelacja dla każdej paczki](./03_korelacja_per_paczka.md).

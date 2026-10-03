@@ -2,8 +2,7 @@
 
 # 2.2 Dywerter jako klasa
 
-To najważniejsza teoretycznie misja tego modułu — poświęcimy jej trochę więcej miejsca niż zwykle,
-bo wprowadza pierwszą klasę w całym kursie.
+Ta misja wprowadza pierwszą klasę w kursie, dlatego część teoretyczna jest nieco dłuższa.
 
 ## Problem
 
@@ -15,16 +14,13 @@ pozycja się zmieniła, jest wywołanie jednej, konkretnej metody, krok po kroku
 
 ## Dlaczego `class`, a nie `struct`
 
-To ważne, żeby nie zrozumieć tego opacznie: w C++ `struct` też może mieć prywatne pola i chronić
-dokładnie ten sam niezmiennik co `class` — jedyna techniczna różnica między `struct` a `class` to
-domyślny poziom dostępu (`public` kontra `private`). To nie słowo kluczowe `class` samo w sobie nas
-chroni.
+W C++ zarówno `struct`, jak i `class` mogą mieć pola prywatne. Technicznie różnią się domyślnym
+poziomem dostępu: w `struct` jest nim `public`, a w `class` — `private`. Samo użycie słowa `class`
+nie chroni stanu.
 
-Mechanizmem ochronnym jest **enkapsulacja** — sekcja `private` plus publiczny interfejs. `class`
-używamy tutaj jako **świadomej konwencji nazewniczej** tego kursu: typ z ukrytym stanem wewnętrznym i
-publicznym interfejsem, który go chroni, nazywamy `class`, żeby sama nazwa typu sygnalizowała "tu jest
-niezmiennik do ochrony". `Plant` w Module 1 został `struct`-em właśnie dlatego, że nic wtedy nie
-chronił — nie było żadnego niezmiennika.
+Stan chroni **enkapsulacja**, czyli prywatne pola udostępnione przez publiczne metody. W tym kursie
+przyjmujemy konwencję, że typ z takim ukrytym stanem zapisujemy jako `class`. `Plant` z modułu 1
+pozostał strukturą, ponieważ nie miał jeszcze niezmiennika wymagającego ochrony.
 
 ## Nowy element C++: `class`
 
@@ -46,7 +42,7 @@ private:
 - `private` — pola `command_`/`actual_`, niedostępne z zewnątrz w żaden inny sposób niż przez te
   metody.
 - `const` na końcu `actualPosition()`/`isSettled()` — te metody tylko odczytują stan, nigdy go nie
-  zmieniają (poznasz to dokładniej, gdy będziesz pisać własne klasy w kolejnych modułach; na razie
+  zmieniają (wrócimy do tego przy kolejnych klasach; na razie
   wystarczy wiedzieć, że to obietnica "ta metoda nic nie zmienia").
 
 **Deklaracje** (nazwy metod, ich sygnatury, pola wraz z wartościami początkowymi) są już kompletne —
@@ -54,7 +50,7 @@ to, co napiszesz, to **ciała** czterech metod.
 
 ## Niezmiennik, który chronimy
 
-`actual_` może się zmienić wyłącznie przez `resolve()`, i to o dokładnie jeden krok na raz, zgodnie z
+`actual_` może się zmienić wyłącznie przez `resolve()`, najwyżej o jeden krok zgodnie z
 poniższą tabelą. Nic innego w kodzie nie ma prawa przypisać do `actual_` dowolnej wartości.
 
 ## Tabela przejść `resolve()`
@@ -119,7 +115,7 @@ przejść w obie strony (`Straight`→`Diverted` i z powrotem) oraz sprawdza `is
 
 ## Pytanie do zastanowienia
 
-Gdybyś zamiast `class` z sekcją `private` napisał `struct` z dokładnie tym samym podziałem na
+Gdybyś zamiast `class` z sekcją `private` napisał `struct` z takim samym podziałem na
 `public`/`private`, czy kod zachowywałby się inaczej? Co faktycznie różni te dwa podejścia w tym
 konkretnym przypadku?
 

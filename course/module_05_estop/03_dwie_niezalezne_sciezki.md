@@ -24,8 +24,8 @@ bool diverterMayMove(Mode mode);
 oba). `diverterMayMove` — prawda wyłącznie dla `Mode::Running`. Obie są zwykłymi, testowalnymi
 funkcjami, w duchu `classify`/`toDiverterCommand` z Controllera.
 
-**`BeltMotor::forceStop()` jest inne z natury.** To **celowo mutująca operacja awaryjna**, nie czysta
-decyzja. Wymagane zachowanie: `forceStop()` ustawia **jednocześnie** `command_` na `Stop` **i**
+**`BeltMotor::forceStop()` ma inną rolę.** Jest operacją awaryjną zmieniającą stan. `forceStop()`
+ustawia **jednocześnie** `command_` na `Stop` **i**
 `actual_` na `Stopped`, w tym samym wywołaniu — żądana komenda i fizyczny stan zostają natychmiast
 zgodne, z pominięciem `RampingDown`. To sedno ścieżki awaryjnej: nie czeka na rampę, i nie zostawia
 "chce jechać" jako zaległej komendy, którą kolejny tick mógłby przypadkiem zrealizować.
@@ -34,9 +34,9 @@ zgodne, z pominięciem `RampingDown`. To sedno ścieżki awaryjnej: nie czeka na
 
 Mogłoby się wydawać naturalne dodanie funkcji filtrującej "żądaną" komendę pasa według `Mode` —
 podobnie jak `diverterMayMove` filtruje ruch dywertera. Ale jedyna "żądana" wartość, jaka na tym
-etapie w ogóle istnieje, to dokładnie `mode == Running ? Run : Stop` — czyli funkcja filtrująca
+etapie istnieje, to `mode == Running ? Run : Stop` — funkcja filtrująca
 porównywałaby wartość z warunkiem, który ją właśnie wyprodukował. To tautologia, nic by nie zmieniała.
-Ścieżka rutynowa na tym etapie **jest** po prostu istniejącym sterowaniem `Mode → BeltMotor` z Modułu
+Ścieżką rutynową pozostaje istniejące sterowanie `Mode → BeltMotor` z modułu
 4, bez zmian. Filtrowanie bezpieczeństwa wróci w późniejszym module, gdy pojawi się naprawdę
 niezależne "żądanie", które będzie miało sens filtrować.
 
@@ -73,12 +73,12 @@ górę (co udowadnia, że `command_` naprawdę zostało zmienione, nie tylko `ac
 - **`forceStop()` ustawiające tylko `actual_`**, nie `command_` — wtedy kolejne `resolve()` (wciąż
   "chcąc" `Run`) natychmiast zacznie `RampingUp` z powrotem, co całkowicie unieważnia sens awaryjnego
   zatrzymania.
-- **`diverterMayMove` sprawdzające coś innego niż dokładnie `Mode::Running`** — żadna inna wartość
+- **`diverterMayMove` dopuszczające stan inny niż `Mode::Running`** — żadna inna wartość
   `Mode` nie pozwala na ruch dywertera.
 
 ## Pytanie do zastanowienia
 
-`checkEmergencyOverride` i `diverterMayMove` są czyste; `forceStop()` celowo nie jest. Dlaczego to
+`checkEmergencyOverride` i `diverterMayMove` są czyste, natomiast `forceStop()` zmienia stan. Dlaczego to
 rozróżnienie ma znaczenie akurat dla operacji **awaryjnej**, a nie przeszkadzało w żadnej z
 wcześniejszych, "zwykłych" metod klas w tym kursie?
 

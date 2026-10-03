@@ -20,7 +20,7 @@ Controllera: brak stanu wewnętrznego, tylko przekształcenie wejścia w wyjści
 ## Dlaczego to nie jest klasa
 
 W tym module nie ma **żadnego powodu**, żeby robić z `Mode` klasę. Nic tu nie wymaga ochrony —
-`Engine` (który poznasz bliżej w kolejnej misji) po prostu przechowuje wartość `Mode` i przekazuje ją
+`Engine` przechowuje wartość `Mode` i przekazuje ją
 dalej do `modeStep`, tak samo jak już przechowuje i przekazuje dalej licznik ticków. To jest
 świadomy kontrast z Misją 13: `BeltMotor` miał konkretny niezmiennik (`actual_` zmienia się tylko
 przez `resolve()`, krok po kroku) — `Mode` na razie żadnego nie ma. Gdyby w przyszłym module pojawił
@@ -45,7 +45,7 @@ gotowe.
 
 ## Co masz napisać
 
-Uzupełnij ciało `modeStep` zgodnie z regułą konfliktu powyżej — dokładnie w tej kolejności
+Uzupełnij ciało `modeStep` zgodnie z regułą konfliktu powyżej, zachowując kolejność
 sprawdzeń (najpierw `stopRequested`, potem `startRequested`, potem bez zmian).
 
 ## Sprawdź się
@@ -60,9 +60,9 @@ kombinacje `startRequested`/`stopRequested`, w tym oba jednocześnie prawdziwe.
 ## Częste błędy
 
 - **Sprawdzenie `startRequested` przed `stopRequested`** — to odwraca regułę konfliktu i
-  da złą odpowiedź dokładnie w przypadku, gdy oba są prawdziwe naraz.
+  da złą odpowiedź, gdy oba żądania są prawdziwe naraz.
 - **Zwrócenie `Running`/`Idle` na sztywno** zamiast `current` w przypadku "bez zmian" — funkcja musi
-  zwrócić dokładnie to, co dostała, gdy żadne z żądań nie jest aktywne.
+  zwrócić dotychczasową wartość, gdy żadne z żądań nie jest aktywne.
 
 ## Pytanie do zastanowienia
 

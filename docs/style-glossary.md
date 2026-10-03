@@ -20,6 +20,11 @@ zostają po angielsku — tego się nie tłumaczy.
 | no-op | nie robi nic / operacja bez efektu | |
 | per-paczka | dla każdej paczki z osobna / na paczkę | |
 | workflow | sposób pracy / przebieg pracy | |
+| gating / bramkowanie | warunek działania / uzależnienie działania od... | opisz konkretnie, co dany warunek dopuszcza |
+| slot | pole odpowiadające strefie / strefa | `slot` tylko wtedy, gdy jest świadomie wprowadzonym terminem technicznym |
+| admission / admitować | przejście z bufora na Infeed / wprowadzić na linię | zależnie od zdania |
+| drain the backlog | opróżnić bufor / obsłużyć oczekujące paczki | nie „drenować zaległość” |
+| source of truth | punkt odniesienia / miejsce określające format | dobierz do kontekstu |
 | checked out (git) | opisz efekt wprost, np. „na właściwym tagu” | unikaj czasownikowej kalki „wyewidencjonować” |
 | Course Core (po pierwszym wystąpieniu w dokumencie) | rdzeń kursu | pierwsze wystąpienie w dokumencie może zostać jako nazwa własna |
 | Final Project (w zwykłej prozie) | projekt końcowy | nazwy plików/tagów (`final_project/`, `final-project-start`) zostają bez zmian |
@@ -53,3 +58,7 @@ zostają po angielsku — tego się nie tłumaczy.
   jako idiom, nie jako tik).
 - Unikaj konstrukcji „nie X, tylko Y” jako domyślnego sposobu kontrastowania — zdania kontrastowe
   formułuj różnymi sposobami zamiast jednego powtarzalnego szablonu.
+- Nie opowiadaj o intencji autora, jeśli można podać wymaganie albo skutek. Zamiast „test celowo
+  sprawdza X” napisz „test sprawdza X”; zamiast „to nie przypadek” wyjaśnij zależność przyczynową.
+- Preferuj krótsze zdania z jednym głównym wątkiem. Wielopiętrowe dopowiedzenia po myślnikach często
+  zdradzają składnię przeniesioną z angielskiego.

@@ -9,8 +9,8 @@ nie przeszkadza paczce ruszać się na pasie, którego nikt nie poprosił o prac
 
 ## Nowe elementy C++
 
-**`Engine::requestStart()` / `Engine::requestStop()`** — jawne operacje wejściowe, dokładnie tej samej
-kategorii co `spawnItem` (niezmiennik z Modułu 3: to wejście, nie posuwanie symulacji naprzód, więc
+**`Engine::requestStart()` / `Engine::requestStop()`** — operacje wejściowe tej samej
+kategorii co `spawnItem` (niezmiennik z modułu 3: to wejście, nie posuwanie symulacji naprzód, więc
 wolno je wywoływać między tickami).
 
 Nowe pola prywatne `Engine`: `mode_`, `beltMotor_`, oraz dwie flagi (`startRequested_`,
@@ -32,9 +32,9 @@ do specjalnego traktowania. Zobaczysz je w weryfikacji tej misji.
    (reguła konfliktu z Misji 14 obowiązuje też tutaj).
 2. `beltMotor_.setCommand(mode_ == Running ? Run : Stop)`, `beltMotor_.resolve()`.
 3. Decyzja Controllera → `diverter_.setCommand` → `diverter_.resolve()` — bez zmian względem
-   Modułu 3.
+   modułu 3.
 4. Wywołaj `psm::advance(plant_, diverter_)` **tylko jeśli** `beltMotor_.actualState() == Running` —
-   w przeciwnym razie pomiń to wywołanie całkowicie; paczka po prostu nie rusza się w tym ticku.
+   w przeciwnym razie pomiń to wywołanie; paczka pozostaje w miejscu.
 5. Złóż większy teraz `TickResult`, zwiększ `tick_`.
 
 ## Przykładowy przebieg
@@ -46,7 +46,7 @@ do specjalnego traktowania. Zobaczysz je w weryfikacji tej misji.
   `RampingUp` (pas był `Stopped`, teraz chce być `Running`) — **paczka się nie rusza** (brama nie
   przechodzi: jeszcze nie `Running`).
 - **Drugi `step()`**: `mode` zostaje `Running`, `beltActual` staje się `Running` (jeszcze jeden krok
-  `resolve()` od `RampingUp`) — brama teraz przechodzi, i paczka przesuwa się **dokładnie o jeden
+  `resolve()` od `RampingUp`) — warunek ruchu jest spełniony i paczka przesuwa się **o jeden
   krok**.
 
 Ten przebieg sprawdza dostarczony test — Twoja implementacja musi go odtworzyć co do joty.
@@ -55,7 +55,7 @@ Ten przebieg sprawdza dostarczony test — Twoja implementacja musi go odtworzy�
 
 `include/psm/engine.hpp` i `include/psm/tick_result.hpp` mają już wszystkie potrzebne pola i
 deklaracje. `src/engine.cpp` ma puste szkielety `requestStart()`/`requestStop()`; ciało `step()` wciąż
-wygląda dokładnie tak, jak zostawił je Moduł 3 — to Twoje zadanie, żeby je rozszerzyć.
+ma wersję z modułu 3, którą teraz rozszerzysz.
 
 ## Co masz napisać
 

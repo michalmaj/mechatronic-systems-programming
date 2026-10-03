@@ -14,9 +14,9 @@ która odrzuci niewiarygodny odczyt, zanim w ogóle trafi do `classify`.
 std::optional<WeightClass> decideClassification(WeightReading weight);
 ```
 
-Celowo tylko **jeden** czujnik na wejściu — nie próbujemy tu jeszcze łączyć odczytu wagi z
-potwierdzeniem obecności (to problem Misji 23, i to znacznie trudniejszy). Ta misja uczy jednej,
-wyizolowanej rzeczy: nie klasyfikuj na podstawie odczytu, któremu nie możesz ufać.
+Funkcja przyjmuje na razie odczyt tylko **jednego** czujnika. Połączenie wagi z potwierdzeniem
+obecności pojawi się w misji 23. Tutaj obowiązuje jedna zasada: nie klasyfikuj na podstawie odczytu,
+któremu nie można ufać.
 
 ## Reguła
 
@@ -42,7 +42,7 @@ Uzupełnij ciało `decideClassification` zgodnie z regułą powyżej.
 ctest --preset test -L misja-22
 ```
 
-Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test celowo zawiera przypadek
+Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test zawiera przypadek
 `{Stale, 750}` — liczba wygląda całkowicie prawdopodobnie, ale status mówi wyraźnie: nie ufaj temu.
 
 ## Częste błędy

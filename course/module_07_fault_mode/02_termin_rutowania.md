@@ -17,8 +17,7 @@ zamraża paczkę na zawsze, po cichu.
 enum class SystemEventKind { DiverterNotReady, RoutingDeadlineMissed };
 ```
 
-Wprowadzamy ten typ dokładnie tutaj, gdzie od razu znajduje zastosowanie — nie jako osobna, pusta
-misja sama w sobie.
+Typ pojawia się razem z pierwszym zastosowaniem, a nie w osobnej misji bez widocznego efektu.
 
 `Plant` zyskuje licznik:
 
@@ -56,7 +55,7 @@ zerować. Wtedy przerwa niezwiązana z samym dywerterem — e-stop, tryb, brakuj
 dlatego, że dywerter naprawdę utknął, tylko dlatego, że coś zupełnie innego wstrzymało próby
 rutowania na kilka ticków wcześniej. To pomieszałoby dwie zupełnie różne przyczyny w jeden sygnał.
 
-Zerowanie przy `!routingReady` gwarantuje, że termin mierzy dokładnie to, co ma mierzyć: ile ticków
+Zerowanie przy `!routingReady` sprawia, że termin mierzy liczbę kolejnych ticków, w których
 z rzędu dywerter dostawał **realną** szansę się ustawić i jej nie wykorzystał.
 
 ## Co już masz gotowe
@@ -87,8 +86,8 @@ dostaje pełny, świeży termin); oraz że ustawiony dywerter rutuje normalnie i
 
 ## Częste błędy
 
-- **Zamrażanie licznika zamiast zerowania go przy `!routingReady`** — dokładnie problem opisany
-  wyżej.
+- **Zamrażanie licznika zamiast zerowania go przy `!routingReady`** — wtedy do terminu wliczałyby
+  się ticki, w których rutowanie nie było możliwe.
 - **Zwracanie `RoutingDeadlineMissed` już przy pierwszej nieudanej próbie** — sprawdź uważnie
   kolejność: `<= 1` to `DiverterNotReady`, dopiero `> 1` to przekroczenie terminu.
 - **Zapominanie o zerowaniu licznika po udanym rutowaniu** — kolejna paczka odziedziczyłaby cudzy,

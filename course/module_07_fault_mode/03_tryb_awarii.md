@@ -10,7 +10,7 @@ dwa **różne** pytania, dostępne w dwóch **różnych** momentach tego samego 
 
 Wcześniejszy szkic tego projektu próbował dwóch skrótów. Pierwszy: przesunąć `Plant::advance()`
 przed liczenie `Mode`. Odrzucony — cichaczem przesunąłby o jeden tick każdy istniejący test
-sprawdzający dokładny moment ruchu paczki, łącznie z już istniejącymi testami z Modułu 4. Drugi:
+sprawdzający dokładny moment ruchu paczki, łącznie z już istniejącymi testami z modułu 4. Drugi:
 wywoływać dotychczasowy `modeStep()` dwukrotnie w jednym ticku, z częścią flag ręcznie wygaszonych na
 `false`. To technicznie działa — ale zaciera fakt, że pojawiły się dwie naprawdę różne
 odpowiedzialności pod jedną nazwą funkcji.
@@ -21,8 +21,8 @@ odpowiedzialności pod jedną nazwą funkcji.
 enum class Mode { Idle, Running, EStopped, Fault };
 
 // Krok 1: poprzedni Mode + wejścia operatora/e-stopu/resetu z tego ticku -> Mode, którego aktuatory
-// użyją do bramkowania W TYM ticku. Duch niezmieniony od Modułu 5; jeden nowy parametr, jedna nowa
-// reguła.
+// użyją do sterowania W TYM ticku. Zasada z modułu 5 pozostaje bez zmian;
+// dochodzi jeden parametr i jedna reguła.
 Mode modeStep(Mode current, bool startRequested, bool stopRequested,
               EStopLatchState latch = EStopLatchState::Released,
               bool resetRequested = false);
@@ -33,13 +33,12 @@ Mode reactToSystemEvent(Mode modeForTick, std::optional<SystemEventKind> event);
 ```
 
 `modeStep` **w ogóle nie wie** o `SystemEventKind` — nie ma go w żadnym parametrze. `reactToSystemEvent`
-**w ogóle nie wie** o operatorze, zatrzasku e-stopu ani resecie — ma dokładnie dwa parametry i jedno
-zadanie. Nazwa każdej funkcji mówi wprost, za co odpowiada — żadna nie jest przebraną drugą wersją
-tej samej.
+**w ogóle nie wie** o operatorze, zatrzasku e-stopu ani resecie — ma dwa parametry i jedno
+zadanie. Nazwy pokazują podział odpowiedzialności; funkcje nie powielają swojej pracy.
 
 ## Poprawiona kolejność reguł w `modeStep`
 
-Łańcuch reguł z Modułu 5 zostaje w tej samej kolejności i bez zmian: bezwarunkowy priorytet zatrzasku
+Łańcuch reguł z modułu 5 zostaje w tej samej kolejności i bez zmian: bezwarunkowy priorytet zatrzasku
 e-stopu, potem powrót z `EStopped` do `Idle`, potem `stopRequested`, potem `startRequested`, a na
 końcu `current` bez zmian, gdy nic z powyższego nie pasuje. Nowa reguła wchodzi jako **trzecia** w tej
 kolejności — zaraz po powrocie z `EStopped`, a przed `stopRequested` — i dotyczy wyłącznie przypadku
@@ -64,12 +63,13 @@ zawsze wymusza `EStopped` już w kroku 1 `modeStep`, `modeForTick` nigdy nie jes
 
 ## `Fault` jest zatrzaskowe
 
-Reguła 3 to pełny "wyłapywacz" — sprawdzany **przed** regułami 4 i 5. Skoro `current == Fault`
+Reguła 3 obsługuje każdy przypadek `current == Fault` i jest sprawdzana **przed** regułami 4 i 5.
+Skoro `current == Fault`
 zawsze zwraca albo `Idle` (przy resecie), albo `Fault`, żadna z reguł 4/5 nigdy nie zostanie
 osiągnięta, gdy trwa `Fault`. Ani `stopRequested`, ani `startRequested` nie mają żadnego efektu.
 Jedyne wyjście to jawny `resetRequested` — i nawet wtedy trafiasz do `Idle`, nigdy prosto do
-`Running`. Powrót zawsze przechodzi przez `Idle` — dokładnie ten sam wzorzec, co odzyskiwanie po
-e-stopie w Module 5.
+`Running`. Powrót zawsze przechodzi przez `Idle`, tak jak wznowienie pracy po awaryjnym stopie w
+module 5.
 
 ## Dlaczego e-stop wciąż ma priorytet nad `Fault`
 
@@ -102,7 +102,7 @@ Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test sprawdza ca
 ## Częste błędy
 
 - **Umieszczenie reguły `Fault` po regułach `stopRequested`/`startRequested`** — wtedy oba mogłyby z
-  niego wyjść, co jest dokładnie tym, czego zatrzask ma zabraniać.
+  niego wyjść, choć zatrzask ma tego zabraniać.
 - **Próba przekazania `routingDeadlineMissed` do `modeStep`** — ta informacja nie jest jeszcze znana
   w momencie, w którym `modeStep` jest wołany; stąd druga funkcja.
 - **`reactToSystemEvent` sprawdzające `current` zamiast `modeForTick`** — to dwie różne nazwy dla
@@ -112,7 +112,7 @@ Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test sprawdza ca
 ## Pytanie do zastanowienia
 
 `reactToSystemEvent` nie przyjmuje `latch` ani `resetRequested`. Skoro `Fault` jest zatrzaskowe tylko
-dzięki regule 3 w `modeStep`, co dokładnie by się zepsuło, gdyby `reactToSystemEvent` też umiała
+dzięki regule 3 w `modeStep`. Co zepsułoby się, gdyby `reactToSystemEvent` też mogła
 zwrócić `Fault` z dowolnego stanu, nie tylko z `Running`?
 
 **Dalej:** [Misja 28: silnik z wykrywaniem awarii](./04_silnik_z_wykrywaniem_awarii.md).

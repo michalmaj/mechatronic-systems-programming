@@ -26,14 +26,14 @@ void updateControllerState(ControllerState& state, const std::optional<Item>& it
 ```
 
 `ControllerState` to zwykły `struct`, bez metod — ten sam wybór co `Plant` (Moduł 1) czy
-`TickResult` (Moduł 3): nic tu nie trzeba chronić enkapsulacją, wywołujący (docelowo `Engine`) po
-prostu przechowuje tę wartość i przekazuje ją dalej, tick po ticku.
+`TickResult` (moduł 3): nic nie wymaga tu ochrony przez enkapsulację. `Engine` będzie przechowywać tę
+wartość między kolejnymi tickami.
 
 **Dlaczego dwa pola, nie jedno.** `presenceConfirmed` potwierdza się **wcześniej** (gdy paczka mija
 `PresenceCheck`), `classification` **później** (gdy paczka mija `Weighing`) — i `classification`
 ma sens ustawiać tylko wtedy, gdy `presenceConfirmed` jest już prawdziwe. To dwa niezależne
 potwierdzenia z dwóch niezależnych, osobno mogących się zepsuć czujników, potwierdzające się
-nawzajem w czasie — ten sam duch co dwie niezależne ścieżki bezpieczeństwa z Modułu 5, tym razem
+nawzajem w czasie — ten sam duch co dwie niezależne ścieżki bezpieczeństwa z modułu 5, tym razem
 zastosowany do **danych**, nie aktuatorów.
 
 ## Dokładna reguła aktualizacji
@@ -62,7 +62,7 @@ odczyt wagi później **nie wyprodukuje klasyfikacji**.
 kompletne, jak wyżej.
 
 [`src/controller_state.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/src/controller_state.cpp) — pusty szkielet z komentarzem
-`// TODO`, opisującym dokładnie te cztery kroki.
+`// TODO`, który opisuje te cztery kroki.
 
 ## Co masz napisać
 
@@ -82,8 +82,8 @@ wagi (też się nie pojawia).
 
 ## Częste błędy
 
-- **Ustawianie `classification` bez sprawdzenia `presenceConfirmed`** — to dokładnie problem, który
-  ta misja rozwiązuje; bez tego warunku klasyfikacja opierałaby się wyłącznie na wadze, ignorując
+- **Ustawianie `classification` bez sprawdzenia `presenceConfirmed`** — wtedy klasyfikacja
+  opierałaby się wyłącznie na wadze, ignorując
   całkowicie czujnik obecności.
 - **Reset tylko przy `!item.has_value()`, bez `Zone::Infeed`** — jeśli paczka jest już w systemie
   (np. świeżo dodana przez `spawnItem`, wciąż w `Infeed`), stary stan z poprzedniej paczki musi
@@ -93,7 +93,7 @@ wagi (też się nie pojawia).
 
 ## Pytanie do zastanowienia
 
-Wyobraź sobie, że usterka czujnika obecności trwa dokładnie jeden tick, akurat wtedy, gdy paczka
+Wyobraź sobie, że usterka czujnika obecności trwa jeden tick, akurat wtedy, gdy paczka
 mija `PresenceCheck` — a potem czujnik znowu działa poprawnie. Czy ta konkretna paczka kiedykolwiek
 zostanie sklasyfikowana, nawet jeśli waga zadziała bez zarzutu? Prześledź regułę krok po kroku, żeby
 się upewnić.

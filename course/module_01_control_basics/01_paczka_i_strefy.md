@@ -16,7 +16,7 @@ Zanim cokolwiek ruszymy, potrzebujemy dwóch rzeczy:
 
 **`enum class`** — zamknięty zbiór nazwanych wartości. Moglibyśmy strefy zapisać jako zwykłe liczby
 (`0`, `1`, `2`...), ale wtedy nic nie chroni nas przed literówką w rodzaju "strefa 7", która nie
-istnieje. `enum class` pozwala napisać `Zone::Infeed` zamiast `0` — kompilator zna dokładnie, jakie
+istnieje. `enum class` pozwala napisać `Zone::Infeed` zamiast `0` — kompilator zna wszystkie
 wartości są dozwolone, i nie da się przez pomyłkę wpisać czegoś spoza tego zbioru.
 
 ```cpp
@@ -40,7 +40,7 @@ struct Item {
 
 Otwórz [`include/psm/zone.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/include/psm/zone.hpp) i
 [`include/psm/item.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/include/psm/item.hpp). Oba typy — `enum class Zone` i `struct Item`
-— są już w pełni zdefiniowane, dokładnie tak, jak wyżej. Nie musisz (i nie powinieneś) ich zmieniać.
+— są już w pełni zdefiniowane, tak jak w przykładzie wyżej. Nie zmieniaj ich.
 
 To, czego brakuje, to **zachowanie**: sposób zamiany wartości `Zone` na czytelny dla człowieka
 napis. Zobacz [`src/zone.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/src/zone.cpp):
@@ -55,7 +55,7 @@ std::string_view toString(Zone zone) {
 
 ## Co masz napisać
 
-Uzupełnij `toString` tak, żeby dla każdej wartości `Zone` zwracał odpowiadający jej napis — dokładnie
+Uzupełnij `toString` tak, żeby dla każdej wartości `Zone` zwracał odpowiadający jej napis, czyli
 nazwę enumeratora jako tekst: `Zone::Infeed` → `"Infeed"`, `Zone::PresenceCheck` →
 `"PresenceCheck"`, i tak dalej dla wszystkich sześciu stref.
 
