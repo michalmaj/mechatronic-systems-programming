@@ -1,6 +1,6 @@
 🇵🇱 Polski | [🇬🇧 English](00_project_kickoff.en.md)
 
-# Project Kickoff: pierwszy własny test
+# Przed projektem: pierwszy własny test
 
 ## Cel
 
@@ -13,7 +13,7 @@ nie tematem zadania.
 
 ## 1. Anatomia istniejącego testu
 
-Otwórz `tests/controller_test.cpp` — jeden z najkrótszych testów w rdzeniu kursu:
+Otwórz `tests/controller_test.cpp`. To jeden z najkrótszych testów w rdzeniu kursu:
 
 ```cpp
 #include "support/check.hpp"
@@ -30,22 +30,22 @@ int main() {
 
 Zwróć uwagę na cztery rzeczy:
 
-- Test to zwykły plik `.cpp` z `main()` — żaden framework, żadna makro-magia. To, co uruchamia
-  `ctest`, to zwykły plik wykonywalny.
+- Test jest zwykłym plikiem `.cpp` z funkcją `main()`. Nie korzysta z zewnętrznej biblioteki
+  testowej ani rozbudowanych makr. `ctest` uruchamia skompilowany plik wykonywalny.
 - `psmCheck(warunek, opis)` (`tests/support/check.hpp`) sprawdza warunek; jeśli jest fałszywy, wypisuje
-  `opis` na `stderr` i **kończy proces przez `std::exit(1)`** — pierwsze niespełnione sprawdzenie
-  przerywa test natychmiast, reszta się nie wykonuje.
-- `return 0;` na końcu `main()` to sygnał sukcesu dla `ctest` — test, który dotarł do końca bez
-  wywołania `std::exit(1)`, zaliczył się.
+  `opis` na `stderr` i **kończy proces przez `std::exit(1)`**. Pierwsze niespełnione sprawdzenie
+  natychmiast przerywa test, więc pozostałe już się nie wykonają.
+- `return 0;` na końcu `main()` informuje `ctest` o powodzeniu. Test przechodzi, jeśli program dotrze
+  do końca bez wywołania `std::exit(1)`.
 - Przypadki obejmują wartości z obu zakresów oraz granicę: `100` i `499` należą do Light, `500`
   sprawdza sam próg, a `999` leży w zakresie Heavy. Test wartości granicznej wykrywa typowy błąd w
   operatorze porównania.
 
 ## 2. Zadanie: test dla `decideClassification`
 
-`controller_test.cpp` testuje `classify(Grams mass) -> WeightClass` — czystą funkcję bez żadnego
-warunku brzegowego poza samym progiem. Obok niej, w tym samym pliku `include/psm/controller.hpp`,
-mieszka funkcja o bogatszym kontrakcie, stabilna od modułu 6:
+`controller_test.cpp` sprawdza `classify(Grams mass) -> WeightClass`, czyli czystą funkcję, której
+jedynym przypadkiem brzegowym jest próg masy. W tym samym pliku `include/psm/controller.hpp` znajduje
+się używana od modułu 6 funkcja o bardziej rozbudowanych zasadach działania:
 
 ```cpp
 std::optional<WeightClass> decideClassification(WeightReading weight);
@@ -70,23 +70,23 @@ std::optional<WeightClass> decideClassification(WeightReading weight) {
 }
 ```
 
-W przeciwieństwie do `classify`, ta funkcja ma **dwie** ścieżki do sprawdzenia: poprawny odczyt
-(deleguje do `classify`) i niepoprawny odczyt (`Missing` lub `Stale` — zawsze `std::nullopt`,
-niezależnie od tego, co akurat siedzi w `grams`).
+W przeciwieństwie do `classify` ta funkcja ma **dwie** ścieżki do sprawdzenia. Dla poprawnego odczytu
+korzysta z `classify`. Dla odczytu `Missing` lub `Stale` zawsze zwraca `std::nullopt`, niezależnie od
+wartości zapisanej w `grams`.
 
-**Napisz `tests/support_your_first_test.cpp`** (albo dowolną inną nazwę pliku — to nie jest misja z
-ustaloną nazwą) sprawdzający co najmniej:
+**Napisz test w pliku `tests/support_your_first_test.cpp`**. Możesz wybrać inną nazwę, ponieważ nie
+jest ona narzucona przez kurs. Test powinien obejmować co najmniej te przypadki:
 
 1. `status == Ok`, masa w zakresie Light → wynik to `WeightClass::Light`.
 2. `status == Ok`, masa w zakresie Heavy (włącznie z progiem) → wynik to `WeightClass::Heavy`.
-3. `status == Missing` → wynik to `std::nullopt`, **niezależnie od wartości `grams`** — warto użyć
-   masy, która „wyglądałaby” na Heavy, żeby upewnić się, że status faktycznie wygrywa.
+3. `status == Missing` → wynik to `std::nullopt`, **niezależnie od wartości `grams`**. Użyj masy,
+   która zostałaby sklasyfikowana jako Heavy, aby sprawdzić, czy status ma pierwszeństwo.
 4. `status == Stale` → jak wyżej.
 
-Wzoruj strukturę pliku na `controller_test.cpp` — `#include "support/check.hpp"`, `#include
-<psm/controller.hpp>`, seria `psmCheck(...)`, `return 0;`.
+Wzoruj strukturę pliku na `controller_test.cpp`: dodaj `#include "support/check.hpp"` i `#include
+<psm/controller.hpp>`, następnie serię wywołań `psmCheck(...)` oraz `return 0;`.
 
-## 3. Rejestracja w CMake — gotowy wzorzec do skopiowania
+## 3. Rejestracja w CMake
 
 `tests/CMakeLists.txt` rejestruje każdy test trzema liniami. Dla nowego pliku
 `tests/support_your_first_test.cpp` dopisz na końcu pliku:
@@ -97,14 +97,14 @@ target_link_libraries(support_your_first_test PRIVATE psm_core)
 add_test(NAME support_your_first_test COMMAND support_your_first_test)
 ```
 
-Każdy test od `zone_test` po `engine_routing_deadline_test` jest rejestrowany tymi samymi trzema
-poleceniami. Skopiuj wzorzec i zmień nazwę; głębsza znajomość CMake nie jest tu potrzebna.
+Każdy test od `zone_test` po `engine_routing_deadline_test` jest rejestrowany za pomocą tych samych
+trzech poleceń. Skopiuj je i zmień nazwę. Na tym etapie nie musisz poznawać pozostałych możliwości
+CMake.
 
-Warto tu zwrócić uwagę na jedną rzecz: `add_executable`/`add_test` rejestrują **jeden plik `.cpp` jako
-jeden wykonywalny test CTest** — ale nic nie stoi na przeszkodzie, żeby ten jeden plik zawierał
-kilka niezależnych wywołań `psmCheck`, tak jak `controller_test.cpp` robi to już dziś. „Test” w sensie
-CTest to plik wykonywalny; „przypadek testowy” to pojedyncze `psmCheck` wewnątrz niego. To rozróżnienie
-wraca w wymaganiu z sekcji 6 niżej.
+`add_executable` i `add_test` rejestrują **jeden plik `.cpp` jako jeden wykonywalny test CTest**. Ten
+plik może jednak zawierać kilka niezależnych wywołań `psmCheck`, tak jak `controller_test.cpp`.
+W terminologii CTest cały program jest testem, natomiast pojedyncze wywołanie `psmCheck` odpowiada
+przypadkowi testowemu. To rozróżnienie będzie potrzebne w sekcji 6.
 
 ## 4. Uruchomienie przez CTest
 
@@ -114,30 +114,28 @@ cmake --build --preset dev
 ctest --test-dir build/dev -R support_your_first_test --output-on-failure
 ```
 
-Jeśli test się kompiluje i przechodzi — wszystkie cztery `psmCheck` są spełnione, `main()` dochodzi do
-`return 0;`.
+Jeśli test się kompiluje i przechodzi, wszystkie cztery warunki przekazane do `psmCheck` są
+spełnione, a `main()` dochodzi do `return 0;`.
 
 ## 5. Porównanie z istniejącym testem kursowym
 
-Warto zestawić swój plik z `controller_test.cpp`. Różnica nie powinna być w stylu (oba to seria
-`psmCheck`) — powinna być w **tym, co jest testowane**: `controller_test.cpp` nie dotyka `status` w
-ogóle, bo `classify` go nie przyjmuje. Nowy test istnieje właśnie dlatego, że `decideClassification` ma
-dodatkową ścieżkę, której `classify` nie ma. Jeśli wygląda identycznie jak `controller_test.cpp` z
-podmienioną nazwą funkcji — prawdopodobnie ścieżka `Missing`/`Stale` nie została jeszcze sprawdzona
-wcale.
+Porównaj swój plik z `controller_test.cpp`. Konstrukcja obu testów będzie podobna, ale powinny
+sprawdzać inne zachowanie. `controller_test.cpp` nie korzysta ze `status`, ponieważ `classify` nie ma
+takiego parametru. Nowy test jest potrzebny właśnie ze względu na dodatkową ścieżkę w
+`decideClassification`. Jeśli różni się od istniejącego testu tylko nazwą funkcji, zapewne nie
+sprawdza jeszcze przypadków `Missing` i `Stale`.
 
 ## 6. „Test przechodzi” a „test faktycznie coś wykrywa”
 
-Sam zielony wynik nie wystarcza. Trzeba jeszcze sprawdzić, czy test **wykrywa błąd**. Zrób to w
-kontrolowany sposób:
+Sam fakt, że test przechodzi, nie wystarcza. Trzeba jeszcze sprawdzić, czy test **wykrywa błąd**.
+Zrób to w kontrolowany sposób:
 
-1. Tymczasowo zepsuj `decideClassification` w `src/controller.cpp` — np. usuń warunek `status` i
-   zawsze wywołuj `classify(weight.grams)`, niezależnie od statusu.
+1. Tymczasowo wprowadź błąd do `decideClassification` w `src/controller.cpp`. Możesz na przykład
+   usunąć warunek `status` i zawsze wywoływać `classify(weight.grams)`, niezależnie od statusu.
 2. Przebuduj i uruchom ponownie swój test.
-3. Jeśli test **nadal jest zielony** mimo zepsutego kodu — nie testował ścieżki `status`, tylko
-   przypadkiem nie zauważył jej braku. Wróć do punktu 2 i dodaj przypadek, który faktycznie to
-   wykrywa.
-4. Cofnij zepsucie (`git checkout -- src/controller.cpp` albo ręcznie), upewnij się, że test znowu
+3. Jeśli test **nadal przechodzi** mimo błędnego kodu, nie sprawdzał ścieżki `status`. Wróć do punktu
+   2 i dodaj przypadek, który wykrywa ten błąd.
+4. Cofnij zmianę (`git restore src/controller.cpp` albo ręcznie) i upewnij się, że test znowu
    przechodzi na poprawnym kodzie.
 
 Tak samo oceniaj każdy test napisany w projekcie końcowym: powinien nie tylko przechodzić dla
@@ -145,7 +143,8 @@ poprawnego kodu, lecz także odrzucać błędną implementację.
 
 ## Co dalej
 
-Minimalne wymaganie tego ćwiczenia: w nowym pliku testowym **co najmniej dwa różne przypadki
-(`psmCheck`), z których co najmniej jeden realnie wykrywa zepsucie**, sprawdzone tak jak w kroku 6 —
-nie dwa osobne pliki wykonywalne, jeden plik z kilkoma sprawdzeniami w pełni wystarcza (patrz punkt 3).
-Gdy to gotowe — przejdź do `01_final_project_brief.md`.
+W nowym pliku umieść **co najmniej dwa różne przypadki testowe (`psmCheck`)**. Przynajmniej jeden z
+nich musi wykrywać błąd wprowadzony zgodnie z opisem w kroku 6. Nie twórz dwóch osobnych programów
+testowych. Wystarczy jeden plik z kilkoma sprawdzeniami, zgodnie z wyjaśnieniem w punkcie 3.
+
+Po wykonaniu ćwiczenia przejdź do `01_final_project_brief.md`.
