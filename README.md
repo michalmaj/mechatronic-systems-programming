@@ -11,7 +11,7 @@ przemysłowej sortowni: od pierwszego `enum class` aż po samodzielny projekt ko
 ## Dla kogo
 
 Kurs jest przeznaczony dla studentów mechatroniki i kierunków pokrewnych. Nie wymaga wcześniejszej
-znajomości C++ — wystarczą podstawy programowania w dowolnym języku. Zamiast serii niezależnych
+znajomości C++. Wystarczą podstawy programowania w dowolnym języku. Zamiast serii niezależnych
 ćwiczeń przez cały semestr rozwijasz ten sam system.
 
 ## Co zbudujesz
@@ -24,17 +24,16 @@ komputerze; do wykonania ćwiczeń nie potrzeba sprzętu laboratoryjnego.
 ## Jak wygląda nauka
 
 - Rdzeń kursu obejmuje moduły 0–9, czyli łącznie 35 misji.
-- Każdy moduł ma swój punkt startowy jako tag Git: `module-XX-start`. Do każdego jest też gotowe
-  rozwiązanie, `module-XX-solution` — możesz z niego korzystać, kiedy utkniesz, ale najwięcej
-  zyskujesz, dochodząc do rozwiązania samodzielnie. Dokumentację czytaj na `main`, gdzie nanosimy
-  poprawki i uzupełnienia. Tagi przechowują niezmienne wersje kodu dla poszczególnych modułów (zobacz
-  [Plan pracy](docs/roadmap.md#skąd-czytać-skąd-brać-kod)).
+- Każdy moduł ma swój punkt startowy zapisany jako tag Git: `module-XX-start`. Tag
+  `module-XX-solution` zawiera gotowe rozwiązanie. Możesz do niego zajrzeć, kiedy utkniesz, choć
+  najwięcej nauczysz się, dochodząc do rozwiązania samodzielnie. Dokumentację czytaj na `main`,
+  gdzie nanosimy poprawki i uzupełnienia. Tagi przechowują niezmienne wersje kodu dla poszczególnych
+  modułów. Więcej informacji znajdziesz w [planie pracy](docs/roadmap.md#skąd-czytać-skąd-brać-kod).
 - Symulacja jest sekwencyjna i powtarzalna: ten sam scenariusz zawsze daje ten sam wynik. Nie ma tu
   wątków ani losowości.
-- CMake i CTest to gotowa infrastruktura — konfigurujesz ją i uruchamiasz, nie budujesz od zera.
-  Każda misja ma własny test (`ctest -L misja-N`). Zielony test potwierdza wymagane zachowanie i
-  kończy misję, ale sam w sobie nie dowodzi zrozumienia — temu służą krótkie rozmowy sprawdzające, opisane w
-  planie pracy.
+- CMake i CTest są już skonfigurowane. Korzystasz z nich, ale nie tworzysz konfiguracji od zera.
+  Każda misja ma własny test (`ctest -L misja-N`). Wynik testu potwierdza wymagane zachowanie i
+  kończy misję. Krótkie rozmowy opisane w planie pracy sprawdzają również zrozumienie rozwiązania.
 - Na koniec samodzielnie rozbudujesz ukończony w trakcie kursu symulator.
 
 ## Szybki start
@@ -56,14 +55,14 @@ z odpowiedniego tagu `module-XX-start`. Szczegóły znajdziesz w planie pracy st
 
 ## Gdzie dalej
 
-- **[Plan pracy studenta](docs/roadmap.md)** — dokładna ścieżka od modułu 0 do obrony projektu
-  końcowego.
-- **[Podręcznik](docs/handbook.md)** — spójny materiał do każdego modułu.
-- **[Materiał modułów](course/README.md)** — treść wszystkich misji i zasady pracy z kodem.
-- **[Projekt końcowy](final_project/README.md)** — bufor wejściowy dla linii sortującej. Materiał
-  czytasz tu, na `main`; kod startowy bierzesz z tagu `final-project-start-v3`, dokładnie jak przy
+- **[Plan pracy studenta](docs/roadmap.md):** kolejność pracy od modułu 0 do rozmowy podsumowującej
+  projekt końcowy.
+- **[Podręcznik](docs/handbook.md):** omówienie zagadnień z każdego modułu.
+- **[Materiał modułów](course/README.md):** treść wszystkich misji i zasady pracy z kodem.
+- **[Projekt końcowy](final_project/README.md):** bufor wejściowy dla linii sortującej. Materiał
+  czytasz na `main`, a kod startowy bierzesz z tagu `final-project-start-v3`, tak jak przy
   modułach.
-- **[Zgłoszenia](../../issues)** — błędy w kodzie i testach, problemy w materiale, propozycje.
+- **[Zgłoszenia](../../issues):** błędy w kodzie i testach, problemy w materiale oraz propozycje zmian.
 
 ## Status
 
