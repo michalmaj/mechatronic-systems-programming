@@ -15,29 +15,29 @@ Nie trzeba osobno uruchamiać budowania. Po kliknięciu Run IDE zauważa zmianę
 wywołuje kompilator przed startem programu. Zachodzi więc sekwencja opisana w kroku 0.0: zmiana pliku
 źródłowego → kompilator → nowy plik wykonywalny → nowy proces.
 
-Powinieneś zobaczyć swój zmieniony napis. Jeśli tak — działa.
+Powinieneś zobaczyć zmieniony napis. To oznacza, że wszystko działa.
 
 ## Krok 2: celowy błąd
 
-Teraz zepsujemy coś celowo. W tym samym pliku usuń jeden średnik (`;`) na końcu dowolnej linii z
+Teraz świadomie wywołasz błąd. W tym samym pliku usuń jeden średnik (`;`) na końcu dowolnej linii z
 kodem. Zapisz plik i spróbuj uruchomić program ponownie.
 
-Tym razem program się nie uruchomi. Zamiast tego zobaczysz komunikat błędu kompilatora — zwykle
-czerwonym tekstem, w oknie "Output"/"Build" (Visual Studio) albo w oknie komunikatów kompilatora
+Tym razem program się nie uruchomi. Zamiast tego zobaczysz komunikat błędu kompilatora, zwykle
+zapisany czerwonym tekstem w oknie **Output** lub **Build** (Visual Studio) albo w oknie kompilacji
 (CLion).
 
 ## Jak czytać taki komunikat
 
 Typowy komunikat błędu zawiera trzy rzeczy, których szukamy w tej kolejności:
 
-1. **Nazwę pliku i numer linii** — wskazuje, gdzie kompilator napotkał problem. Czasem
-   nie musi to być linia, w której powstał błąd — brakujący średnik często ujawnia się dopiero w
-   *następnej* linii, bo dopiero tam kompilator "gubi wątek".
-2. **Pierwszy komunikat błędu** — jeśli widzisz kilkanaście linii błędów naraz, skup się na
-   pierwszym. Brakujący średnik potrafi wywołać lawinę kolejnych, pozornie niezwiązanych błędów —
-   napraw pierwszy, a reszta często zniknie sama.
-3. **Treść komunikatu** — kompilatory C++ bywają rozwlekłe, ale zwykle da się z nich wyłuskać
-   sedno (np. `expected ';'` — "oczekiwano średnika").
+1. **Nazwę pliku i numer linii.** Wskazuje, gdzie kompilator napotkał problem. Nie zawsze jest to
+   linia, w której powstał błąd. Brakujący średnik często ujawnia się dopiero w
+   *następnej* linii, bo dopiero tam kompilator traci kontekst.
+2. **Pierwszy komunikat błędu.** Jeśli widzisz kilkanaście linii błędów naraz, skup się na
+   pierwszym. Brakujący średnik potrafi wywołać lawinę kolejnych, pozornie niezwiązanych błędów.
+   Napraw pierwszy, a reszta często zniknie sama.
+3. **Treść komunikatu.** Kompilatory C++ bywają rozwlekłe, ale zwykle da się z nich wyłuskać
+   sedno, np. `expected ';'`, czyli „oczekiwano średnika”.
 
 ## Krok 3: naprawa
 

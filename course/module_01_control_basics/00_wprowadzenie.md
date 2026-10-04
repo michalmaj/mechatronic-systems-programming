@@ -3,16 +3,16 @@
 # 1.0 Wprowadzenie
 
 W module 0 uruchomiłeś dwa programy: `toolchain_check` i gotowy podgląd `simulator_cli`. Nie
-napisałeś ani jednej linijki logiki — chodziło wyłącznie o to, żeby Twoje środowisko działało.
+napisałeś jeszcze żadnej logiki programu. Celem było przygotowanie działającego środowiska.
 
 Teraz zaczyna się właściwa praca. W tym module zbudujesz od zera mały, ale kompletny system:
 paczkę, która porusza się przez kolejne strefy przenośnika i na końcu zostaje skierowana w jedną z
-dwóch stron — w zależności od swojej wagi. Na koniec modułu ten sam `simulator_cli`, który wcześniej
-tylko obejrzałeś, będzie Twoim własnym programem, wypisującym na konsolę wynik Twojej pracy.
+dwóch stron, zależnie od swojej wagi. Na koniec modułu ten sam `simulator_cli`, który wcześniej
+tylko oglądałeś, pokaże na konsoli działanie napisanego przez Ciebie kodu.
 
 ## Skąd startujesz
 
-Kod, który dostajesz na start, **kompiluje się od razu** — ale nie robi jeszcze nic sensownego.
+Kod startowy **kompiluje się od razu**, ale nie wykonuje jeszcze użytecznej pracy.
 Każda funkcja, którą będziesz uzupełniać, istnieje już w projekcie jako pusty szkielet z komentarzem
 `// TODO`. Twoim zadaniem w każdej misji jest wypełnienie jednego takiego miejsca, aż odpowiadający
 mu test przestanie zgłaszać błąd.
@@ -38,22 +38,22 @@ Moduł składa się z sześciu misji. Każda z nich:
 4. kończy się uruchomieniem **testu tej misji**,
 5. na końcu (w ostatniej misji) prosi o uruchomienie **całego** zestawu testów naraz.
 
-Testy do wszystkich sześciu misji już istnieją w projekcie — napisał je kurs, nie Ty. Twoja rola to
+Testy do wszystkich sześciu misji są już w projekcie. Twoim zadaniem jest
 sprawić, żeby przechodziły. Pisanie własnych testów to temat na później.
 
 ## Mapa modułu
 
-1. **Paczka i strefy** — czym jest paczka i gdzie może się znajdować.
-2. **Ruch paczki** — jak przesunąć paczkę o jedną strefę do przodu.
-3. **Stan przenośnika** — co się dzieje, gdy przenośnik jest pusty.
-4. **Decyzja sortowania** — jak zdecydować, w którą stronę skierować paczkę.
-5. **Pętla sterowania** — jak powtórzyć ten cykl wiele razy z rzędu.
-6. **Pierwszy przebieg** — Twój własny `main()`, wypisujący wynik na konsolę.
+1. **Paczka i strefy:** czym jest paczka i gdzie może się znajdować.
+2. **Ruch paczki:** jak przesunąć paczkę o jedną strefę do przodu.
+3. **Stan przenośnika:** co się dzieje, gdy przenośnik jest pusty.
+4. **Decyzja sortowania:** jak zdecydować, w którą stronę skierować paczkę.
+5. **Pętla sterowania:** jak powtórzyć ten cykl wiele razy z rzędu.
+6. **Pierwszy przebieg:** Twój własny `main()`, wypisujący wynik na konsolę.
 
 ## Zanim zaczniesz
 
-- Nie musisz nic zmieniać w plikach `CMakeLists.txt` — cała konfiguracja budowania jest już gotowa.
-- Nie musisz pisać ani modyfikować testów — tylko je uruchamiać.
+- Nie musisz nic zmieniać w plikach `CMakeLists.txt`. Konfiguracja budowania jest już gotowa.
+- Nie musisz pisać ani modyfikować testów. W tym module tylko je uruchamiasz.
 - Jeśli utkniesz, każda misja ma sekcję z najczęstszymi błędami na tym etapie.
 
 **Dalej:** [Misja 1: paczka i strefy](./01_paczka_i_strefy.md).

@@ -4,16 +4,15 @@
 
 ## Problem
 
-Masz już wszystkie kawałki: `Plant` reprezentuje stan, Controller (`classify` +
+Masz już wszystkie potrzebne elementy: `Plant` reprezentuje stan, sterownik (`classify` i
 `toDiverterPosition`) podejmuje decyzję, `advance` przesuwa paczkę o jeden krok, uwzględniając tę
-decyzję. Ale do tej pory wywoływałeś to wszystko ręcznie, pojedynczo, w testach. Prawdziwy system
-nie robi jednego kroku — powtarza ten sam cykl (obejrzyj stan → zdecyduj → działaj) raz za razem, aż
-coś się skończy.
+decyzję. Do tej pory wywoływałeś jednak każdą z tych funkcji osobno w testach. Działający system
+powtarza cały cykl: sprawdza stan, podejmuje decyzję i wykonuje działanie.
 
 ## Nowe elementy C++
 
-**`for`** — pętla powtarzająca blok kodu określoną liczbę razy. Tu: "wykonaj jeden krok symulacji,
-`tickCount` razy z rzędu".
+**`for`** to pętla powtarzająca blok kodu określoną liczbę razy. Tutaj służy do wykonania
+`tickCount` kolejnych kroków symulacji.
 
 ```cpp
 for (int i = 0; i < tickCount; ++i) {
@@ -36,15 +35,15 @@ void runTicks(Plant& plant, int tickCount);
 
 ## Co masz napisać
 
-Wypełnij `runTicks` tak, żeby dla każdego z `tickCount` "ticków" wykonać:
+Wypełnij `runTicks` tak, żeby dla każdego z `tickCount` ticków wykonać:
 
-1. jeśli `plant.item` ma wartość — policz `WeightClass` przez `classify(plant.item->mass)`, a
+1. jeśli `plant.item` ma wartość, policz `WeightClass` przez `classify(plant.item->mass)`, a
    następnie `DiverterPosition` przez `toDiverterPosition(...)` na tym wyniku,
 2. wywołaj `advance(plant, diverterPosition)`, gdzie `diverterPosition` to ta właśnie policzona
    wartość (jeśli `plant.item` jest puste, `advance` i tak nic nie zrobi, więc możesz podać
    dowolną wartość, np. `DiverterPosition::Straight`, gdy paczki nie ma).
 
-Funkcja `runTicks` łączy Controller z `Plant::advance` i powtarza ten krok `tickCount` razy.
+Funkcja `runTicks` łączy sterownik z `Plant::advance` i powtarza ten krok `tickCount` razy.
 
 ## Sprawdź się
 
@@ -56,22 +55,22 @@ Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test tworzy `Pla
 750-gramową paczką, wywołuje `runTicks(plant, 4)` i sprawdza, że paczka dotarła do `OutputHeavy`, a
 kolejny tick czyści ją z systemu.
 
-## Dlaczego Controller nadal nie jest klasą
+## Dlaczego sterownik nadal nie jest klasą
 
-Nazwą Controller obejmujemy dwie współpracujące funkcje: `classify` i `toDiverterPosition`. Żadna z
+Sterownik obejmuje dwie współpracujące funkcje: `classify` i `toDiverterPosition`. Żadna z
 nich nie przechowuje stanu, więc klasa z prywatnymi polami niczego by tu nie chroniła.
 
 ## Częste błędy
 
-- **Wywołanie `classify`/`toDiverterPosition`, gdy `plant.item` jest puste** — `plant.item->mass`
+- **Wywołanie `classify`/`toDiverterPosition`, gdy `plant.item` jest puste:** `plant.item->mass`
   na pustym `std::optional` to niezdefiniowane zachowanie. Sprawdź `has_value()` najpierw.
-- **Pętla `for` z błędnym warunkiem stopu** (`<=` zamiast `<`) — wykona się o jeden raz za dużo.
-- **Wywołanie `advance` tylko raz, poza pętlą** — cały sens tej misji to *powtórzenie* kroku, a nie
-  wykonanie go jednorazowo.
+- **Pętla `for` z błędnym warunkiem stopu** (`<=` zamiast `<`): wykona się o jeden raz za dużo.
+- **Wywołanie `advance` tylko raz, poza pętlą:** zadanie wymaga *powtarzania* kroku, a nie
+  wykonania go jednorazowo.
 
 ## Pytanie do zastanowienia
 
-Test tej misji sprawdza tylko stan `Plant` po serii ticków — nie widzi, co dzieje się "w środku" po
+Test tej misji sprawdza tylko stan `Plant` po serii ticków. Nie widzi, co dzieje się „w środku” po
 drodze. Czy to problem, czy zamierzona cecha takiego testu?
 
 **Dalej:** [Misja 6: pierwszy przebieg](./06_pierwszy_przebieg.md).

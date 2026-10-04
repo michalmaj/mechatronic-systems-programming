@@ -4,29 +4,28 @@
 
 ## Problem
 
-Nasza komórka sortująca to fizycznie jeden przenośnik podzielony na kilka odcinków — nazwijmy je
-**strefami**. Paczka wjeżdża na początku, przechodzi kolejno przez punkt kontrolny obecności,
+Komórka sortująca składa się z przenośnika podzielonego na kilka odcinków, które nazwiemy
+**strefami**. Paczka wjeżdża na przenośnik, przechodzi kolejno przez punkt kontrolny obecności,
 wagę, rozjazd (dywerter) i kończy w jednym z dwóch miejsc wyjściowych, zależnie od tego, ile waży.
 
 Zanim cokolwiek ruszymy, potrzebujemy dwóch rzeczy:
 - sposobu, żeby **nazwać** te miejsca w kodzie,
-- sposobu, żeby **opisać jedną konkretną paczkę** — gdzie akurat jest i ile waży.
+- sposobu, żeby **opisać jedną konkretną paczkę**, jej położenie i masę.
 
 ## Nowe elementy C++
 
-**`enum class`** — zamknięty zbiór nazwanych wartości. Moglibyśmy strefy zapisać jako zwykłe liczby
-(`0`, `1`, `2`...), ale wtedy nic nie chroni nas przed literówką w rodzaju "strefa 7", która nie
-istnieje. `enum class` pozwala napisać `Zone::Infeed` zamiast `0` — kompilator zna wszystkie
-wartości są dozwolone, i nie da się przez pomyłkę wpisać czegoś spoza tego zbioru.
+**`enum class`** opisuje zamknięty zbiór nazwanych wartości. Moglibyśmy strefy zapisać jako zwykłe
+liczby (`0`, `1`, `2`...), ale wtedy nic nie chroni nas przed pomyłką w rodzaju „strefa 7”, która nie
+istnieje. `enum class` pozwala napisać `Zone::Infeed` zamiast `0`. Kompilator zna wszystkie
+dozwolone wartości i nie pozwoli przez pomyłkę wpisać czegoś spoza tego zbioru.
 
 ```cpp
 enum class Zone { Infeed, PresenceCheck, Weighing, Diverting, OutputLight, OutputHeavy };
 ```
 
-**`struct`** — sposób na zgrupowanie kilku powiązanych ze sobą wartości w jedną całość. Paczka ma
-tożsamość (`id`), aktualne położenie (`zone`) i wagę (`mass`) — trzy różne rzeczy, ale wszystkie
-opisują tę samą paczkę. `struct` pozwala trzymać je razem, zamiast żonglować trzema osobnymi
-zmiennymi.
+**`struct`** pozwala zgrupować kilka powiązanych wartości. Paczka ma tożsamość (`id`), bieżące
+położenie (`zone`) i wagę (`mass`). Są to trzy różne informacje, ale wszystkie opisują tę samą
+paczkę. `struct` pozwala trzymać je razem, zamiast przekazywać trzy osobne zmienne.
 
 ```cpp
 struct Item {
@@ -39,8 +38,8 @@ struct Item {
 ## Co już masz gotowe
 
 Otwórz [`include/psm/zone.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/include/psm/zone.hpp) i
-[`include/psm/item.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/include/psm/item.hpp). Oba typy — `enum class Zone` i `struct Item`
-— są już w pełni zdefiniowane, tak jak w przykładzie wyżej. Nie zmieniaj ich.
+[`include/psm/item.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/include/psm/item.hpp). Oba typy, `enum class Zone` i `struct Item`,
+są już w pełni zdefiniowane, tak jak w przykładzie wyżej. Nie zmieniaj ich.
 
 To, czego brakuje, to **zachowanie**: sposób zamiany wartości `Zone` na czytelny dla człowieka
 napis. Zobacz [`src/zone.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-01-start/src/zone.cpp):
@@ -68,8 +67,8 @@ switch (zone) {
 }
 ```
 
-Usuń linijkę `(void)zone;` — była tam tylko po to, żeby kompilator nie narzekał na nieużywany
-parametr, zanim go faktycznie użyjesz.
+Usuń linię `(void)zone;`. Była potrzebna tylko po to, żeby kompilator nie zgłaszał nieużywanego
+parametru, zanim go faktycznie użyjesz.
 
 ## Sprawdź się
 
@@ -81,11 +80,11 @@ Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`.
 
 ## Częste błędy
 
-- **Brak `return` w którymś `case`** — wykonanie "przechodzi" do następnego przypadku (tzw.
+- **Brak `return` w którymś `case`:** wykonanie przechodzi do następnego przypadku (tzw.
   fall-through) i zwraca zły napis. Każdy `case` w tej funkcji powinien kończyć się swoim `return`.
-- **Literówka w napisie** — test porównuje napis znak w znak (`"PresenceCheck"`, nie
+- **Literówka w napisie:** test porównuje napis znak w znak (`"PresenceCheck"`, nie
   `"presence_check"` ani `"Presence Check"`).
-- **Pominięta wartość `Zone`** — jeśli zapomnisz `case` dla którejś strefy, kompilator prawdopodobnie
+- **Pominięta wartość `Zone`:** jeśli zapomnisz `case` dla którejś strefy, kompilator prawdopodobnie
   wypisze ostrzeżenie o niewyczerpanym `switch`. Warto je od razu naprawić, nie ignorować.
 
 ## Pytanie do zastanowienia

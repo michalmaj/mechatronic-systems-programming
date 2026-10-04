@@ -6,17 +6,17 @@ Ta misja wprowadza pierwszą klasę w kursie, dlatego część teoretyczna jest 
 
 ## Problem
 
-Prawdziwy rozjazd nie przeskakuje natychmiast z jednej pozycji w drugą — musi się fizycznie
+Prawdziwy rozjazd nie przeskakuje natychmiast z jednej pozycji w drugą. Musi się fizycznie
 przemieścić, co zajmuje czas. Potrzebujemy typu, który to odzwierciedla: pamięta, czego od niego
 chcemy (`DiverterCommand`), pamięta, gdzie faktycznie jest (`DiverterPosition`), i **nie pozwala
-nikomu z zewnątrz ustawić tej drugiej wartości na dowolną liczbę** — jedynym sposobem, żeby faktyczna
-pozycja się zmieniła, jest wywołanie jednej, konkretnej metody, krok po kroku.
+nikomu z zewnątrz ustawić tej drugiej wartości dowolnie**. Jedynym sposobem zmiany faktycznej
+pozycji jest wywołanie metody `resolve()`, która przesuwa dywerter krok po kroku.
 
 ## Dlaczego `class`, a nie `struct`
 
 W C++ zarówno `struct`, jak i `class` mogą mieć pola prywatne. Technicznie różnią się domyślnym
-poziomem dostępu: w `struct` jest nim `public`, a w `class` — `private`. Samo użycie słowa `class`
-nie chroni stanu.
+poziomem dostępu: w `struct` jest nim `public`, a w `class` jest nim `private`. Samo użycie słowa
+`class` nie chroni stanu.
 
 Stan chroni **enkapsulacja**, czyli prywatne pola udostępnione przez publiczne metody. W tym kursie
 przyjmujemy konwencję, że typ z takim ukrytym stanem zapisujemy jako `class`. `Plant` z modułu 1
@@ -38,15 +38,14 @@ private:
 };
 ```
 
-- `public` — metody, przez które świat zewnętrzny wchodzi w interakcję z dywerterem.
-- `private` — pola `command_`/`actual_`, niedostępne z zewnątrz w żaden inny sposób niż przez te
+- `public`: metody, przez które pozostała część programu komunikuje się z dywerterem.
+- `private`: pola `command_` i `actual_`, dostępne z zewnątrz tylko przez te
   metody.
-- `const` na końcu `actualPosition()`/`isSettled()` — te metody tylko odczytują stan, nigdy go nie
-  zmieniają (wrócimy do tego przy kolejnych klasach; na razie
-  wystarczy wiedzieć, że to obietnica "ta metoda nic nie zmienia").
+- `const` na końcu `actualPosition()` i `isSettled()` oznacza, że te metody nie zmieniają stanu.
+  Na razie wystarczy zapamiętać tę obietnicę. Wrócimy do niej przy kolejnych klasach.
 
-**Deklaracje** (nazwy metod, ich sygnatury, pola wraz z wartościami początkowymi) są już kompletne —
-to, co napiszesz, to **ciała** czterech metod.
+**Deklaracje**, czyli nazwy metod, ich sygnatury oraz pola z wartościami początkowymi, są już
+kompletne. Masz napisać **ciała** czterech metod.
 
 ## Niezmiennik, który chronimy
 
@@ -59,39 +58,40 @@ Pozycja docelowa (`target`) zależy od `command_`: `HoldStraight` → `Straight`
 
 | `actual_` przed | `command_`   | `target`   | `actual_` po |
 |-------------------|--------------|------------|-----------------|
-| `Straight`        | HoldStraight | `Straight` | `Straight` (bez zmian — już tam jest) |
+| `Straight`        | HoldStraight | `Straight` | `Straight` (bez zmian) |
 | `Straight`        | Divert       | `Diverted` | `Moving` (zaczyna się ruch) |
 | `Diverted`        | HoldStraight | `Straight` | `Moving` (zaczyna się ruch) |
-| `Diverted`        | Divert       | `Diverted` | `Diverted` (bez zmian — już tam jest) |
+| `Diverted`        | Divert       | `Diverted` | `Diverted` (bez zmian) |
 | `Moving`          | HoldStraight | `Straight` | `Straight` (dojeżdża) |
 | `Moving`          | Divert       | `Diverted` | `Diverted` (dojeżdża) |
 
-Każde wywołanie `resolve()` przesuwa co najwyżej o jeden krok: ustawiony-poprawnie zostaje na
-miejscu, ustawiony-źle zaczyna się ruszać, ruszający się dojeżdża.
+Każde wywołanie `resolve()` przesuwa dywerter najwyżej o jeden krok. Jeśli dywerter jest już w
+pozycji docelowej, pozostaje na miejscu. Jeśli jest w innej pozycji, zaczyna ruch. Jeśli jest w
+pozycji `Moving`, dojeżdża do celu.
 
 ## Semantyka `isSettled()`
 
-`isSettled()` to **żywe porównanie**, liczone na nowo przy każdym wywołaniu — nigdy zapamiętana
-wcześniej odpowiedź:
+`isSettled()` wykonuje porównanie na nowo przy każdym wywołaniu. Nie korzysta z zapamiętanej
+wcześniej odpowiedzi:
 
 ```cpp
 return actual_ == target(command_);
 ```
 
-To ma konkretną konsekwencję: jeśli wywołasz `setCommand(...)` i **nie** wywołasz jeszcze
+W praktyce oznacza to, że jeśli wywołasz `setCommand(...)` i **nie** wywołasz jeszcze
 `resolve()`, `isSettled()` musi natychmiast odzwierciedlić nową sytuację. Przykład: `actual_ ==
 Straight`, `command_ == HoldStraight` → `isSettled() == true`. Teraz wywołujesz
-`setCommand(Divert)`, ale jeszcze nie `resolve()` — `isSettled()` musi od razu zwrócić `false`
+`setCommand(Divert)`, ale jeszcze nie `resolve()`. `isSettled()` musi od razu zwrócić `false`
 (cel to teraz `Diverted`, `actual_` jeszcze się nie ruszył). Gdyby `isSettled()` zwracał zapamiętaną
 wcześniej flagę zamiast liczyć na nowo, dałby tu błędną odpowiedź.
 
 ## Co masz napisać
 
 W [`src/diverter.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-02-start/src/diverter.cpp) uzupełnij cztery metody:
-- `setCommand(DiverterCommand)` — zapisz argument w `command_`.
-- `resolve()` — zaimplementuj tabelę przejść powyżej.
-- `actualPosition() const` — zwróć `actual_`.
-- `isSettled() const` — policz i zwróć porównanie opisane wyżej.
+- `setCommand(DiverterCommand)`: zapisz argument w `command_`.
+- `resolve()`: zaimplementuj tabelę przejść powyżej.
+- `actualPosition() const`: zwróć `actual_`.
+- `isSettled() const`: policz i zwróć porównanie opisane wyżej.
 
 ## Sprawdź się
 
@@ -105,12 +105,12 @@ przejść w obie strony (`Straight`→`Diverted` i z powrotem) oraz sprawdza `is
 
 ## Częste błędy
 
-- **`isSettled()` liczące na podstawie starej, zapamiętanej wartości** zamiast porównania na żywo —
+- **`isSettled()` korzystające ze starej, zapamiętanej wartości** zamiast bieżącego porównania:
   ten błąd omówiony wyżej.
-- **`resolve()` przeskakujące od razu do celu** z `Straight`/`Diverted` (pomijając `Moving`) —
-  pamiętaj: settled-źle zawsze najpierw przechodzi przez `Moving`, dopiero kolejne `resolve()`
-  dojeżdża do celu.
-- **Zapomniany przypadek "już na miejscu"** — jeśli `actual_ == target`, `resolve()` nic nie robi
+- **`resolve()` przeskakujące od razu do celu** z `Straight` lub `Diverted`, z pominięciem `Moving`:
+  dywerter, który nie jest jeszcze w pozycji docelowej, powinien najpierw przejść do `Moving`.
+  Dopiero kolejne wywołanie `resolve()` doprowadza go do celu.
+- **Zapomniany przypadek „już na miejscu”:** jeśli `actual_ == target`, `resolve()` nic nie robi
   (nie ma po co ruszać dywertera, który już tam jest).
 
 ## Pytanie do zastanowienia

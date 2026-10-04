@@ -23,23 +23,23 @@ git switch -c <nazwa-twojego-brancha> module-02-start
 `module-02-start` zawiera kompletne rozwiązanie modułu 1. Testy `misja-1`–`misja-4` oraz `misja-6`
 powinny przechodzić od razu. W tym module wykonasz trzy nowe misje.
 
-(Jeśli zastanawiasz się, co stało się z testem `misja-5` z modułu 1 — jego rola została wchłonięta
-przez test Misji 9 tego modułu, ponieważ sposób, w jaki cała pętla ticków działa, zmienia się w tym
-module. Więcej o tym w Misji 9.)
+Jeśli zastanawiasz się, co stało się z testem `misja-5` z modułu 1, jego rolę przejął test misji 9.
+W tym module zmienia się sposób działania całej pętli ticków. Więcej na ten temat dowiesz się w
+misji 9.
 
 ## Mapa modułu
 
-1. **Polecenie a rzeczywistość** — dlaczego "czego chcemy" i "co fizycznie istnieje" to dwie różne
+1. **Polecenie a rzeczywistość:** dlaczego „czego chcemy” i „co fizycznie istnieje” to dwie różne
    rzeczy.
-2. **Dywerter jako klasa** — pierwsza klasa w kursie: chroniony stan wewnętrzny i publiczny
+2. **Dywerter jako klasa:** pierwsza klasa w kursie, chroniony stan wewnętrzny i publiczny
    interfejs.
-3. **Przenośnik czeka na dywerter** — spięcie wszystkiego w jedną, poprawną całość.
+3. **Przenośnik czeka na dywerter:** połączenie wszystkich elementów w działającą całość.
 
 ## Zanim zaczniesz
 
 - Tak jak w module 1: nie edytujesz `CMakeLists.txt`, testy są dostarczone przez kurs, a poziom
   prowadzenia maleje w miarę postępu przez misje.
-- Ten moduł jest mniejszy niż moduł 1 — trzy misje zamiast sześciu — bo korzysta z poznanych już
-  narzędziach (enumy, funkcje wolne, `std::optional`, pętle) zamiast wprowadzać je od nowa.
+- Ten moduł ma trzy misje zamiast sześciu, ponieważ korzysta z poznanych już narzędzi: typów
+  wyliczeniowych, funkcji wolnych, `std::optional` i pętli.
 
 **Dalej:** [Misja 7: polecenie a rzeczywistość](./01_polecenie_a_rzeczywistosc.md).
