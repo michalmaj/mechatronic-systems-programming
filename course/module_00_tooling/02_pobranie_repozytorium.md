@@ -7,8 +7,8 @@ pierwsze własne zmiany do zapisania.
 
 ## Ścieżka podstawowa: git clone
 
-Otwórz terminal (na Windows: możesz użyć "Git Bash", zainstalowanego razem z Git for Windows) i
-wykonaj, w miejscu na dysku, gdzie chcesz trzymać materiały kursu:
+Otwórz terminal (na Windows możesz użyć programu **Git Bash**, zainstalowanego razem z Git for
+Windows) i wykonaj, w miejscu na dysku, gdzie chcesz trzymać materiały kursu:
 
 ```bash
 git clone https://github.com/michalmaj/mechatronic-systems-programming.git
@@ -22,7 +22,7 @@ Jeśli instalacja Gita się nie powiodła, możesz tymczasowo pobrać pliki jako
 repozytorium w GitHubie kliknij zielony przycisk **Code**, wybierz **Download ZIP** i rozpakuj
 archiwum w wybranym miejscu.
 
-**To rozwiązanie tymczasowe.** Folder z rozpakowanego ZIP-a nie jest repozytorium Git — nie da się
+**To rozwiązanie tymczasowe.** Folder z rozpakowanego ZIP-a nie jest repozytorium Git. Nie da się
 w nim aktualizować zmian ani ich zapisywać w historii. Wystarczy do przejścia przez ten moduł;
 zanim zaczniesz zapisywać własne zmiany w kolejnym module, wrócimy do `git clone`.
 
@@ -32,4 +32,4 @@ Niezależnie od wybranej ścieżki, powinieneś mieć teraz folder `mechatronic-
 zawierający m.in. plik `CMakeLists.txt` w katalogu głównym. To sygnał, że masz kompletne
 repozytorium, gotowe do otwarcia w IDE.
 
-**Dalej:** [pierwszy build](./03_pierwszy_build.md).
+**Dalej:** [pierwsze budowanie projektu](./03_pierwszy_build.md).

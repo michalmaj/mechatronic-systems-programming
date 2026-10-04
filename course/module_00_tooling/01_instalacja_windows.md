@@ -9,7 +9,7 @@ Potrzebujesz Visual Studio 2022 z narzędziami C++ oraz Gita.
 1. W tym kursie używamy **Visual Studio 2022**. Pobierz instalator z oficjalnej strony historii
    wydań tej wersji:
    [learn.microsoft.com/visualstudio/releases/2022/release-history](https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-history)
-   — wystarczy darmowa edycja **Community**.
+   Wystarczy darmowa edycja **Community**.
 2. Uruchom instalator i na liście zestawów składników zaznacz **Desktop development with C++**
    (**Programowanie aplikacji klasycznych w C++**).
 3. W panelu **Installation details** (**Szczegóły instalacji**) sprawdź, czy jest zaznaczony składnik

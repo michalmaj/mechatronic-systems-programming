@@ -24,31 +24,31 @@ jest tekstem, a nie gotowym programem. Kompilator działa niezależnie od edytor
 ## CMake
 
 Kod w projekcie tego kursu składa się z wielu plików `.cpp`. CMake to narzędzie, które opisuje,
-jak te pliki połączyć w gotowe programy — które pliki wchodzą w skład którego programu, jakich
-opcji kompilatora użyć. CMake sam nie kompiluje kodu — woła kompilator za Ciebie, z odpowiednimi
+jak te pliki połączyć w gotowe programy: które pliki wchodzą w skład danego programu i jakich
+opcji kompilatora użyć. CMake sam nie kompiluje kodu. Uruchamia kompilator z odpowiednimi
 poleceniami.
 
 ## IDE (zintegrowane środowisko programistyczne)
 
 IDE (Visual Studio, CLion) to program, w którym piszesz kod i który *dla wygody* potrafi
 samodzielnie wywołać CMake i kompilator, pokazać Ci błędy w czytelnej formie i uruchomić gotowy
-program jednym kliknięciem. IDE nie jest kompilatorem — jest nakładką, która ułatwia korzystanie
+program jednym kliknięciem. IDE nie jest kompilatorem. To środowisko ułatwiające korzystanie
 z kompilatora i CMake, żebyś nie musiał wpisywać poleceń ręcznie w terminalu (na razie).
 
 ## Proces i plik wykonywalny
 
 Kiedy kompilator skończy pracę, powstaje **plik wykonywalny** (na Windows: `.exe`, na Linux/macOS:
-plik bez rozszerzenia, oznaczony jako uruchamialny) — gotowy program, leżący na dysku.
+plik bez rozszerzenia oznaczony jako uruchamialny). Jest to gotowy program zapisany na dysku.
 Kiedy uruchamiasz ten plik przez IDE, dwuklikiem albo z terminala, system operacyjny tworzy
 **proces**, czyli działający egzemplarz programu z własną pamięcią.
-Ten sam plik wykonywalny możesz uruchomić wiele razy — za każdym razem powstanie osobny proces.
+Ten sam plik wykonywalny możesz uruchomić wiele razy. Za każdym razem powstanie osobny proces.
 
 ## Dlaczego to wszystko ma znaczenie
 
-Kiedy coś "nie działa", pierwsze pytanie brzmi: na którym etapie? Czy to błąd kompilatora (kod się
-nie tłumaczy)? Czy to błąd CMake (pliki się nie łączą)? Czy program się zbudował, ale coś robi źle,
+Kiedy coś „nie działa”, pierwsze pytanie brzmi: na którym etapie? Czy to błąd kompilatora (kod się
+nie kompiluje)? Czy to błąd CMake (pliki się nie łączą)? Czy program się zbudował, ale coś robi źle,
 kiedy już działa jako proces? W kolejnych krokach nauczymy się to rozróżniać na żywym przykładzie.
 
-**Dalej:** instalacja narzędzi dla Twojego systemu —
+**Dalej:** wybierz instrukcję instalacji dla swojego systemu:
 [Windows](./01_instalacja_windows.md) · [Linux](./01_instalacja_linux.md) ·
 [macOS](./01_instalacja_macos.md).

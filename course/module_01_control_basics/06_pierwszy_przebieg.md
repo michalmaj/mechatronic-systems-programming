@@ -4,16 +4,16 @@
 
 ## Problem
 
-Wszystko, co napisałeś do tej pory, sprawdzały za Ciebie testy — uruchamiane po cichu, bez żadnego
-widocznego wyjścia. Czas zobaczyć to na własne oczy: napisać program, który tworzy jedną paczkę,
-przepuszcza ją przez system i pokazuje na konsoli, co się z nią dzieje, krok po kroku.
+Do tej pory działanie kodu sprawdzały testy, które nie pokazywały przebiegu programu. Czas zobaczyć
+go na własne oczy. Napiszesz program, który tworzy jedną paczkę, przepuszcza ją przez system i po
+każdym kroku pokazuje jej stan na konsoli.
 
 ## Nowe elementy C++
 
-**`main()`** — punkt wejścia programu. Widziałeś go już w `toolchain_check` (Moduł 0) i w gotowym
-podglądzie `simulator_cli`, ale to pierwszy raz, kiedy piszesz go sam, do własnego kodu.
+**`main()`** jest punktem wejścia programu. Znasz go już z `toolchain_check` (moduł 0) i z gotowego
+podglądu `simulator_cli`, ale teraz po raz pierwszy napiszesz go samodzielnie.
 
-**`std::cout`** — wypisywanie tekstu na konsolę, ten sam mechanizm co w `toolchain_check`.
+**`std::cout`** służy do wypisywania tekstu na konsolę, tak jak w `toolchain_check`.
 
 ## Co już masz gotowe
 
@@ -35,14 +35,14 @@ int main() {
 
 W `main()`:
 
-1. Stwórz `Plant` i dodaj do niego jedną paczkę przez `spawnItem` — wybierz dowolną masę (np. `750`
+1. Utwórz `Plant` i dodaj do niego jedną paczkę przez `spawnItem`. Wybierz dowolną masę, np. `750`
    gramów, żeby zobaczyć trasę przez `OutputHeavy`, albo coś poniżej `500`, żeby zobaczyć
-   `OutputLight`).
+   `OutputLight`.
 2. Napisz pętlę (np. na 6 ticków), która w każdym obiegu: jeśli `plant.item` ma wartość, liczy
    `WeightClass` i `DiverterPosition` (tak jak `runTicks` z misji 5), wywołuje
    `advance(plant, ...)`, a następnie **wypisuje** numer ticku oraz aktualną strefę paczki (albo
    napis w rodzaju `"empty"`, jeśli `plant.item` już nie ma wartości). Do zamiany strefy na tekst
-   użyj `psm::toString(zone)` z Misji 1 — pamiętaj o `#include <psm/zone.hpp>`.
+   użyj `psm::toString(zone)` z misji 1. Pamiętaj o `#include <psm/zone.hpp>`.
 
 Nie korzystaj tutaj z `runTicks`, ponieważ ta funkcja nie udostępnia wyniku po każdym kroku. Napisz
 w `main()` niewielką pętlę, która używa tych samych funkcji `classify`, `toDiverterPosition` i
@@ -59,7 +59,7 @@ tick 4: empty
 
 ## Sprawdź się
 
-Najpierw smoke test — sprawdza tylko, że program się uruchamia i kończy bez błędu:
+Najpierw uruchom test podstawowy. Sprawdza on tylko, czy program uruchamia się i kończy bez błędu:
 
 ```bash
 ctest --preset test -L misja-6
@@ -72,13 +72,13 @@ cmake --build --preset dev
 ./build/dev/apps/simulator_cli/simulator_cli
 ```
 
-(na Windows: `.\build\dev\apps\simulator_cli\Debug\simulator_cli.exe`, dokładna ścieżka zależy od
+(na Windows: `.\build\dev\apps\simulator_cli\Debug\simulator_cli.exe`; ścieżka zależy od
 generatora Twojego IDE).
 
 Sprawdź, czy widzisz sensowną sekwencję stref, kończącą się dotarciem do `OutputLight` albo
 `OutputHeavy` (zależnie od masy, którą wybrałeś), a potem `empty`.
 
-## Koniec modułu — pełny zestaw testów
+## Koniec modułu: pełny zestaw testów
 
 Teraz, gdy wszystkie sześć misji jest zrobionych, uruchom cały zestaw naraz, bez żadnego filtra:
 
@@ -100,22 +100,22 @@ git commit -m "..."
 
 ## Częste błędy
 
-- **Wywołanie `plant.item->mass` bez sprawdzenia `has_value()`** — tak jak w Misji 5, to
+- **Wywołanie `plant.item->mass` bez sprawdzenia `has_value()`:** tak jak w misji 5, to
   niezdefiniowane zachowanie, gdy przenośnik jest pusty.
-- **Program kończy się natychmiast bez żadnego wyjścia** — sprawdź, czy naprawdę wypisujesz coś
-  wewnątrz pętli, a nie tylko raz na końcu (albo wcale).
-- **Brak `#include <psm/zone.hpp>`** przy próbie użycia `psm::toString` — `plant.hpp` go nie
+- **Program kończy się natychmiast i niczego nie wypisuje:** sprawdź, czy używasz `std::cout`
+  wewnątrz pętli, a nie tylko raz na końcu.
+- **Brak `#include <psm/zone.hpp>`** przy próbie użycia `psm::toString`: `plant.hpp` go nie
   dociąga automatycznie w sposób, na którym warto polegać; dołącz go jawnie.
 
 ## Pytanie do zastanowienia
 
 Porównaj kod w `main()` z `runTicks` z misji 5. Co się w nich powtarza, a co jest różne? Czy ta
-odrobina duplikacji Ci przeszkadza — i dlaczego (albo dlaczego nie) na
-tym etapie projektu jest to akceptowalne?
+niewielka ilość powtórzonego kodu Ci przeszkadza? Dlaczego na tym etapie projektu jest jeszcze
+akceptowalna?
 
 ## Koniec modułu 1
 
-Masz teraz działający, kompletny (choć mały) system: paczkę poruszającą się przez strefy i sortowaną
-według wagi, ze stanem oddzielonym od decyzji. To jest ta sama architektura, do której ten
-projekt doszedł na samym początku swojej historii — w kolejnych modułach będziesz ją rozbudowywać
-o kolejne elementy: aktuatory z własnym stanem, tryby pracy, bezpieczeństwo, czujniki i usterki.
+Masz teraz działający, kompletny (choć mały) system, w którym paczka porusza się przez kolejne
+strefy i jest sortowana według wagi. Stan systemu jest oddzielony od logiki podejmowania decyzji.
+W kolejnych modułach rozbudujesz tę architekturę o aktuatory z własnym stanem, tryby pracy,
+bezpieczeństwo, czujniki i usterki.

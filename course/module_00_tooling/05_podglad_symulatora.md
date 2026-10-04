@@ -25,9 +25,9 @@ jeszcze analizować każdej linii. Tryby pracy, strefy i czujniki zostaną wyja�
 modułach.
 
 Oba programy należą do tego samego projektu C++: prosty `toolchain_check` i znacznie większy
-symulator. W następnych modułach będziesz stopniowo budować ten drugi.
+symulator. W następnych modułach będziesz stopniowo tworzyć logikę tego symulatora.
 
 ## Koniec modułu 0
 
-Jeśli dotarłeś tutaj i widziałeś działające wyjście obu programów — masz gotowe środowisko i
+Jeśli oba programy się uruchomiły i wyświetliły wynik, środowisko jest gotowe, a Ty
 wiesz, jak wygląda podstawowy cykl pracy. To wszystko, czego potrzebujesz, żeby zacząć.
