@@ -4,9 +4,9 @@
 
 ## Problem
 
-Moduł 6 nauczył czujniki uczciwie przyznawać się do usterki, zamiast udawać, że wszystko działa.
-Aktuator zasługuje na to samo: fizycznie zablokowany dywerter **nie może** się ruszyć, i
-`Diverter::resolve()` nie powinien udawać inaczej.
+W module 6 zasymulowaliśmy usterki czujników. Teraz zrobimy to samo dla dywertera. Jeśli mechanizm
+jest zablokowany, jego rzeczywiste położenie nie może się zmienić. `Diverter::resolve()` musi to
+uwzględniać.
 
 ## Nowy element C++
 
@@ -14,12 +14,10 @@ Aktuator zasługuje na to samo: fizycznie zablokowany dywerter **nie może** si�
 enum class DiverterFaultKind { Blocked };
 ```
 
-Zwróć uwagę: to **osobny** typ od `SensorFaultKind` (`Missing`/`Stale` — to, co do niedawna nazywało
-się `FaultKind`, zanim ten moduł rozdzielił nazwę na `SensorFaultKind`, aby zakres był
-jawny w samej nazwie). Gdyby dywerter dzielił jeden wspólny typ usterki z czujnikami, nic nie
-broniłoby przed wywołaniem w rodzaju "zablokowany czujnik obecności" albo "brakujący dywerter" —
-kombinacji bez żadnego sensu, które i tak by się skompilowały. Osobny typ sprawia, że taka pomyłka po
-prostu nie przechodzi przez kompilator.
+Usterki dywertera mają osobny typ. `SensorFaultKind` opisuje wyłącznie usterki czujników, takie jak
+`Missing` i `Stale`. Dzięki temu kompilator nie pozwoli przekazać usterki dywertera do czujnika ani
+usterki czujnika do dywertera. Jeden wspólny typ dopuszczałby bezsensowne połączenia, na przykład
+zablokowany czujnik obecności.
 
 ```cpp
 void resolve(std::optional<DiverterFaultKind> fault = std::nullopt);
@@ -27,29 +25,33 @@ void resolve(std::optional<DiverterFaultKind> fault = std::nullopt);
 
 ## Dokładna reguła
 
-Gdy `fault == DiverterFaultKind::Blocked`, `resolve()` **nic nie robi** — `actual_` nie zmienia się
-wcale, nawet w stronę `Moving`. W przeciwnym razie zachowanie jest identyczne jak
-dotychczas — cała logika trzech stanów z modułu 2 zostaje bez zmian, tylko poprzedzona tym jednym
-sprawdzeniem.
+Jeśli `fault == DiverterFaultKind::Blocked`, metoda `resolve()` kończy działanie bez zmiany
+`actual_`. Dotyczy to również sytuacji, w której dywerter zatrzymał się w stanie `Moving`.
 
-`isSettled()` **nie wymaga żadnej zmiany**. Już teraz porównuje `actual_` z celem *aktualnego
-polecenia*, czego potrzeba, aby poprawnie zgłosić „nieustawiony” dla
-dywertera zamrożonego w połowie przejścia przez blokadę.
+Bez usterki metoda ma działać dokładnie tak jak w module 2. Całą dotychczasową logikę trzech stanów
+poprzedź jednym sprawdzeniem.
+
+Nie zmieniaj `isSettled()`. Metoda porównuje rzeczywiste położenie dywertera z położeniem zadanym.
+Jeśli mechanizm zostanie zablokowany przed osiągnięciem celu, zwróci `false`, czyli właściwy wynik.
 
 ## Co już masz gotowe
 
-[`include/psm/diverter_fault_kind.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/include/psm/diverter_fault_kind.hpp) — typ gotowy.
+[`include/psm/diverter_fault_kind.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/include/psm/diverter_fault_kind.hpp)
+zawiera gotowy typ usterki.
 
-[`include/psm/diverter.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/include/psm/diverter.hpp) — sygnatura `resolve` już
-zaktualizowana.
+W pliku
+[`include/psm/diverter.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/include/psm/diverter.hpp)
+sygnatura `resolve()` jest już zaktualizowana.
 
-[`src/diverter.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/src/diverter.cpp) — cała dotychczasowa logika trzech stanów obecna i
-niezmieniona; brakuje tylko sprawdzenia `Blocked` na samym początku (`// TODO`).
+W pliku
+[`src/diverter.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/src/diverter.cpp)
+znajdziesz dotychczasową logikę trzech stanów. Brakuje tylko sprawdzenia `Blocked` na początku
+metody, w miejscu oznaczonym `// TODO`.
 
 ## Co masz napisać
 
-Dodaj sprawdzenie `fault == DiverterFaultKind::Blocked` na początku `resolve()`, zanim cokolwiek
-innego się wykona.
+Na początku `resolve()` sprawdź, czy `fault == DiverterFaultKind::Blocked`. Zrób to przed zmianą
+któregokolwiek stanu dywertera.
 
 ## Sprawdź się
 
@@ -57,23 +59,22 @@ innego się wykona.
 ctest --preset test -L misja-25
 ```
 
-Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test sprawdza, że przy `Blocked`
-`resolve()` nic nie robi (łącznie z zatrzymaniem w stanie `Moving`, jeśli usterka pojawia się
-w połowie przejścia),
-i że działanie bez usterki pozostaje takie jak w module 2.
+Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test potwierdza, że przy usterce
+`Blocked` metoda `resolve()` nie zmienia stanu dywertera, również po zatrzymaniu go w położeniu
+`Moving`. Sprawdza też, czy bez usterki dywerter nadal działa tak jak w module 2.
 
 ## Częste błędy
 
-- **Sprawdzanie `fault.has_value()` zamiast porównania z `DiverterFaultKind::Blocked`** — na razie to
-  ten sam efekt (jest tylko jedna wartość), ale porównanie z konkretną wartością jest jaśniejsze i
-  odporne na przyszłe rozszerzenie typu.
-- **Umieszczenie sprawdzenia `Blocked` po istniejącej logice**, zamiast przed nią — wtedy dywerter
-  zdążyłby się poruszyć o jeden krok, zanim blokada go zatrzyma.
+- **Sprawdzenie samego `fault.has_value()` zamiast porównania z `DiverterFaultKind::Blocked`**:
+  obecnie da taki sam wynik, bo typ ma tylko jedną wartość. Jawne porównanie jest jednak
+  czytelniejsze i pozostanie poprawne po dodaniu kolejnych rodzajów usterek.
+- **Sprawdzenie `Blocked` po dotychczasowej logice**: dywerter zdąży wtedy zmienić stan, zanim
+  blokada zostanie uwzględniona.
 
 ## Pytanie do zastanowienia
 
-`SensorFaultKind` ma dwie wartości (`Missing`, `Stale`), `DiverterFaultKind` na razie tylko jedną
-(`Blocked`). Dlaczego mimo to warto zdefiniować go jako osobny `enum`, a nie np. jako `bool
-isBlocked`?
+`SensorFaultKind` ma dwie wartości (`Missing`, `Stale`), a `DiverterFaultKind` na razie tylko jedną
+(`Blocked`). Dlaczego mimo to warto użyć osobnego typu wyliczeniowego zamiast parametru
+`bool isBlocked`?
 
-**Dalej:** [Misja 26: termin rutowania](./02_termin_rutowania.md).
+**Dalej:** [Misja 26: limit czasu na ustawienie dywertera](./02_termin_rutowania.md).
