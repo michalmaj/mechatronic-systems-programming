@@ -1,11 +1,11 @@
 🇵🇱 Polski | [🇬🇧 English](01_model_i_walidacja.en.md)
 
-# 9.1 Model i walidacja
+# 9.1 Model i sprawdzanie poprawności
 
 ## Problem
 
-Każdy scenariusz do tej pory był napisany ręcznie, jedno wywołanie na raz. Nie ma sposobu, żeby zapisać
-"co ma się wydarzyć" jako jedną, sprawdzalną wartość, zanim cokolwiek zostanie uruchomione.
+Dotychczas scenariusze były zapisane jako ciąg pojedynczych wywołań. Nie można było opisać całego
+przebiegu jedną wartością i sprawdzić go przed uruchomieniem symulacji.
 
 ## Nowe elementy C++
 
@@ -31,54 +31,57 @@ struct Scenario {
 bool isValidScenario(const Scenario& scenario);
 ```
 
-`ScriptedSensorFault`/`ScriptedDiverterFault` są dwoma **osobnymi** typami, nie jednym wspólnym
-„usterka + cel”. Podobnie jak przy `SensorFaultKind` i `DiverterFaultKind` w module 7,
-nielegalna kombinacja ma być niewyrażalna w typach, nie odrzucana dopiero w trakcie działania programu.
+`ScriptedSensorFault` i `ScriptedDiverterFault` są osobnymi typami. Dzięki temu nie można połączyć
+rodzaju usterki z niewłaściwym celem, na przykład usterki dywertera z czujnikiem. Taka pomyłka jest
+wykrywana podczas kompilacji, a nie dopiero w trakcie działania programu.
 
-`duration` żyje na `Scenario`, nie jako osobny parametr — scenariusz ma być kompletnym opisem
-powtarzalnego eksperymentu, a to, jak długo trwa, jest częścią tego opisu.
+`duration` jest polem `Scenario`, ponieważ czas trwania należy do opisu eksperymentu. Funkcja nie
+przyjmuje go jako osobnego parametru.
 
-**Kolejność elementów w każdym wektorze nie ma znaczenia.** Każda reguła niżej jest zdefiniowana przez
-wartości `at`/`from`/`until` zapisane w danych, nie przez pozycję w wektorze.
+Kolejność elementów w wektorach nie ma znaczenia. O ich wykonaniu decydują wartości `at`, `from` i
+`until`, a nie pozycja w kontenerze.
 
 ## Dokładne reguły
 
-1. Każdy przedział usterki: `from < until` i `until <= duration`.
-2. Żadne dwie `ScriptedSensorFault` o tym samym `target` nie mogą się nakładać `[from, until)`.
-   Nakładanie się dla *różnych* targetów jest w porządku.
-3. Żadne dwie `ScriptedDiverterFault` nie mogą się nakładać (jest jeden dywerter).
-4. Wejścia operatora, per tick: żaden powtórzony `ScenarioInputKind` na tym samym ticku; co najwyżej
-   dwa różne rodzaje na tym samym ticku, ale wyłącznie para `{EmergencyStopReleased, Reset}`.
-   **To węższy kontrakt niż sam `Engine`** — `nextEStopLatchState`/`modeStep` obsługują `Reset` i
-   `StartRequested` ustawione jednocześnie bezpiecznie (niezmienione od modułu 5), ale odporność `Engine`
-   na kombinację flag to inny kontrakt niż to, co dobrze napisany `Scenario` powinien *mówić*. Scenariusz,
-   który chce obu efektów, zapisuje je na osobnych tickach.
-5. Każde `operatorInputs.at` musi być `< duration`.
-6. Każde `arrivals.at` musi być `< duration`.
-7. Żadne dwa `arrivals` nie mogą dzielić tego samego `at` — to zawsze niewykonalne (Infeed mieści
-   jedną paczkę), więc wykrywalne statycznie.
-8. Każdy `ItemId` w `arrivals` musi być unikalny globalnie w całym `Scenario` — nie tylko "unikalny
-   wśród aktualnie obecnych” (słabszy niezmiennik `Plant` z modułu 8). To uproszczenie sprawia, że
-   autor scenariusza nie musi znać momentu odjazdu, aby stwierdzić, czy ponowne użycie id
-   jest bezpieczne.
+1. Każdy przedział usterki spełnia `from < until` oraz `until <= duration`.
+2. Przedziały dwóch usterek czujnika o tym samym `target` nie mogą się nakładać. Przedział
+   `[from, until)` obejmuje `from`, ale nie obejmuje `until`. Usterki różnych czujników mogą być
+   aktywne jednocześnie.
+3. Przedziały usterek dywertera nie mogą się nakładać, ponieważ układ ma tylko jeden dywerter.
+4. W jednym ticku dany `ScenarioInputKind` może wystąpić najwyżej raz. Dopuszczalne są najwyżej dwa
+   różne polecenia i tylko w parze `{EmergencyStopReleased, Reset}`.
 
-`duration == 0` jest jawnie poprawnym, granicznym przypadkiem — pusty scenariusz o zerowym czasie
-trwania. Powyższe reguły same to gwarantują: żaden `at`/`from` nie może spełnić `< 0` dla nieujemnego
-`Tick`, więc poprawny scenariusz o `duration == 0` musi mieć wszystkie wektory puste.
+   Jest to bardziej rygorystyczne niż wymagania samego `Engine`. Funkcje `nextEStopLatchState()` i
+   `modeStep()` potrafią bezpiecznie obsłużyć jednoczesne `Reset` i `StartRequested`, ale poprawny
+   scenariusz powinien zapisać te polecenia w osobnych tickach.
+5. Każde `operatorInputs.at` jest mniejsze od `duration`.
+6. Każde `arrivals.at` jest mniejsze od `duration`.
+7. W jednym ticku może być zaplanowane najwyżej jedno przybycie. `infeed` mieści tylko jedną paczkę,
+   więc dwóch takich operacji nie da się wykonać.
+8. Każdy `ItemId` w `arrivals` jest unikalny w całym `Scenario`. Jest to silniejszy warunek niż w
+   `Plant`, gdzie identyfikator musi być unikalny tylko wśród paczek obecnych w danej chwili. Dzięki
+   temu autor scenariusza nie musi ustalać, czy poprzednia paczka o tym samym identyfikatorze zdążyła
+   już opuścić układ.
+
+`duration == 0` jest poprawnym przypadkiem granicznym. Taki scenariusz musi mieć puste wektory,
+ponieważ żadna nieujemna wartość `Tick` nie jest mniejsza od zera.
 
 ## Co już masz gotowe
 
-[`include/psm/scenario_input.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scenario_input.hpp),
+Pliki
+[`scenario_input.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scenario_input.hpp),
 [`scripted_item_arrival.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scripted_item_arrival.hpp),
 [`scripted_sensor_fault.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scripted_sensor_fault.hpp),
-[`scripted_diverter_fault.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scripted_diverter_fault.hpp),
-[`scenario.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scenario.hpp) — wszystkie kształty i sygnatura `isValidScenario`
-gotowe.
+[`scripted_diverter_fault.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scripted_diverter_fault.hpp)
+i
+[`scenario.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/include/psm/scenario.hpp)
+zawierają gotowe definicje typów oraz deklarację `isValidScenario()`.
 
 ## Co masz napisać
 
-Uzupełnij ciało `isValidScenario` w [`src/scenario.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/src/scenario.cpp) zgodnie z ośmioma
-regułami powyżej.
+Uzupełnij `isValidScenario()` w
+[`src/scenario.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/src/scenario.cpp)
+zgodnie z ośmioma regułami opisanymi powyżej.
 
 ## Sprawdź się
 
@@ -86,21 +89,21 @@ regułami powyżej.
 ctest --preset test -L misja-33
 ```
 
-Oczekiwany wynik: `100% tests passed`. Test sprawdza każdą z ośmiu reguł osobno, plus graniczny
-przypadek `duration == 0`.
+Oczekiwany wynik: `100% tests passed`. Test sprawdza osobno każdą z ośmiu reguł oraz przypadek
+`duration == 0`.
 
 ## Częste błędy
 
-- **Traktowanie `{Reset, StartRequested}` jako dozwolonej pary** — to *nie* jest to samo pytanie co
-  "czy `Engine` sobie z tym poradzi". `Scenario` ma węższy kontrakt.
-- **Sprawdzanie nakładania się usterek czujników bez uwzględnienia `target`** — nakładanie się dla
-  różnych czujników jest w porządku, tylko dla tego samego jest błędem.
-- **Odrzucanie `duration == 0`** — to jawnie poprawny przypadek, nie błąd do złapania.
+- **Dopuszczenie pary `{Reset, StartRequested}`**: fakt, że `Engine` potrafi ją obsłużyć, nie oznacza,
+  że spełnia ona bardziej rygorystyczne wymagania `Scenario`.
+- **Sprawdzenie nakładania się usterek czujników bez uwzględnienia `target`**: jednoczesne usterki
+  różnych czujników są dozwolone.
+- **Odrzucenie `duration == 0`**: pusty scenariusz o zerowym czasie trwania jest poprawny.
 
 ## Pytanie do zastanowienia
 
-Reguła 8 wymaga globalnej unikalności id w całym `Scenario`, mimo że `Plant` sam wymaga tylko
-unikalności wśród aktualnie obecnych paczek. Jaki konkretny scenariusz byłby poprawny względem reguły
-`Plant`, ale odrzucony przez regułę 8?
+Reguła 8 wymaga unikalnych identyfikatorów w całym `Scenario`, choć `Plant` sprawdza tylko paczki
+obecne w danej chwili. Podaj przykład scenariusza, który spełnia wymagania `Plant`, ale zostanie
+odrzucony przez regułę 8.
 
-**Dalej:** [Misja 34: odtwarzacz](./02_odtwarzacz.md).
+**Dalej:** [Misja 34: uruchamianie scenariusza](./02_odtwarzacz.md).
