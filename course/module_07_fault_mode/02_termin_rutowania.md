@@ -1,15 +1,15 @@
 🇵🇱 Polski | [🇬🇧 English](02_termin_rutowania.en.md)
 
-# 7.2 Termin rutowania
+# 7.2 Limit czasu na ustawienie dywertera
 
-To najważniejsza misja tego modułu pod względem teorii. Przeczytaj ją całą, zanim zaczniesz pisać
-kod.
+W tej misji ważna jest nie tylko implementacja licznika, lecz także ustalenie, kiedy powinien on
+być zerowany. Przeczytaj opis reguły przed rozpoczęciem pracy.
 
 ## Problem
 
-`Plant` czeka w strefie `Diverting`, aż dywerter się ustawi — dziś bez żadnego limitu czasu i bez
-żadnego sposobu, żeby ktokolwiek się dowiedział, że czeka za długo. Zablokowany dywerter z Misji 25
-zamraża paczkę na zawsze, po cichu.
+W strefie `Diverting` obiekt `Plant` czeka, aż dywerter osiągnie właściwe położenie. Obecnie nie ma
+żadnego limitu tego oczekiwania. Jeśli dywerter zostanie zablokowany, paczka pozostanie w tej strefie,
+a program nie zgłosi przyczyny problemu.
 
 ## Nowy element C++
 
@@ -17,9 +17,9 @@ zamraża paczkę na zawsze, po cichu.
 enum class SystemEventKind { DiverterNotReady, RoutingDeadlineMissed };
 ```
 
-Typ pojawia się razem z pierwszym zastosowaniem, a nie w osobnej misji bez widocznego efektu.
+Typ pojawia się razem z pierwszym miejscem, w którym jest potrzebny.
 
-`Plant` zyskuje licznik:
+`Plant` otrzymuje licznik:
 
 ```cpp
 struct Plant {
@@ -28,50 +28,54 @@ struct Plant {
 };
 ```
 
-`advance()` zamienia swój typ zwracany z `void` na `std::optional<SystemEventKind>` — to zmiana
-darmowa i wsteczna: każde dotychczasowe wywołanie (`plant_test.cpp`, `plant_diverter_test.cpp`,
-`loop.cpp`, `Engine::step()`) woła `advance(...)` jako samodzielną instrukcję, odrzucając wynik — a
-to zostaje legalnym C++ niezależnie od typu zwracanego. Żadne z tych wywołań nie wymaga edycji.
+Typ zwracany przez `advance()` zmienia się z `void` na `std::optional<SystemEventKind>`. Istniejące
+wywołania tej funkcji nadal są poprawne. W C++ można zignorować zwracaną wartość, jeśli w danym
+miejscu nie jest potrzebna. Dlatego nie musisz zmieniać dotychczasowych wywołań w
+`plant_test.cpp`, `plant_diverter_test.cpp`, `loop.cpp` ani `Engine::step()`.
 
 ## Dokładna reguła
 
 W gałęzi `Diverting`:
 
-- Jeśli `!routingReady`: **zresetuj `divertingWaitTicks` do `0`** i zwróć `std::nullopt`. **Nie**
-  zamrażaj licznika — patrz niżej, dlaczego to ważne.
-- Jeśli `routingReady`, ale `!diverter.isSettled()`: zwiększ `divertingWaitTicks`; zwróć
-  `DiverterNotReady`, jeśli licznik wciąż `<= 1`, `RoutingDeadlineMissed`, jeśli licznik przekroczył
-  `1`.
-- Jeśli ustawiony: rutuj normalnie, zresetuj licznik do `0`.
+- Jeśli `!routingReady`, wyzeruj `divertingWaitTicks` i zwróć `std::nullopt`. Nie pozostawiaj
+  dotychczasowej wartości licznika. Powód opisujemy poniżej.
+- Jeśli `routingReady`, ale `!diverter.isSettled()`, zwiększ `divertingWaitTicks`. Zwróć
+  `DiverterNotReady`, dopóki licznik jest mniejszy lub równy `1`. Po przekroczeniu tej wartości zwróć
+  `RoutingDeadlineMissed`.
+- Jeśli dywerter jest ustawiony, skieruj paczkę do odpowiedniego wyjścia i wyzeruj licznik.
 
-Licznik resetuje się też przy przejściu `Weighing` → `Diverting` — świeża paczka zaczyna z czystym
-licznikiem, niezależnie od tego, co zostało po poprzedniej.
+Licznik należy wyzerować także przy przejściu `Weighing` → `Diverting`. Każda paczka zaczyna w ten
+sposób z pełnym limitem czasu, niezależnie od przebiegu poprzedniego cyklu.
 
-## Dlaczego termin mierzy wyłącznie *ciągłą, aktywną* próbę
+## Dlaczego licznik obejmuje tylko kolejne aktywne próby
 
-To jest sedno tej misji. Wyobraź sobie, że `!routingReady` **zamrażałoby** licznik zamiast go
-zerować. Wtedy przerwa niezwiązana z samym dywerterem — e-stop, tryb, brakująca jeszcze klasyfikacja
-— po cichu zjadałaby część limitu czasu dywertera. Parcela mogłaby dostać `RoutingDeadlineMissed` nie
-dlatego, że dywerter naprawdę utknął, tylko dlatego, że coś zupełnie innego wstrzymało próby
-rutowania na kilka ticków wcześniej. To pomieszałoby dwie zupełnie różne przyczyny w jeden sygnał.
+Załóżmy, że przy `!routingReady` licznik zachowuje swoją wartość. Przerwa spowodowana naciśnięciem
+przycisku awaryjnego, zmianą trybu pracy albo brakiem klasyfikacji skracałaby wtedy czas dostępny
+dywerterowi. Program mógłby zgłosić `RoutingDeadlineMissed`, choć sam dywerter nie miał jeszcze
+wystarczającej liczby kolejnych prób ustawienia się. Jeden sygnał opisywałby wówczas kilka różnych
+przyczyn zatrzymania.
 
-Zerowanie przy `!routingReady` sprawia, że termin mierzy liczbę kolejnych ticków, w których
-z rzędu dywerter dostawał **realną** szansę się ustawić i jej nie wykorzystał.
+Zerowanie licznika przy `!routingReady` zapobiega takiej sytuacji. Licznik obejmuje tylko kolejne
+ticki, w których dywerter może zmienić położenie i skierować paczkę do właściwego wyjścia.
 
 ## Co już masz gotowe
 
-[`include/psm/system_event_kind.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/include/psm/system_event_kind.hpp) — typ gotowy.
+[`include/psm/system_event_kind.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/include/psm/system_event_kind.hpp)
+zawiera gotowy typ zdarzenia.
 
-[`include/psm/plant.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/include/psm/plant.hpp) — `divertingWaitTicks` i nowa sygnatura
-`advance()` już obecne.
+W pliku
+[`include/psm/plant.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/include/psm/plant.hpp)
+znajdziesz `divertingWaitTicks` i nową sygnaturę `advance()`.
 
-[`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/src/plant.cpp) — gałęzie `Infeed`/`PresenceCheck`/`Weighing`/`Output*`
-kompletne i niezmienione (w tym reset licznika przy `Weighing`→`Diverting`); tylko własna logika
-gałęzi `Diverting` jest `// TODO`.
+W pliku
+[`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-07-start/src/plant.cpp)
+gotowe są gałęzie `Infeed`, `PresenceCheck`, `Weighing` i `Output*`, w tym zerowanie licznika przy
+przejściu z `Weighing` do `Diverting`. Do uzupełnienia pozostała gałąź `Diverting`, oznaczona
+`// TODO`.
 
 ## Co masz napisać
 
-Uzupełnij gałąź `Diverting` w `advance()` zgodnie z dokładną regułą powyżej.
+Uzupełnij gałąź `Diverting` w `advance()` zgodnie z regułą opisaną powyżej.
 
 ## Sprawdź się
 
@@ -79,25 +83,26 @@ Uzupełnij gałąź `Diverting` w `advance()` zgodnie z dokładną regułą powy
 ctest --preset test -L misja-26
 ```
 
-Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test sprawdza: `DiverterNotReady`
-przy pierwszej nieudanej aktywnej próbie, `RoutingDeadlineMissed` przy drugiej z rzędu; że
-`!routingReady` zeruje licznik zamiast go zamrażać (i że rutowanie wznowione po takiej przerwie
-dostaje pełny, świeży termin); oraz że ustawiony dywerter rutuje normalnie i zeruje licznik.
+Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test sprawdza, czy pierwsza
+nieudana próba powoduje `DiverterNotReady`, a druga z rzędu `RoutingDeadlineMissed`. Potwierdza też,
+że `!routingReady` zeruje licznik, wznowienie pracy rozpoczyna liczenie od początku, a poprawnie
+ustawiony dywerter kieruje paczkę do wyjścia i zeruje licznik.
 
 ## Częste błędy
 
-- **Zamrażanie licznika zamiast zerowania go przy `!routingReady`** — wtedy do terminu wliczałyby
-  się ticki, w których rutowanie nie było możliwe.
-- **Zwracanie `RoutingDeadlineMissed` już przy pierwszej nieudanej próbie** — sprawdź uważnie
-  kolejność: `<= 1` to `DiverterNotReady`, dopiero `> 1` to przekroczenie terminu.
-- **Zapominanie o zerowaniu licznika po udanym rutowaniu** — kolejna paczka odziedziczyłaby cudzy,
-  częściowo zużyty licznik.
+- **Zachowanie wartości licznika przy `!routingReady`**: do limitu zostałyby wliczone ticki, w
+  których skierowanie paczki nie było możliwe.
+- **Zwrócenie `RoutingDeadlineMissed` po pierwszej nieudanej próbie**: dla wartości `<= 1` wynikiem
+  ma być `DiverterNotReady`. Dopiero wartość `> 1` oznacza przekroczenie limitu.
+- **Brak zerowania licznika po skierowaniu paczki do wyjścia**: kolejna paczka rozpoczęłaby pracę z
+  wartością pozostałą po poprzedniej.
 
 ## Pytanie do zastanowienia
 
-Termin karencji wynosi efektywnie jeden tick (`DiverterNotReady` przy count `<= 1`,
-`RoutingDeadlineMissed` dopiero przy count `> 1`). Dywerter bez usterki potrzebuje najwyżej dwóch
-wywołań `resolve()`, żeby się ustawić z dowolnego stanu. Prześledź, dlaczego to sprawia, że żaden
-istniejący, nieusterkowy scenariusz z Modułów 1–6 nigdy nie zgłosi `RoutingDeadlineMissed`.
+Dopuszczalne oczekiwanie wynosi jeden tick. Dla `divertingWaitTicks <= 1` program zwraca
+`DiverterNotReady`, a dopiero dla `divertingWaitTicks > 1` zwraca `RoutingDeadlineMissed`. Dywerter
+bez usterki potrzebuje najwyżej dwóch wywołań `resolve()`, aby osiągnąć cel z dowolnego stanu.
+Prześledź, dlaczego żaden poprawny scenariusz z modułów 1–6 nie zgłosi
+`RoutingDeadlineMissed`.
 
 **Dalej:** [Misja 27: tryb awarii](./03_tryb_awarii.md).

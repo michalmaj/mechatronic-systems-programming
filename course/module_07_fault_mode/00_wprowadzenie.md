@@ -2,21 +2,19 @@
 
 # 7.0 Wprowadzenie
 
-`Mode::EStopped` od modułu 5 ma jasny powód istnienia: przycisk awaryjny. `Mode::Fault` istnieje od
-modułu 4 — ale bez żadnego wyzwalacza. Ten moduł to zmienia: dywerter, który nie potrafi dotrzymać
-terminu rutowania (bo jest fizycznie zablokowany), w końcu daje `Fault` konkretny powód, żeby się
-pojawić.
+W module 5 tryb `Mode::EStopped` został powiązany z przyciskiem awaryjnym. Teraz podobnie zajmiemy
+się trybem `Mode::Fault`. Program przejdzie do niego, gdy zablokowany dywerter nie ustawi się w
+wyznaczonym czasie.
 
-`Diverter::isSettled()` — sprawdzenie, które pozwala odróżnić dywerter naprawdę zablokowany od
-takiego, który jeszcze nie dostał polecenia ruchu — istnieje bez zmian od modułu 2. Ten
-moduł go nie przebudowuje; wykorzystuje go do czegoś nowego.
+Do wykrycia takiej sytuacji wykorzystasz `Diverter::isSettled()`. Ta metoda istnieje od modułu 2 i
+sprawdza, czy dywerter osiągnął położenie wynikające z ostatniego polecenia. Nie będziesz jej
+zmieniać, lecz użyjesz jej w nowym miejscu.
 
-Największa mechaniczna nowość tego modułu: `Mode` jest teraz liczony w **dwóch jawnie osobnych
-krokach**, nie jednym. Wcześniej `modeStep` odpowiadał na jedno pytanie: "co mówią wejścia
-operatora/e-stopu/resetu?" Teraz to pytanie zostaje osobne od drugiego: "co właśnie zgłosił
-`Plant::advance()`?" — bo te dwa pytania mają odpowiedzi dostępne w dwóch różnych momentach tego
-samego ticku. Misja `tryb_awarii` wyjaśnia, dlaczego potrzebne są dwie funkcje zamiast jednej
-wywoływana dwukrotnie.
+Zmieni się za to sposób wyznaczania trybu pracy. Od tej pory będzie się to odbywać w dwóch krokach.
+Na początku ticku program uwzględni polecenia operatora, stan przycisku awaryjnego i żądanie resetu.
+Po wywołaniu `Plant::advance()` zareaguje na zdarzenie zgłoszone przez symulowany układ. Te
+informacje są dostępne w różnych momentach, dlatego każda z nich będzie obsługiwana przez osobną
+funkcję.
 
 ## Skąd startujesz
 
@@ -29,24 +27,22 @@ Do ostatniej misji pozostaw `Engine::step()` w wersji z modułu 6.
 
 ## Mapa modułu
 
-1. **Zablokowany dywerter** — `Diverter::resolve` uczy się reagować na usterkę aktuatora, tym samym
-   wzorcem co czujniki w module 6, ale zastosowanym do nowego, osobnego typu (`DiverterFaultKind`) —
-   nie do wspólnego, przeciążonego typu, który dopuszczałby bezsensowne kombinacje w rodzaju
-   "zablokowany czujnik obecności".
-2. **Termin rutowania** — `Plant` liczy, jak długo dywerter nie nadąża, i zgłasza to jako
-   `SystemEventKind`. Największa porcja teorii w tym module: dlaczego termin musi mierzyć wyłącznie
-   *ciągłą, aktywną* próbę rutowania.
-3. **Tryb awarii** — `Mode` uczy się `Fault`, w dwóch osobnych krokach: `modeStep` (wejścia
-   operatora) i nowa `reactToSystemEvent` (reakcja na zdarzenie z `Plant`). `Fault` jest zatrzaskowe:
-   ani `stopRequested`, ani `startRequested` nie mogą z niego wyjść — tylko jawny reset.
-4. **Silnik z wykrywaniem awarii** — spięcie wszystkiego: rozdzielone API usterek
-   (`injectSensorFault`/`injectDiverterFault`), `step()` używający `modeForTick` do sterowania
-   aktuatorów i `reactToSystemEvent` do ustalenia ostatecznego `mode_`, oraz pełny scenariusz
-   odzyskiwania w CLI.
+1. **Zablokowany dywerter**: `Diverter::resolve()` zacznie uwzględniać usterkę elementu wykonawczego.
+   Zdefiniujesz ją za pomocą osobnego typu `DiverterFaultKind`, aby nie można było pomylić jej z
+   usterką czujnika.
+2. **Limit czasu na ustawienie dywertera**: `Plant` policzy, jak długo dywerter nie może osiągnąć
+   wymaganego położenia, a następnie zgłosi odpowiedni `SystemEventKind`. Dowiesz się też, dlaczego
+   licznik powinien obejmować tylko kolejne aktywne próby wyboru trasy.
+3. **Tryb awarii**: obsługę `Mode` podzielisz między `modeStep()`, które przetwarza wejścia
+   operatora, a `reactToSystemEvent()`, które reaguje na zdarzenie z `Plant`. Tryb `Fault` pozostanie
+   aktywny aż do jawnego resetu.
+4. **`Engine` z wykrywaniem awarii**: połączysz wszystkie elementy w `Engine::step()`, dodasz osobne
+   metody do obsługi usterek czujników i dywertera oraz przygotujesz w programie terminalowym pełny
+   scenariusz usunięcia awarii i wznowienia pracy.
 
 ## Zanim zaczniesz
 
-- Testy Modułów 1–6 (`misja-1`–`misja-4`, `misja-6`–`misja-24`) są już obecne i przechodzą.
-- Tak jak zawsze: nie edytujesz plików testowych ani `CMakeLists.txt`.
+- Testy modułów 1–6 (`misja-1`–`misja-4`, `misja-6`–`misja-24`) są już obecne i przechodzą.
+- Tak jak wcześniej, nie edytuj plików testowych ani `CMakeLists.txt`.
 
 **Dalej:** [Misja 25: zablokowany dywerter](./01_zablokowany_dywerter.md).

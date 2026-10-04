@@ -1,107 +1,109 @@
 🇵🇱 Polski | [🇬🇧 English](04_silnik_z_wykrywaniem_awarii.en.md)
 
-# 7.4 Silnik z wykrywaniem awarii
+# 7.4 `Engine` z wykrywaniem awarii
 
 ## Problem
 
-Wszystkie kawałki istnieją osobno — blokowalny dywerter, licznik terminu w `Plant`, dwuetapowe
-liczenie `Mode` — ale nic w działającym silniku jeszcze ich nie łączy.
+Zablokowany dywerter, licznik w `Plant` i dwuetapowe wyznaczanie `Mode` są już gotowe. Trzeba teraz
+połączyć je w `Engine`, aby awaria wpływała na działanie całej symulacji.
 
 ## Nowe elementy C++
 
-**Rozdzielone API usterek.** `SensorFaultKind`/`SensorTarget` to Moduł 6 pod nowymi, jaśniejszymi
-nazwami (`injectFault`/`clearFault` też się przemianowały na `injectSensorFault`/`clearSensorFault`)
-— to już gotowe, bez Twojej pracy. Nowość to:
+Usterki czujników obsługują teraz metody `injectSensorFault()` i `clearSensorFault()`. Korzystają z
+typów `SensorFaultKind` oraz `SensorTarget`. Ta zmiana jest już wprowadzona i nie wymaga Twojej
+pracy.
+
+Do obsługi usterki dywertera służą osobne metody:
 
 ```cpp
 void injectDiverterFault(DiverterFaultKind kind);
 void clearDiverterFault();
 ```
 
-Bez parametru celu — jest tylko jeden dywerter, więc nie ma czego wybierać.
+Nie potrzebują parametru wskazującego cel, ponieważ w układzie jest tylko jeden dywerter.
 
-## Rozszerzenie `step()` — sedno tej misji
+## Rozszerzenie `step()`
 
-`step()` z modułu 6 pozostaje w niemal niezmienionym kształcie (flagi wejściowe, `latch_`, `decision`,
-czujniki i `ControllerState` — bez zmian) — zmieniają się cztery rzeczy, w tej kolejności:
+Większość kodu z modułu 6 pozostaje bez zmian. Nadal korzystasz z flag wejściowych, `latch_`,
+`decision`, czujników i `ControllerState`. Wprowadź cztery zmiany, w podanej kolejności:
 
-1. **Liczenie `Mode` przenosi się na sam początek `step()`**, przed jakąkolwiek próbą rutowania w tym
-   ticku. Policz `modeForTick` dotychczasowym wywołaniem `modeStep(...)` i zapamiętaj
-   wynik w zmiennej lokalnej — **nie** przypisuj go jeszcze do `mode_`.
-2. **Warunki działania aktuatorów (dywertera i pasa) korzystają z `modeForTick`, nie z `mode_`** — pole
-   `mode_` w tym ticku wciąż ma starą wartość, aż do punktu 4 poniżej. Przy sterowaniu dywerterem
-   trzeba dodatkowo przekazać
-   `diverterFault_` do `diverter_.resolve(...)`, tak jak czujniki dostają swoje usterki w
-   module 6.
-3. **`psm::advance(...)` jest wywoływane pod tym samym warunkiem co w module 6** (pas faktycznie
-   `Running`), ale
-   jego wynik trzeba teraz zapamiętać — `advance()` zwraca informację, czy w tym ticku wystąpił
-   `SystemEventKind` (np. przekroczenie terminu rutowania).
-4. **Drugie liczenie `Mode` dzieje się dopiero po `advance()`**, nie przed nim: to jedyne miejsce,
-   gdzie `mode_` dostaje nową wartość w tym ticku, przez `reactToSystemEvent(modeForTick, event)` —
-   `modeForTick` z punktu 1, `event` z punktu 3.
+1. Na początku `step()` wywołaj `modeStep(...)` i zapisz wynik w lokalnej zmiennej `modeForTick`.
+   Nie przypisuj go jeszcze do `mode_`. Ta wartość określa tryb pracy w bieżącym ticku.
+2. Przy sterowaniu dywerterem i taśmą korzystaj z `modeForTick`, a nie z `mode_`. Do
+   `diverter_.resolve(...)` przekaż dodatkowo `diverterFault_`, tak jak w module 6 przekazujesz
+   usterki do czujników.
+3. Wywołuj `psm::advance(...)` pod tym samym warunkiem co wcześniej, czyli gdy taśma rzeczywiście
+   jest w stanie `Running`. Tym razem zapisz wartość zwróconą przez funkcję. Informuje ona o
+   zdarzeniu, które wystąpiło w bieżącym ticku.
+4. Po wywołaniu `advance()` ustaw `mode_` za pomocą
+   `reactToSystemEvent(modeForTick, event)`. To jedyne przypisanie nowej wartości do `mode_` w tym
+   ticku.
 
-`TickResult` tego ticku dostaje dodatkowo pole `event`.
+Dodaj też `event` do zwracanego `TickResult`.
 
-## Jednotickowe opóźnienie zatrzymania pasa — zaakceptowane, nie naprawiane
+## Zatrzymanie taśmy rozpoczyna się tick później
 
-Tick, który wykrywa `RoutingDeadlineMissed`, bramkuje swoje aktuatory wartością `modeForTick ==
-Running` (to była wartość znana na początku tego ticku — próba, która ujawniła przekroczenie
-terminu, sama musiała zostać wykonana w trybie `Running`) i dopiero na samym końcu zgłasza
-`mode = Fault`. Efekt: `TickResult` tego ticku może pokazywać `mode = Fault`, a `beltActual` wciąż
-`Running`. Pas zaczyna faktycznie zwalniać (`RampingDown`) dopiero w **następnym** ticku, gdy
-`modeForTick` dla tego kolejnego ticku jest już `Fault`.
+Zdarzenie `RoutingDeadlineMissed` zostaje wykryte pod koniec ticku. Elementy wykonawcze działają
+wtedy jeszcze na podstawie `modeForTick == Running`, ponieważ bez aktywnej próby ustawienia
+dywertera nie dałoby się wykryć przekroczenia limitu. Dlatego wynik tego ticku może zawierać
+`mode = Fault` i jednocześnie `beltActual = Running`.
 
-To celowo inaczej niż e-stop, który wymusza `beltMotor_.forceStop()` natychmiast, przez
-`decision.overrideActive` — liczone niezależnie od `Mode`, właśnie po to, żeby zadziałać w tym samym
-ticku, w którym wykryto naciśnięcie. `Fault` nie ma i nie dostaje żadnej takiej wymuszonej ścieżki w
-tym module: to stan kontrolowany, związany z rutowaniem, nie stan bezpieczeństwa krytycznego. Jednotickowe
-opóźnienie jest poprawnym, zaakceptowanym zachowaniem, nie luką.
+Taśma zacznie zwalniać w następnym ticku. Wtedy `modeForTick` będzie już miało wartość `Fault`, a
+napęd przejdzie do `RampingDown`.
 
-## Przykładowy scenariusz odzyskiwania
+Przycisk awaryjny działa inaczej. `decision.overrideActive` powoduje natychmiastowe wywołanie
+`beltMotor_.forceStop()`, niezależnie od `Mode`. Tryb `Fault` sygnalizuje tutaj problem z wyborem
+trasy i nie korzysta z tej ścieżki awaryjnego zatrzymania. Opóźnienie o jeden tick jest więc
+zamierzonym zachowaniem modelu.
+
+## Przykładowy scenariusz usunięcia awarii
 
 ```text
-krok 1: item wchodzi do Infeed, mode=Running, belt=RampingUp — paczka jeszcze czeka, pas dopiero się rozpędza.
-krok 2: item PresenceCheck, belt=Running — dopiero teraz pas realnie jedzie, paczka rusza.
-krok 3: item Weighing.
-krok 4: item Diverting, klasyfikacja już w ControllerState.
-krok 5: event=DiverterNotReady — pierwsza aktywna próba, dywerter Blocked.
-krok 6: event=RoutingDeadlineMissed, mode=Fault, belt wciąż Running — ten sam tick.
-krok 7: mode=Fault, belt=RampingDown — dopiero teraz pas zaczyna zwalniać.
+krok 1: paczka trafia do Infeed, mode=Running, belt=RampingUp. Taśma dopiero się rozpędza.
+krok 2: paczka przechodzi do PresenceCheck, belt=Running.
+krok 3: paczka przechodzi do Weighing.
+krok 4: paczka przechodzi do Diverting, a klasyfikacja jest już w ControllerState.
+krok 5: event=DiverterNotReady. To pierwsza próba przy zablokowanym dywerterze.
+krok 6: event=RoutingDeadlineMissed, mode=Fault, belt=Running.
+krok 7: mode=Fault, belt=RampingDown. Taśma zaczyna zwalniać.
 krok 8: mode=Fault, belt=Stopped.
-— clearDiverterFault() —
-krok 9: mode=Fault — samo wyczyszczenie usterki nie wystarcza.
-— requestReset() —
-krok 10: mode=Idle — zatrzask ustępuje dopiero teraz. Paczka wciąż w Diverting.
-— requestStart() —
-krok 11: mode=Running, belt=RampingUp — paczka wciąż czeka, pas znów musi się rozpędzić od zera.
-krok 12: belt=Running, event=brak — dywerter (usterka już wyczyszczona, w ruchu od poprzedniego ticku) zdążył się ustawić, zanim advance() w ogóle zdążył sprawdzić — prosto do rutowania, bez żadnego DiverterNotReady po drodze.
+
+wywołaj clearDiverterFault()
+
+krok 9: mode=Fault. Usunięcie blokady nie zmienia trybu pracy.
+
+wywołaj requestReset()
+
+krok 10: mode=Idle. Reset kończy tryb Fault, a paczka pozostaje w Diverting.
+
+wywołaj requestStart()
+
+krok 11: mode=Running, belt=RampingUp. Taśma ponownie się rozpędza.
+krok 12: belt=Running, event=brak. Dywerter zdążył się ustawić i paczka trafia do wyjścia.
 ```
 
-Zwróć uwagę na krok 12: w tej konkretnej sekwencji odzyskiwanie **nie** przechodzi przez
-`DiverterNotReady` wcale — bo pas też musiał się rozpędzić od zera (był w pełni zatrzymany podczas
-`Fault`), więc `advance()` nie sprawdza dywertera aż do kroku 12, a dywerter miał już dwa tiki, żeby
-się ustawić (kroki 11 i 12). Zarówno pas, jak i dywerter potrzebują dwóch wywołań
-`resolve()`, żeby dojść do celu ze stanu spoczynkowego.
+Po usunięciu blokady dywerter otrzymuje polecenia w krokach 11 i 12. W tym samym czasie taśma
+rozpędza się od zera. Gdy `advance()` ponownie sprawdza położenie dywertera, mechanizm jest już
+ustawiony. Dlatego po wznowieniu pracy nie pojawia się kolejne `DiverterNotReady`.
 
-Gdyby `clearDiverterFault()` nie zostało wywołane, kroki 11–12 powtórzyłyby sekwencję z
-kroków 5–6: znowu `DiverterNotReady`, potem znowu `RoutingDeadlineMissed` i `Fault`. To pokazuje
-że `requestReset()` usuwa tylko **objaw** (zatrzask trybu), a nie **przyczynę**.
+Gdyby nie wywołano `clearDiverterFault()`, program ponownie zgłosiłby `DiverterNotReady`, następnie
+`RoutingDeadlineMissed` i wrócił do `Fault`. `requestReset()` kończy tryb awarii, ale nie usuwa jej
+przyczyny.
 
 ## Co już masz gotowe
 
-`include/psm/engine.hpp` ma już wszystkie potrzebne pola i deklaracje. `src/engine.cpp` ma gotowe,
-przemianowane `injectSensorFault`/`clearSensorFault`; puste szkielety `injectDiverterFault`/
-`clearDiverterFault`; ciało `step()` ma wersję z modułu 6, którą teraz rozszerzysz.
+W `include/psm/engine.hpp` znajdują się wszystkie potrzebne pola i deklaracje. W
+`src/engine.cpp` gotowe są metody `injectSensorFault()` i `clearSensorFault()`. Znajdziesz tam też
+puste szkielety `injectDiverterFault()` i `clearDiverterFault()` oraz ciało `step()` z modułu 6.
 
 ## Co masz napisać
 
-- `Engine::injectDiverterFault(DiverterFaultKind)` — zapisz `kind` do `diverterFault_`.
-- `Engine::clearDiverterFault()` — wyczyść (`std::nullopt`) `diverterFault_`.
-- `Engine::step()` — rozszerz zgodnie z opisem powyżej: `modeForTick` określa działanie aktuatorów,
-  `diverterFault_` przekazywane do `diverter_.resolve()`, `reactToSystemEvent` na końcu ustawiające
-  `mode_`, `event` w `TickResult`.
-- `apps/simulator_cli/main.cpp` — zaimplementuj scenariusz odzyskiwania opisany powyżej.
+- W `Engine::injectDiverterFault(DiverterFaultKind)` zapisz `kind` w `diverterFault_`.
+- W `Engine::clearDiverterFault()` ustaw `diverterFault_` na `std::nullopt`.
+- Rozszerz `Engine::step()` zgodnie z opisem powyżej. Do sterowania elementami wykonawczymi użyj
+  `modeForTick`, przekaż `diverterFault_` do `diverter_.resolve()`, a na końcu ustaw `mode_` za pomocą
+  `reactToSystemEvent()`. Umieść też `event` w `TickResult`.
+- W `apps/simulator_cli/main.cpp` zaimplementuj opisany scenariusz usunięcia awarii.
 
 ## Sprawdź się
 
@@ -109,22 +111,24 @@ przemianowane `injectSensorFault`/`clearSensorFault`; puste szkielety `injectDiv
 ctest --preset test -L misja-28
 ```
 
-To prawdziwy, dedykowany test tej misji, śledzący scenariusz odzyskiwania powyżej krok po
-kroku. Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`.
+Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test przechodzi krok po kroku przez
+cały scenariusz usunięcia awarii.
 
-Uruchom też program naprawdę:
+Zbuduj i uruchom także program:
+
 ```bash
 cmake --build --preset dev
 ./build/dev/apps/simulator_cli/simulator_cli
 ```
 
-## Koniec modułu — pełny zestaw testów
+## Koniec modułu: pełny zestaw testów
 
 ```bash
 ctest --preset test
 ```
 
-Oczekiwany wynik: wszystkie testy zielone — `misja-1` do `misja-4`, `misja-6` do `misja-28`.
+Oczekiwany wynik: przechodzą wszystkie testy od `misja-1` do `misja-4` oraz od `misja-6` do
+`misja-28`.
 
 ## Zapisz swoją pracę
 
@@ -136,25 +140,21 @@ git commit -m "..."
 
 ## Częste błędy
 
-- **Bramkowanie aktuatorów przez `mode_` zamiast `modeForTick`** — w tym ticku `mode_` jeszcze nie
-  ma nowej wartości; ona pojawia się dopiero po `reactToSystemEvent`.
-- **Wywołanie `reactToSystemEvent` przed `Plant::advance()`** — wtedy `event` nie byłoby jeszcze
-  znane. Kolejność w kroku 7 i 8 jest tu istotna.
-- **Dodanie wymuszonego zatrzymania pasa dla `Fault`** — w tym modelu zatrzymanie ma opisane wyżej
-  opóźnienie o jeden tick.
+- **Sterowanie elementami wykonawczymi na podstawie `mode_` zamiast `modeForTick`**: pole `mode_`
+  otrzymuje nową wartość dopiero po wywołaniu `reactToSystemEvent()`.
+- **Wywołanie `reactToSystemEvent()` przed `Plant::advance()`**: zdarzenie nie jest wtedy jeszcze
+  znane. Najpierw zapisz wynik `advance()`, a dopiero później wyznacz końcowy tryb.
+- **Natychmiastowe wymuszenie zatrzymania taśmy po przejściu do `Fault`**: w tym modelu taśma zaczyna
+  zwalniać w następnym ticku.
 
 ## Pytanie do zastanowienia
 
-Scenariusz odzyskiwania powyżej pokazuje, że pas i dywerter "przypadkiem" kończą rozpędzanie się w
-tym samym kroku. Zmodyfikuj w głowie (albo na boku, eksperymentalnie) czas rozpędzania pasa, żeby był
-o jeden tick dłuższy niż settle-time dywertera. Co dokładnie zobaczyłby `TickResult` w tym
-hipotetycznym scenariuszu na kroku, w którym dywerter jest już ustawiony, ale pas jeszcze nie jest
-`Running`?
+W opisanym scenariuszu taśma i dywerter kończą ruch w tym samym kroku. Załóż, że rozpędzanie taśmy
+trwa o jeden tick dłużej niż ustawianie dywertera. Co zawierałby `TickResult` w chwili, gdy dywerter
+jest już ustawiony, ale taśma nie osiągnęła jeszcze stanu `Running`?
 
 ## Koniec modułu 7
 
-`Mode::Fault` ma teraz prawdziwy, przetestowany wyzwalacz — a Ty zbudowałeś mechanizm, który
-rozróżnia dwie naprawdę różne odpowiedzialności (wejścia operatora kontra reakcja na zdarzenie
-systemowe) jako dwie osobne, nazwane funkcje, zamiast maskować je pod jedną. To ten sam duch, co
-dwie niezależne ścieżki bezpieczeństwa z modułu 5 — tym razem zastosowany do dwóch różnych momentów
-w czasie jednego ticku, nie do dwóch różnych aktuatorów.
+Tryb `Mode::Fault` ma teraz konkretną, przetestowaną przyczynę. `modeStep()` obsługuje informacje
+dostępne na początku ticku, a `reactToSystemEvent()` zdarzenie zgłoszone po wykonaniu kroku
+symulacji. Dzięki temu każda funkcja odpowiada za jedną decyzję, podejmowaną we właściwym momencie.
