@@ -2,10 +2,9 @@
 
 # 4.0 Wprowadzenie
 
-Moduł 3 zostawił Cię z `Engine` jako jedynym miejscem, w którym w ogóle istnieje kolejność jednego
-ticka. Ten moduł rozbudowuje `Engine` o dwie nowe rzeczy: drugi aktuator (silnik przenośnika,
-`BeltMotor`) oraz pierwsze pojęcie dotyczące **całego systemu**, a nie pojedynczej paczki — tryb pracy
-(`Mode`).
+Po module 3 klasa `Engine` jest jedynym miejscem, które określa kolejność operacji w ticku. Teraz
+rozbudujesz ją o dwa elementy: silnik przenośnika (`BeltMotor`) oraz tryb pracy (`Mode`), który
+opisuje stan **całego systemu**, a nie pojedynczej paczki.
 
 ## Skąd startujesz
 
@@ -25,15 +24,16 @@ założenie przestaje obowiązywać, dlatego test został zawężony.
 
 ## Mapa modułu
 
-1. **Silnik przenośnika** — `BeltMotor`, drugie użycie wzorca komenda-a-rzeczywistość z modułu 2.
-2. **Tryb pracy** — `Mode`, pierwsze pojęcie dotyczące całego systemu, i pierwszy przypadek, w którym
-   *nie* budujemy klasy.
-3. **Przenośnik pod kontrolą trybu** — moment, w którym wszystko się spina: paczka rusza dopiero, gdy
-   pas naprawdę jest `Running`.
+1. **Silnik przenośnika:** `BeltMotor`, czyli kolejny przykład rozdzielenia polecenia od
+   rzeczywistego stanu urządzenia.
+2. **Tryb pracy:** `Mode`, czyli stan całego systemu. Tym razem wystarczy typ wyliczeniowy i wolna
+   funkcja, bez osobnej klasy przechowującej stan.
+3. **Przenośnik pod kontrolą trybu:** połączenie nowych elementów z `Engine`. Paczka rusza dopiero,
+   gdy silnik przenośnika osiągnie stan `Running`.
 
 ## Zanim zaczniesz
 
-- Testy Modułów 1–3 (`misja-1`–`misja-4`, `misja-6`–`misja-11`) są już obecne i przechodzą.
+- Testy modułów 1–3 (`misja-1`–`misja-4`, `misja-6`–`misja-11`) są już obecne i przechodzą.
 - Tak jak zawsze: nie edytujesz plików testowych ani `CMakeLists.txt`.
 
 **Dalej:** [Misja 13: silnik przenośnika](./01_silnik_przenosnika.md).
