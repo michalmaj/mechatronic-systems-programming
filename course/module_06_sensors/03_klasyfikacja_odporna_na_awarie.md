@@ -4,9 +4,9 @@
 
 ## Problem
 
-`classify(mass)` (Moduł 1) wciąż bezwarunkowo ufa liczbie, którą dostaje. Teraz, gdy ta liczba
-pochodzi z czujnika, który może zgłosić `Missing` albo `Stale`, potrzebujemy warstwy pośredniej,
-która odrzuci niewiarygodny odczyt, zanim w ogóle trafi do `classify`.
+`classify(mass)` z modułu 1 korzysta z każdej przekazanej wartości. Odczyt czujnika może jednak mieć
+status `Missing` albo `Stale`. Potrzebujemy więc funkcji, która odrzuci taki odczyt, zanim jego
+wartość trafi do `classify`.
 
 ## Nowy element C++
 
@@ -14,23 +14,25 @@ która odrzuci niewiarygodny odczyt, zanim w ogóle trafi do `classify`.
 std::optional<WeightClass> decideClassification(WeightReading weight);
 ```
 
-Funkcja przyjmuje na razie odczyt tylko **jednego** czujnika. Połączenie wagi z potwierdzeniem
-obecności pojawi się w misji 23. Tutaj obowiązuje jedna zasada: nie klasyfikuj na podstawie odczytu,
-któremu nie można ufać.
+Funkcja przyjmuje na razie odczyt tylko **jednego** czujnika. W misji 23 połączysz pomiar wagi z
+potwierdzeniem obecności. Tutaj obowiązuje jedna zasada: nie klasyfikuj paczki na podstawie
+niewiarygodnego odczytu.
 
 ## Reguła
 
-- Jeśli `weight.status != ReadingStatus::Ok`: zwróć `std::nullopt` — niezależnie od tego, jak
-  sensowna wygląda liczba w `weight.grams`.
+- Jeśli `weight.status != ReadingStatus::Ok`, zwróć `std::nullopt`, niezależnie od wartości
+  `weight.grams`.
 - W przeciwnym razie: zwróć `classify(weight.grams)`.
 
 ## Co już masz gotowe
 
-[`include/psm/controller.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/controller.hpp) — deklaracja `decideClassification`
-już dodana, obok istniejących `classify`/`toDiverterCommand` (te dwie zostają bez zmian).
+[`include/psm/controller.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/controller.hpp)
+zawiera deklarację `decideClassification` obok niezmienionych `classify` i `toDiverterCommand`.
 
-[`src/controller.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/src/controller.cpp) — pusty szkielet `decideClassification` z
-komentarzem `// TODO`; `classify`/`toDiverterCommand` już działają poprawnie.
+W pliku
+[`src/controller.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/src/controller.cpp)
+znajdziesz pusty szkielet `decideClassification` z komentarzem `// TODO`. Funkcje `classify` i
+`toDiverterCommand` są już gotowe.
 
 ## Co masz napisać
 
@@ -43,17 +45,17 @@ ctest --preset test -L misja-22
 ```
 
 Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test zawiera przypadek
-`{Stale, 750}` — liczba wygląda całkowicie prawdopodobnie, ale status mówi wyraźnie: nie ufaj temu.
+`{Stale, 750}`. Sama wartość wygląda wiarygodnie, ale status nie pozwala użyć jej do klasyfikacji.
 
 ## Częste błędy
 
-- **Sprawdzanie `weight.grams` zamiast `weight.status`** jako sygnału do odrzucenia — to odwrotność
-  całego sensu tej funkcji.
+- **Sprawdzanie `weight.grams` zamiast `weight.status`:** o wiarygodności odczytu decyduje status, a
+  nie wartość pomiaru.
 
 ## Pytanie do zastanowienia
 
-Dlaczego ta misja nie przyjmuje jeszcze `PresenceReading` jako drugiego argumentu, skoro realny
-problem (Misja 23) będzie potrzebował obu czujników? Co konkretnie poszłoby nie tak, gdybyśmy
+Dlaczego ta misja nie przyjmuje jeszcze `PresenceReading` jako drugiego argumentu, skoro misja 23
+będzie potrzebowała obu czujników? Co konkretnie poszłoby nie tak, gdybyśmy
 spróbowali połączyć oba czujniki w tej samej funkcji, wywoływanej w jednym ticku?
 
 **Dalej:** [Misja 23: pamięć decyzji sterownika](./04_pamiec_decyzji_sterownika.md).

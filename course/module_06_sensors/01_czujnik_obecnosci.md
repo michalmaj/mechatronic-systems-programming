@@ -4,16 +4,14 @@
 
 ## Problem
 
-Prawdziwy czujnik obecności to nie wszechwiedzące oko widzące cały przenośnik naraz — to urządzenie
-zamontowane w jednym konkretnym miejscu. Nasz czujnik obecności "widzi" paczkę wyłącznie, gdy jest
-ona w strefie `PresenceCheck`. Gdziekolwiek indziej — nawet jeśli paczka fizycznie istnieje gdzieś na
-przenośniku — ten konkretny czujnik nic tam nie widzi.
+Czujnik obecności jest zamontowany w jednym miejscu i nie obserwuje całego przenośnika. Wykrywa
+paczkę wyłącznie wtedy, gdy znajduje się ona w strefie `PresenceCheck`. Poza tą strefą jego bieżący
+odczyt nie potwierdza obecności paczki, nawet jeśli paczka znajduje się w innym miejscu systemu.
 
 ## Nowy element C++
 
-**`class PresenceSensor`** — czwarta klasa w kursie, i pierwsza z zupełnie innym niezmiennikiem niż
-`Diverter`/`BeltMotor` (komenda-a-rzeczywistość). Tutaj niezmiennik brzmi: **nigdy nie udawaj, że
-pamiętasz coś, czego nigdy naprawdę nie zaobserwowałeś.**
+**`class PresenceSensor`** chroni inny rodzaj niezmiennika niż `Diverter` i `BeltMotor`. Zapamiętana
+wartość może pochodzić wyłącznie z rzeczywistego, wiarygodnego odczytu w strefie czujnika.
 
 ```cpp
 class PresenceSensor {
@@ -25,37 +23,38 @@ private:
 };
 ```
 
-Zwróć uwagę: `lastKnownOccupied_` to `std::optional<bool>`, nie goły `bool`. Gdyby to był zwykły
-`bool`, musiałby mieć jakąś wartość początkową (`false`?) — ale `false` oznaczałoby zarówno "sensor
-naprawdę zaobserwował brak paczki", jak i "sensor jeszcze niczego nie zaobserwował" — dwie zupełnie
-różne sytuacje, których `bool` nie pozwala odróżnić. `std::optional<bool>` zachowuje tę informację:
-pusty `std::optional` znaczy "nigdy nic wiarygodnego nie widziałem."
+Pole `lastKnownOccupied_` ma typ `std::optional<bool>`, a nie zwykły `bool`. Początkowe `false`
+mogłoby oznaczać zarówno wiarygodny odczyt braku paczki, jak i brak jakiegokolwiek wcześniejszego
+odczytu. Są to dwie różne sytuacje. Pusty `std::optional` jednoznacznie informuje, że czujnik nie ma
+jeszcze zapamiętanej wiarygodnej wartości.
 
 ## Dokładna reguła
 
-**Stan rzeczywisty** (prawda fizyczna, jaką ten czujnik może w ogóle zaobserwować):
+Warunek rzeczywistej obecności paczki w miejscu pomiaru:
 `item.has_value() && item->zone == Zone::PresenceCheck`.
 
 - **Bez usterki, paczka w `PresenceCheck`:** zapisz do `lastKnownOccupied_` i zwróć `{Ok, true}`.
-- **Bez usterki, paczka gdzie indziej (albo jej nie ma):** zwróć `{Ok, false}` — to prawdziwy,
-  bieżący odczyt ("nic tu teraz nie ma"), ale **nie jest to wartość do zapamiętania** — nie
-  aktualizuj `lastKnownOccupied_`.
+- **Bez usterki, paczka gdzie indziej albo jej nie ma:** zwróć `{Ok, false}`. Jest to bieżący odczyt
+  dla strefy czujnika, ale **nie należy go zapamiętywać**. Nie aktualizuj `lastKnownOccupied_`.
 - **`Missing`:** zwróć `{Missing, false}`, nie dotykaj pamięci.
 - **`Stale`:** jeśli `lastKnownOccupied_` ma wartość, zwróć `{Stale, *lastKnownOccupied_}`. **Jeśli
-  nie ma** (nigdy nie było wiarygodnego odczytu do powtórzenia), zwróć `{Missing, false}` —
-  degradacja `Stale` bez historii do `Missing`.
+  jej nie ma**, zwróć `{Missing, false}`, ponieważ czujnik nie ma wcześniejszego odczytu, który
+  mógłby powtórzyć.
 
 ## Co już masz gotowe
 
 [`include/psm/reading_status.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/reading_status.hpp),
 [`include/psm/sensor_snapshot.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/sensor_snapshot.hpp),
 [`include/psm/fault_kind.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/fault_kind.hpp),
-[`include/psm/fault_target.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/fault_target.hpp) — wszystkie typy gotowe.
+[`include/psm/fault_target.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/fault_target.hpp)
+zawierają gotowe typy używane w tej misji.
 
-[`include/psm/presence_sensor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/presence_sensor.hpp) — deklaracja klasy
-kompletna, jak wyżej.
+[`include/psm/presence_sensor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/include/psm/presence_sensor.hpp)
+zawiera kompletną deklarację klasy pokazaną wyżej.
 
-[`src/presence_sensor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/src/presence_sensor.cpp) — pusty szkielet z komentarzem `// TODO`.
+W pliku
+[`src/presence_sensor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-06-start/src/presence_sensor.cpp)
+znajdziesz pusty szkielet metody z komentarzem `// TODO`.
 
 ## Co masz napisać
 
@@ -67,22 +66,22 @@ Uzupełnij ciało `PresenceSensor::read` zgodnie z dokładną regułą powyżej.
 ctest --preset test -L misja-20
 ```
 
-Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test sprawdza również, że odczyt „gdzie
-indziej" (paczka w `Weighing`, nie `PresenceCheck`) **nie** psuje wcześniej zapamiętanego dobrego
-odczytu — dopiero potem `Stale` powtarza tamtą, wcześniejszą wartość.
+Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test sprawdza również, że odczyt poza
+strefą czujnika, na przykład dla paczki w `Weighing`, **nie** nadpisuje wcześniej zapamiętanej
+wartości. Późniejszy odczyt `Stale` powinien ją powtórzyć.
 
 ## Częste błędy
 
-- **Aktualizowanie `lastKnownOccupied_` na `false`, gdy paczka jest gdzie indziej** — pamięć może
+- **Aktualizowanie `lastKnownOccupied_` na `false`, gdy paczka jest gdzie indziej:** pamięć może
   być aktualizowana wyłącznie na podstawie odczytu **w** `PresenceCheck`.
-- **`Stale` zwracające jakąś wartość domyślną** zamiast degradować do `Missing`, gdy
-  `lastKnownOccupied_` jest puste.
-- **Sprawdzanie `item.has_value()` bez sprawdzenia strefy** — sam fakt istnienia paczki nigdzie w
-  systemie to za mało; musi być akurat w `PresenceCheck`.
+- **Zwrócenie przez `Stale` wartości domyślnej**, gdy `lastKnownOccupied_` jest puste: w tej
+  sytuacji należy zwrócić `Missing`.
+- **Sprawdzanie `item.has_value()` bez sprawdzenia strefy:** sama obecność paczki w systemie nie
+  wystarcza. Musi znajdować się w `PresenceCheck`.
 
 ## Pytanie do zastanowienia
 
-`Diverter` (Moduł 2) i `PresenceSensor` (ta misja) to obie klasy z prywatnym stanem. Czym różni się
+`Diverter` z modułu 2 i `PresenceSensor` to klasy z prywatnym stanem. Czym różni się
 **rodzaj** niezmiennika, który każda z nich chroni? Spróbuj sformułować to jednym zdaniem dla każdej.
 
 **Dalej:** [Misja 21: czujnik wagi](./02_czujnik_wagi.md).
