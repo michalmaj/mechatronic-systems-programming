@@ -79,8 +79,9 @@ Niezależnie od podjętych decyzji projektowych, poniższe musi być prawdziwe w
    punktów: Diverting, Weighing→Diverting, PresenceCheck→Weighing, Infeed→PresenceCheck oraz
    Bufor→Infeed. Dodanie nowej paczki do bufora **nie jest** ruchem na linii. Liczenie zaczyna się
    dopiero od przejścia Bufor→Infeed.
-5. Istniejące bezpieczeństwo korelacji `ItemId` w czujnikach (`presenceObservedItemId` /
-   `weightObservedItemId`) pozostaje bez zmian. Bufor znajduje się przed PresenceCheck.
+5. Dotychczasowe zasady przypisywania odczytów czujników do właściwego `ItemId`
+   (`presenceObservedItemId` / `weightObservedItemId`) pozostają bez zmian. Bufor znajduje się przed
+   PresenceCheck.
 6. Zasady działania `EStopped`, `Fault` i `RampingUp` pozostają zachowane.
 7. Każde uruchomienie z tymi samymi danymi daje ten sam wynik.
 8. Kolejność elementów w `Scenario::arrivals` nadal nie wpływa na wynik.

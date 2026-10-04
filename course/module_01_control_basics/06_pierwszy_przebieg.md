@@ -117,5 +117,5 @@ akceptowalna?
 
 Masz teraz działający, kompletny (choć mały) system, w którym paczka porusza się przez kolejne
 strefy i jest sortowana według wagi. Stan systemu jest oddzielony od logiki podejmowania decyzji.
-W kolejnych modułach rozbudujesz tę architekturę o aktuatory z własnym stanem, tryby pracy,
+W kolejnych modułach rozbudujesz tę architekturę o elementy wykonawcze z własnym stanem, tryby pracy,
 bezpieczeństwo, czujniki i usterki.

@@ -20,6 +20,11 @@ wyliczeniowych i polecenia, zawsze zostają po angielsku.
 | runtime | w trakcie działania programu / w czasie wykonania | |
 | no-op | nie robi nic / operacja bez efektu | |
 | per-paczka | dla każdej paczki z osobna / na paczkę | |
+| actuator / aktuator | element wykonawczy / napęd / nazwa konkretnego mechanizmu | identyfikatory `Diverter` i `BeltMotor` pozostają bez zmian |
+| routing / routing deadline | skierowanie paczki / wybór trasy / limit czasu na ustawienie dywertera | dobierz określenie do opisywanej czynności |
+| per-parcel correlation / korelacja dla paczki | powiązanie odczytu z paczką / przypisanie danych do właściwego `ItemId` | „korelacja” może zostać tylko w ściśle technicznym kontekście, gdy rzeczywiście opisuje korelację danych |
+| scripted scenario | zaplanowany scenariusz / scenariusz zapisany w danych | nazwy typów `Scripted*` pozostają bez zmian |
+| scenario replayer / odtwarzacz scenariusza | uruchamianie scenariusza / funkcja wykonująca scenariusz | przy odwołaniu do kodu użyj `runScenario()` |
 | workflow | sposób pracy / przebieg pracy | |
 | gating / bramkowanie | warunek działania / uzależnienie działania od... | opisz konkretnie, co dany warunek dopuszcza |
 | slot | pole odpowiadające strefie / strefa | `slot` tylko wtedy, gdy jest świadomie wprowadzonym terminem technicznym |
