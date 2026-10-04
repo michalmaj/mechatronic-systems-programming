@@ -4,43 +4,43 @@
 
 ## Problem
 
-Fizyczny przycisk awaryjny to nie jest zwykły przełącznik on/off. Ma subtelność, którą łatwo
-przeoczyć: **puszczenie przycisku nie powinno cicho wznawiać normalnej pracy**. Operator, który
-puszcza przycisk, mógł to zrobić przez przypadek albo dlatego, że problem wciąż nie jest rozwiązany —
-system powinien czekać na jawne potwierdzenie, zanim uzna, że można wznowić.
+Przycisk awaryjny nie działa jak zwykły przełącznik włącz/wyłącz. **Zwolnienie przycisku nie może
+automatycznie wznowić normalnej pracy.** Operator mógł zwolnić go przypadkowo albo zanim usunięto
+przyczynę zatrzymania. System powinien więc czekać na osobne potwierdzenie możliwości wznowienia.
 
 ## Nowy element C++
 
-**`enum class EStopLatchState { Released, Engaged, Armed }`** + wolna funkcja
-**`nextEStopLatchState(previous, pressed, released, resetRequested)`** — trzeci przykład wzorca
-para enum i funkcja w tym kursie (po `Mode` w module 4).
+**`enum class EStopLatchState { Released, Engaged, Armed }`** wraz z wolną funkcją
+**`nextEStopLatchState(previous, pressed, released, resetRequested)`** tworzą niewielki automat
+stanów. Podobne rozwiązanie zastosowaliśmy dla `Mode` w module 4.
 
 ## Reguła
 
-- **`pressed` zawsze wygrywa** — z dowolnego stanu, natychmiast przechodzi do `Engaged`.
+- **`pressed` ma najwyższy priorytet.** Z dowolnego stanu powoduje przejście do `Engaged`.
 - Z `Engaged`: dopiero `released` (przycisk fizycznie puszczony) przechodzi do `Armed`.
-- Z `Armed`: dopiero jawne `resetRequested` wraca do `Released`. `Armed` to stan "puszczony, ale
-  wciąż czekam na potwierdzenie" — właśnie dlatego `Mode` (Misja 17) nigdy nie wznowi pracy
-  automatycznie.
+- Z `Armed`: dopiero jawne `resetRequested` powoduje powrót do `Released`. `Armed` oznacza, że
+  przycisk został zwolniony, ale system nadal czeka na potwierdzenie. Dzięki temu `Mode` w misji 17
+  nie wznowi pracy automatycznie.
 
 **Przypadek brzegowy: `released` i `resetRequested` prawdziwe w tym samym wywołaniu.** Liczy się
-wyłącznie `released`. Wynikiem jest `Armed`, nie `Released` — reset nie może "przeskoczyć" stanu,
-który dopiero co został zaobserwowany. Innymi słowy: z `Engaged`, `released=true` razem z
-`resetRequested=true` daje `Armed`; dopiero **osobne, kolejne** wywołanie z `resetRequested=true`
-(gdy `previous` jest już `Armed`) prowadzi do `Released`. To odzwierciedla fizyczną rzeczywistość: nie
-można potwierdzić resetu przejścia, które jeszcze się nie zakończyło.
+wyłącznie `released`. Wynikiem jest `Armed`, a nie `Released`. Dla stanu `Engaged` jednoczesne
+`released=true` i `resetRequested=true` daje więc `Armed`. Dopiero **osobne, kolejne** wywołanie z
+`resetRequested=true`, gdy `previous` ma już wartość `Armed`, prowadzi do `Released`. System musi
+najpierw zarejestrować zwolnienie przycisku, a dopiero później przyjąć potwierdzenie.
 
 ## Co już masz gotowe
 
-[`include/psm/estop_latch.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/include/psm/estop_latch.hpp) — `enum class EStopLatchState`
-i deklaracja `nextEStopLatchState` już gotowe.
+[`include/psm/estop_latch.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/include/psm/estop_latch.hpp)
+zawiera gotowy `enum class EStopLatchState` oraz deklarację `nextEStopLatchState`.
 
-[`src/estop_latch.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/src/estop_latch.cpp) — pusty szkielet z komentarzem `// TODO`.
+W pliku
+[`src/estop_latch.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/src/estop_latch.cpp)
+znajdziesz pusty szkielet funkcji z komentarzem `// TODO`.
 
 ## Co masz napisać
 
 Uzupełnij ciało `nextEStopLatchState` zgodnie z regułą powyżej, uwzględniając przypadek brzegowy
-`released`+`resetRequested`.
+jednoczesnych `released` i `resetRequested`.
 
 ## Sprawdź się
 
@@ -49,16 +49,16 @@ ctest --preset test -L misja-16
 ```
 
 Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test przechodzi przez pełny cykl
-`Released→Engaged→Armed→Released`, sprawdza ignorowanie resetu w `Engaged`, przypadek brzegowy
-`released`+`resetRequested` naraz, oraz priorytet `pressed` nad wszystkim innym.
+`Released` → `Engaged` → `Armed` → `Released`, sprawdza ignorowanie resetu w `Engaged`, jednoczesne
+`released` i `resetRequested` oraz najwyższy priorytet `pressed`.
 
 ## Częste błędy
 
-- **Sprawdzenie `resetRequested` przed `pressed`** — `pressed` musi wygrywać zawsze, niezależnie od
-  tego, co jeszcze jest prawdziwe.
-- **Reagowanie na `resetRequested` w stanie `Engaged`** — reset ma sens wyłącznie w `Armed`; w
+- **Sprawdzenie `resetRequested` przed `pressed`:** `pressed` musi mieć najwyższy priorytet,
+  niezależnie od pozostałych sygnałów.
+- **Reagowanie na `resetRequested` w stanie `Engaged`:** reset ma sens wyłącznie w `Armed`. W
   `Engaged` (przycisk wciąż wciśnięty) nie ma czego resetować.
-- **Zwrócenie `Released` zamiast `Armed`** dla jednoczesnych `released` i `resetRequested` — reguła
+- **Zwrócenie `Released` zamiast `Armed`** dla jednoczesnych `released` i `resetRequested`: reguła
   opisana wyżej wymaga `Armed`.
 
 ## Pytanie do zastanowienia

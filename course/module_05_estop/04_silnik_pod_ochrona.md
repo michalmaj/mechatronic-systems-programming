@@ -1,74 +1,73 @@
 🇵🇱 Polski | [🇬🇧 English](04_silnik_pod_ochrona.en.md)
 
-# 5.4 Silnik pod ochroną
+# 5.4 Obsługa zatrzymania awaryjnego w `Engine`
 
 ## Problem
 
-`EStopLatchState`, rozszerzony `Mode` i obie funkcje bezpieczeństwa istnieją — ale nic w działającej
-symulacji jeszcze ich nie wywołuje.
+`EStopLatchState`, rozszerzony `Mode` i obie funkcje bezpieczeństwa są już gotowe, ale działająca
+symulacja jeszcze z nich nie korzysta.
 
 ## Nowe elementy C++
 
-**`Engine::requestEStop()`, `releaseEStop()`, `requestReset()`** — trzy kolejne operacje wejściowe,
-ta sama kategoria co `spawnItem`/`requestStart`/`requestStop`: to wejście, nie posuwanie symulacji
-naprzód, więc wolno je wywoływać między tickami.
+**`Engine::requestEStop()`, `releaseEStop()` i `requestReset()`** zapisują kolejne żądania wejściowe.
+Podobnie jak `spawnItem`, `requestStart` i `requestStop`, można je wywoływać między tickami. Same nie
+wykonują kroku symulacji.
 
 Nowe pole prywatne `latch_`.
 
-## Dwie niezależne ścieżki, naprawdę niezależne
+## Dwie niezależne ścieżki
 
-**Nie wystarczy** obliczyć `Mode::EStopped` i uzależnić ruch dywertera oraz pasa wyłącznie od `Mode`.
-Wtedy ścieżka awaryjna zależałaby od poprawności `modeStep`, a przyszły błąd w kolejności sprawdzeń mógłby
-unieważnić działanie przycisku awaryjnego). Dlatego `Engine::step()` sprawdza
-`checkEmergencyOverride(latch_)` **bezpośrednio**, i rozgałęzia się na tej podstawie jawnie: gdy
-override jest aktywny, rutynowa logika pasa/dywertera **w ogóle się nie wykonuje** w tym ticku — nie
-"wykonuje się i przypadkiem się zgadza", tylko jest pominięta, wzajemnie wykluczająca się z rutynową
-ścieżką w tym samym `if`/`else`.
+**Nie wystarczy** obliczyć `Mode::EStopped` i uzależnić ruch dywertera oraz taśmy wyłącznie od `Mode`.
+W takim rozwiązaniu ścieżka awaryjna zależałaby od poprawności `modeStep`, a błąd w kolejności
+warunków mógłby ją wyłączyć. Dlatego `Engine::step()` sprawdza
+`checkEmergencyOverride(latch_)` **bezpośrednio**. Gdy `overrideActive` ma wartość `true`, zwykła
+logika silnika i dywertera nie wykonuje się w tym ticku. Obie ścieżki są rozdzielone za pomocą
+`if`/`else`, więc nie mogą wykonać się jednocześnie.
 
 ## Rozszerzona kolejność `step()`
 
-1. Skonsumuj i wyzeruj oczekujące żądania (eStop/release/reset/start/stop), policz
-   `latch_ = nextEStopLatchState(latch_, ...)`.
-2. Policz `const SafetyDecision decision = checkEmergencyOverride(latch_);` — czytane bezpośrednio z
-   `latch_`, nie wyprowadzane z `Mode`.
-3. Policz `mode_ = modeStep(mode_, startRequested, stopRequested, latch_)` — `Mode` wciąż jest
-   potrzebny (to on jest obserwowalny i steruje ścieżką *rutynową*), lecz ścieżka awaryjna już
-   mu nie ufa.
-4. **Pas, jako `if`/`else`, nigdy oba naraz:** gdy `decision.overrideActive` jest prawdziwe, wywołaj
-   wyłącznie `beltMotor_.forceStop()` i nic więcej. W przeciwnym razie zachowaj logikę z modułu 4:
+1. Odczytaj oczekujące żądania zatrzymania awaryjnego, zwolnienia, resetu, uruchomienia i
+   zatrzymania. Oblicz `latch_ = nextEStopLatchState(latch_, ...)`, a następnie wyzeruj odpowiednie
+   flagi.
+2. Oblicz `const SafetyDecision decision = checkEmergencyOverride(latch_);` bezpośrednio na
+   podstawie `latch_`, a nie `Mode`.
+3. Oblicz `mode_ = modeStep(mode_, startRequested, stopRequested, latch_)`. `Mode` nadal opisuje
+   stan całego systemu i steruje zwykłą ścieżką pracy, ale ścieżka awaryjna nie zależy wyłącznie od
+   jego wartości.
+4. Gdy `decision.overrideActive` ma wartość `true`, wywołaj tylko `beltMotor_.forceStop()`. W
+   przeciwnym razie wykonaj logikę z modułu 4:
    `beltMotor_.setCommand(mode_ == Mode::Running ? BeltMotorCommand::Run :
    BeltMotorCommand::Stop)`, a potem `beltMotor_.resolve()`.
-5. **Dywerter zależny bezpośrednio od obu sygnałów, a nie wyłącznie od `Mode`:**
-   `if (!decision.overrideActive && diverterMayMove(mode_))` — dopiero wtedy wykonuje się decyzja
-   Controllera → `diverter_.setCommand` → `diverter_.resolve()`. W przeciwnym razie dywerter
-   pozostaje **całkowicie nietknięty** w tym ticku, zamrożony tam, gdzie jest.
-6. Brama na `psm::advance(plant_, diverter_)` według `beltMotor_.actualState() == Running`, bez
-   zmian względem modułu 4.
-7. Złóż `TickResult` (teraz z polem `latch`), zwiększ `tick_`.
+5. Sprawdź `if (!decision.overrideActive && diverterMayMove(mode_))`. Tylko wtedy wykonaj decyzję
+   sterownika, `diverter_.setCommand` i `diverter_.resolve()`. W przeciwnym razie stan dywertera nie
+   zmienia się w tym ticku.
+6. Wywołaj `psm::advance(plant_, diverter_)` tylko wtedy, gdy
+   `beltMotor_.actualState() == Running`, tak jak w module 4.
+7. Utwórz `TickResult`, tym razem również z polem `latch`, a następnie zwiększ `tick_`.
 
 ## Przykładowy przebieg
 
-System pracuje (paczka się porusza, pas `Running`) → `requestEStop()` → **w tym samym ticku**:
-`mode = EStopped`, `latch = Engaged`, `beltActual = Stopped` (natychmiast, przez `forceStop()`, bez
-rampy, bez konkurującego wywołania rutynowego w tym ticku), paczka zamrożona w miejscu →
-`releaseEStop()` → `latch = Armed`, **`mode` zostaje `EStopped`** (latch wciąż nie jest `Released`) →
-`requestReset()` → `latch = Released`, `mode = Idle` (**nie** `Running`, zgodnie z regułą z
-Misji 17) → wznowienie wymaga świeżego `requestStart()`.
+System pracuje, silnik ma stan `Running`, a paczka się porusza. Po wywołaniu `requestEStop()` w tym
+samym ticku `mode` zmienia się na `EStopped`, `latch` na `Engaged`, a `beltActual` na `Stopped`.
+`forceStop()` zmienia stan modelu bez przejścia przez `RampingDown`, a paczka pozostaje w miejscu.
+Po `releaseEStop()` wartość `latch` zmienia się na `Armed`, natomiast `mode` pozostaje w `EStopped`.
+Po `requestReset()` otrzymujemy `latch = Released` i `mode = Idle`, a nie `Running`. Wznowienie pracy
+wymaga osobnego `requestStart()`.
 
 ## Co już masz gotowe
 
-`include/psm/engine.hpp` ma już wszystkie potrzebne pola i deklaracje. `src/engine.cpp` ma puste
-szkielety `requestEStop()`/`releaseEStop()`/`requestReset()`; ciało `step()` ma wersję z modułu 4,
-którą teraz rozszerzysz.
+`include/psm/engine.hpp` ma już wszystkie potrzebne pola i deklaracje. W `src/engine.cpp` znajdziesz
+puste szkielety `requestEStop()`, `releaseEStop()` i `requestReset()`. Ciało `step()` nadal odpowiada
+wersji z modułu 4, którą teraz rozszerzysz.
 
 ## Co masz napisać
 
-- `Engine::requestEStop()` — ustaw `eStopPressed_` na `true`.
-- `Engine::releaseEStop()` — ustaw `eStopReleased_` na `true`.
-- `Engine::requestReset()` — ustaw `resetRequested_` na `true`.
-- `Engine::step()` — rozszerz o siedem kroków opisanych wyżej.
-- `apps/simulator_cli/main.cpp` — zademonstruj przebieg (naciśnij, puść, zresetuj, wznów) i wypisuj
-  `mode`/`latch` obok istniejącego wyjścia.
+- `Engine::requestEStop()`: ustaw `eStopPressed_` na `true`.
+- `Engine::releaseEStop()`: ustaw `eStopReleased_` na `true`.
+- `Engine::requestReset()`: ustaw `resetRequested_` na `true`.
+- `Engine::step()`: dodaj siedem opisanych wyżej kroków.
+- `apps/simulator_cli/main.cpp`: pokaż zatrzymanie awaryjne, zwolnienie przycisku, reset i ponowne
+  uruchomienie. Oprócz dotychczasowego wyniku wypisuj `mode` oraz `latch`.
 
 ## Sprawdź się
 
@@ -76,21 +75,23 @@ którą teraz rozszerzysz.
 ctest --preset test -L misja-19
 ```
 
-To prawdziwy, dedykowany test tej misji. Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`.
+Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`.
 
-Uruchom też program naprawdę:
+Uruchom też program:
+
 ```bash
 cmake --build --preset dev
 ./build/dev/apps/simulator_cli/simulator_cli
 ```
 
-## Koniec modułu — pełny zestaw testów
+## Koniec modułu: pełny zestaw testów
 
 ```bash
 ctest --preset test
 ```
 
-Oczekiwany wynik: wszystkie testy zielone — `misja-1` do `misja-4`, `misja-6` do `misja-19`.
+Oczekiwany wynik: przechodzą wszystkie testy od `misja-1` do `misja-4` oraz od `misja-6` do
+`misja-19`.
 
 ## Zapisz swoją pracę
 
@@ -102,23 +103,22 @@ git commit -m "..."
 
 ## Częste błędy
 
-- **Wywołanie rutynowej logiki pasa/dywertera nawet gdy `decision.overrideActive`** — narusza to
-  niezależność ścieżki awaryjnej. Sprawdź, czy Twój `if`/`else` rzeczywiście się
-  wyklucza.
-- **Bramkowanie dywertera wyłącznie przez `diverterMayMove(mode_)`**, bez `!decision.overrideActive`
-  — to ponownie ta sama luka, tym razem po stronie dywertera.
-- **Zapomniany `requestStart()` po odzyskaniu** — po `EStopped` system wraca do `Idle`, nie
-  `Running`; bez świeżego żądania startu nic więcej się nie wydarzy.
+- **Wywołanie zwykłej logiki silnika lub dywertera, gdy `decision.overrideActive` ma wartość
+  `true`:** narusza niezależność ścieżki awaryjnej. Sprawdź, czy gałęzie `if` i `else` wzajemnie się
+  wykluczają.
+- **Sprawdzenie dywertera wyłącznie przez `diverterMayMove(mode_)`**, bez
+  `!decision.overrideActive`: pomija bezpośrednią informację ze ścieżki awaryjnej.
+- **Brak `requestStart()` po resecie:** po `EStopped` system wraca do `Idle`, a nie `Running`.
+  Ponowne uruchomienie wymaga nowego żądania.
 
 ## Pytanie do zastanowienia
 
 Ta misja sprawdza `decision.overrideActive` osobno, zamiast ufać wyłącznie `Mode::EStopped`. Wymyśl
-konkretny (hipotetyczny) błąd w `modeStep`, który sprawiłby, że poleganie wyłącznie na `Mode`
-faktycznie zawiodłoby — a bezpośrednie sprawdzenie `checkEmergencyOverride` nadal by zadziałało.
+konkretny błąd w `modeStep`, który sprawiłby, że poleganie wyłącznie na `Mode`
+nie zatrzymałoby urządzeń, ale bezpośrednie sprawdzenie `checkEmergencyOverride` nadal by zadziałało.
 
 ## Koniec modułu 5
 
-System ma teraz prawdziwie niezależną ścieżkę awaryjną, obok istniejącej ścieżki rutynowej sterowanej
-przez `Mode`. W kolejnych modułach ta architektura będzie się rozwijać dalej — pojawią się czujniki,
-usterki sprzętowe i zdarzenia systemowe, które dadzą `Mode::Fault` wreszcie konkretny powód do
-istnienia.
+Model ma teraz niezależną ścieżkę awaryjną obok zwykłej ścieżki sterowanej przez `Mode`. W kolejnych
+modułach dojdą czujniki, usterki sprzętowe i zdarzenia systemowe. Na ich podstawie system będzie
+mógł przechodzić do `Mode::Fault`.
