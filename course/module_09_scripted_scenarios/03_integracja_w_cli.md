@@ -1,52 +1,65 @@
 🇵🇱 Polski | [🇬🇧 English](03_integracja_w_cli.en.md)
 
-# 9.3 Integracja w CLI
+# 9.3 Scenariusze w programie terminalowym
 
 ## Problem
 
-Nic jeszcze nie pokazuje `Scenario`/`runScenario` naprawdę zastępujących ręcznie pisane sekwencje
-bezpośrednie w działającym programie. Poza testem jednostkowym nic nie potwierdza, że ta
-demonstracja jest prawdziwa i kompletna.
+`Scenario` i `runScenario()` działają już w testach, ale program nie pokazuje jeszcze praktycznego
+zastosowania tego rozwiązania. Przygotujesz dwa przykłady, które zastąpią ręcznie zapisane sekwencje
+wywołań.
 
 ## Co już masz gotowe
 
-[`apps/simulator_cli/main.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/apps/simulator_cli/main.cpp) jest w tym module **w całości
-gotowy i niezmienny — to nie jest Twoja misja**. Buduje oba demonstracyjne scenariusze, uruchamia je
-przez `runScenario`, wypisuje każdy tick przez `describe()`, i sam sprawdza wynik: jeśli scenariusz
-odzyskiwania nigdy nie pokaże `Mode::Fault`, albo scenariusz wielu paczek da mniej niż trzy odjazdy,
-program kończy się kodem innym niż `0`.
+Plik
+[`apps/simulator_cli/main.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/apps/simulator_cli/main.cpp)
+jest kompletny i nie należy go edytować. Program buduje dwa scenariusze, uruchamia je za pomocą
+`runScenario()` i wypisuje każdy tick przez `describe()`. Sprawdza też podstawowe wyniki. Jeśli
+scenariusz awarii nie osiągnie `Mode::Fault` albo scenariusz wielu paczek zawiera mniej niż trzy
+odjazdy, program kończy się kodem innym niż `0`.
 
-[`apps/simulator_cli/scenario_demos.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/apps/simulator_cli/scenario_demos.hpp) — deklaracje
-`recoveryDemoScenario()`/`multiParcelDemoScenario()`, gotowe.
+W pliku
+[`apps/simulator_cli/scenario_demos.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/apps/simulator_cli/scenario_demos.hpp)
+znajdziesz gotowe deklaracje `recoveryDemoScenario()` i `multiParcelDemoScenario()`.
 
 ## Co masz napisać
 
-Oba ciała w [`apps/simulator_cli/scenario_demos.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/apps/simulator_cli/scenario_demos.cpp):
+Uzupełnij obie funkcje w
+[`apps/simulator_cli/scenario_demos.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-09-start/apps/simulator_cli/scenario_demos.cpp).
 
 ### `recoveryDemoScenario()`
 
-Odtwórz **ten sam mechanizm i oś czasu**, co ślad odzyskiwania po zablokowanym dywerterze z modułu 7
-([`course/module_07_fault_mode/04_silnik_z_wykrywaniem_awarii.md`](../module_07_fault_mode/04_silnik_z_wykrywaniem_awarii.md))
-— **nie** dosłownie identyczny, historyczny tekst CLI, bo to już niemożliwe: kształt `TickResult` i
-format `describe()` zmieniły się w module 8 (osobne pole dla każdej strefy zamiast jednego
-`item`/`zone`). To, co się **nie** zmieniło od modułu 7, to sam mechanizm — `Diverter`, `Mode`,
-`BeltMotor`, `EStopLatch` —
-więc te same numery ticków, na których pojawiają się `DiverterNotReady`/`RoutingDeadlineMissed`/
-`Mode::Fault`/odzyskiwanie, są nadal odtwarzalne, choć zapisane w obecnym formacie
-`describe()`.
+Odtwórz mechanizm i kolejność zdarzeń ze scenariusza zablokowanego dywertera z modułu 7. Jego opis
+znajdziesz w
+[`course/module_07_fault_mode/04_silnik_z_wykrywaniem_awarii.md`](../module_07_fault_mode/04_silnik_z_wykrywaniem_awarii.md).
 
-Konkretnie: jedno przybycie (750g) na ticku 0, `StartRequested` na ticku 0, `ScriptedDiverterFault{Blocked}`
-aktywny od ticku 0 do ticku 8 (odpowiednik `clearDiverterFault()` w oryginale), `Reset` na ticku 9,
-`StartRequested` na ticku 10, `duration = 12`.
+Nie próbuj odtwarzać dokładnego tekstu wypisywanego w module 7. W module 8 zmieniły się `TickResult`
+i format `describe()`. Zamiast pojedynczych pól `item` i `zone` wynik zawiera teraz osobne pola dla
+każdej strefy. Bez zmian pozostały jednak `Diverter`, `Mode`, `BeltMotor` i `EStopLatch`. Zdarzenia
+`DiverterNotReady` i `RoutingDeadlineMissed`, przejście do `Mode::Fault` oraz powrót do pracy mogą
+więc wystąpić w tych samych tickach.
+
+Utwórz scenariusz o następujących danych:
+
+- paczka o masie 750 g przybywa w ticku 0,
+- `StartRequested` występuje w ticku 0,
+- usterka `ScriptedDiverterFault{Blocked}` jest aktywna od ticku 0 do ticku 8, bez ticku 8,
+- `Reset` występuje w ticku 9,
+- kolejne `StartRequested` występuje w ticku 10,
+- `duration = 12`.
+
+Koniec przedziału usterki odpowiada wywołaniu `clearDiverterFault()` w pierwotnym przykładzie.
 
 ### `multiParcelDemoScenario()`
 
-Trzy przybycia o różnych klasyfikacjach (np. 100g/800g/150g — Light/Heavy/Light), z odstępami między
-tickami przybyć wynoszącymi co najmniej dwa, żeby żadne przybycie nie trafiło na wciąż zajęty `Infeed`
-(paczka opuszcza `Infeed` dopiero, gdy pas realnie jedzie — rozpęd trwa jeden tick). To demonstruje
-zdolność, której sama Misja 34 nie mogła jeszcze pokazać: wiele paczek zadeklarowanych z góry,
-deklaratywnie, zamiast przez ręczną pętlę ponawiającą spawn co tick (por.
-`tests/multiple_items_engine_test.cpp` z modułu 8).
+Zaplanuj przybycie trzech paczek należących do różnych klas, na przykład o masach 100 g, 800 g i
+150 g. Powinny trafić kolejno do wyjść Light, Heavy i Light.
+
+Między tickami przybycia zachowaj odstęp co najmniej dwóch ticków. Paczka opuszcza `infeed` dopiero
+po rozpędzeniu taśmy, które trwa jeden tick. Mniejszy odstęp mógłby spowodować próbę dodania kolejnej
+paczki do zajętej strefy.
+
+Ten przykład pokazuje kilka przybyć zapisanych z góry w `Scenario`. Nie wymaga ręcznej pętli, która
+ponawia `spawnItem()` w każdym ticku, jak w `tests/multiple_items_engine_test.cpp` z modułu 8.
 
 ## Sprawdź się
 
@@ -54,26 +67,26 @@ deklaratywnie, zamiast przez ręczną pętlę ponawiającą spawn co tick (por.
 ctest --preset test -L misja-35
 ```
 
-To prawdziwy test (`simulator_cli_scenario_smoke`), nie tylko stary `simulator_cli_smoke` (misja-6).
-Obydwa uruchamiają to samo polecenie, ale sprawdzają inne wymagania: `simulator_cli_smoke`
-zawsze sprawdzał tylko "program się uruchomił i zwrócił 0"; własna weryfikacja w `main.cpp` sprawia, że
-ten sam kod wyjścia jest teraz naprawdę powiązany z tym, czy obie demonstracje faktycznie się udały.
-Dlatego `misja-6`, mimo że historycznie osobny, w tym module dzieli wynik z `misja-35`, dopóki ta misja
-nie jest gotowa.
+Test `simulator_cli_scenario_smoke` uruchamia to samo polecenie co wcześniejszy
+`simulator_cli_smoke` z misji 6, ale sprawdza nowe wymagania. Pierwszy test historycznie potwierdzał
+tylko, że program uruchamia się i zwraca kod `0`. Teraz kod zakończenia zależy także od wewnętrznych
+sprawdzeń obu demonstracji wykonywanych w `main.cpp`. Do ukończenia tej misji testy `misja-6` i
+`misja-35` mogą więc zgłaszać ten sam błąd.
 
-Uruchom też program i porównaj wypisany ślad odzyskiwania z modułu 7:
+Zbuduj i uruchom program, a następnie porównaj przebieg awarii z opisem w module 7:
+
 ```bash
 cmake --build --preset dev
 ./build/dev/apps/simulator_cli/simulator_cli
 ```
 
-## Koniec modułu — pełny zestaw testów
+## Koniec modułu: pełny zestaw testów
 
 ```bash
 ctest --preset test
 ```
 
-Oczekiwany wynik: wszystkie testy zielone (`misja-1`, `misja-3`–`misja-4`, `misja-6`–`misja-35`).
+Oczekiwany wynik: przechodzą testy `misja-1`, `misja-3`–`misja-4` oraz `misja-6`–`misja-35`.
 
 ## Zapisz swoją pracę
 
@@ -85,22 +98,22 @@ git commit -m "..."
 
 ## Częste błędy
 
-- **Próba dosłownego odtworzenia starego tekstu CLI z modułu 7** — niemożliwa i niepotrzebna; liczy
-  się mechanizm i oś czasu, nie literalny string.
-- **Zbyt małe odstępy między tickami przybyć w `multiParcelDemoScenario`** — przybycie zaplanowane
-  zanim poprzednia paczka zdążyła opuścić `Infeed` sprawi, że `runScenario` zwróci `std::nullopt`.
-- **Edytowanie `main.cpp`** — to gotowy szkielet programu dla całego modułu; Twoja praca jest
-  wyłącznie w `scenario_demos.cpp`.
+- **Próba odtworzenia dokładnego tekstu z programu w module 7**: format wyniku zmienił się w module
+  8. Ważne są mechanizm i kolejność zdarzeń, a nie identyczny napis.
+- **Zbyt małe odstępy między przybyciami w `multiParcelDemoScenario()`**: jeśli poprzednia paczka nie
+  opuściła jeszcze `infeed`, `runScenario()` zwróci `std::nullopt`.
+- **Edycja `main.cpp`**: ten plik jest gotowy. Zmiany należy wprowadzić wyłącznie w
+  `scenario_demos.cpp`.
 
 ## Pytanie do zastanowienia
 
-`main.cpp` sprawdza tylko dwie rzeczy: czy pojawił się `Mode::Fault` i czy nastąpiły co najmniej trzy
-odjazdy. To minimalny warunek. Jaki błędny, ale wciąż „działający” (kod wyjścia `0`)
-`recoveryDemoScenario()` przeszedłby tę weryfikację, mimo że w ogóle nie odtwarza mechanizmu z modułu 7?
+`main.cpp` sprawdza tylko, czy wystąpił `Mode::Fault` i czy odjechały co najmniej trzy paczki. Podaj
+przykład błędnego `recoveryDemoScenario()`, który spełniłby te minimalne warunki i zakończył program
+kodem `0`, choć nie odtwarzałby mechanizmu z modułu 7.
 
 ## Koniec modułu 9
 
-Symulator pozwala teraz prowadzić eksperyment na dwa sposoby: bezpośrednio, krok po kroku (od
-modułu 1), i deklaratywny, jako jedna wartość `Scenario` do zapisania, przekazania i odtworzenia w
-niezmienionej postaci. Żaden nie zastąpił drugiego; oba korzystają z tego samego publicznego
-API `Engine`, które nigdy nie musiało się dowiedzieć, że taki wybór w ogóle istnieje.
+Symulacją można teraz sterować na dwa sposoby. Pierwszy polega na bezpośrednim wywoływaniu kolejnych
+metod `Engine`. Drugi zapisuje cały eksperyment w `Scenario`, które można przechować, przekazać i
+ponownie uruchomić. Oba sposoby korzystają z tego samego publicznego interfejsu `Engine`, który nie
+wymagał żadnych zmian.
