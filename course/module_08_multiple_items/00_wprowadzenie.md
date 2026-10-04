@@ -1,49 +1,52 @@
 🇵🇱 Polski | [🇬🇧 English](00_wprowadzenie.en.md)
 
-# Moduł 8: wiele paczek naraz
+# Moduł 8: wiele paczek jednocześnie
 
 ## Gdzie jesteśmy
 
-Od modułu 1 `Plant` modelował jedną paczkę za pomocą pola `std::optional<Item> item`.
-Prawdziwa taśma sortująca tak nie działa: kilka paczek jest fizycznie w locie jednocześnie, każda w
-innej strefie, każda na innym etapie procesu. Ten moduł to zmienia.
+Od modułu 1 `Plant` przechowywał jedną paczkę w polu `std::optional<Item> item`. Na prawdziwej linii
+sortującej kilka paczek może znajdować się jednocześnie w różnych strefach. W tym module dostosujesz
+do tego nasz model.
 
 ## Co się zmienia
 
-`Item` traci pole `zone` — skoro `Plant` będzie miał osobne pole na każdą strefę, przynależność paczki
-do strefy to fakt wynikający z tego, w którym polu ona leży, nie osobny znacznik, który mógłby się
-z tym faktem rozjechać. W zamian `Item` zyskuje własny stan przetwarzania: `presenceConfirmed`,
-`classification`, `divertingWaitTicks` — to, co dotąd żyło w jednym, globalnym `ControllerState`,
-teraz podróżuje razem z konkretną paczką, bo przy kilku paczkach naraz różne odczyty czujników mogą w
-tym samym ticku dotyczyć zupełnie różnych `ItemId`.
+Z `Item` znika pole `zone`. `Plant` będzie mieć osobne pole dla każdej strefy, więc położenie paczki
+wynika bezpośrednio z pola, w którym została zapisana. Dodatkowy znacznik powielałby tę informację i
+mógłby wskazywać inną strefę niż rzeczywiste położenie paczki.
 
-`Plant` zyskuje cztery nazwane pola: `infeed`, `presenceCheck`, `weighing`, `diverting`. Każde mieści
-najwyżej jedną paczkę — to naturalne, fizyczne ograniczenie: paczka nie może wejść do zajętej strefy.
-Dzięki temu dywerter nigdy nie musi arbitrażować między dwiema paczkami naraz — w `diverting` zawsze
-jest co najwyżej jedna.
+Każdy `Item` otrzymuje za to własny stan przetwarzania: `presenceConfirmed`, `classification` i
+`divertingWaitTicks`. Dotychczas dane te znajdowały się we wspólnym `ControllerState`. Przy kilku
+paczkach odczyty czujników wykonane w jednym ticku mogą jednak dotyczyć różnych `ItemId`, dlatego
+stan musi być przechowywany razem z właściwą paczką.
 
-`advance()` przesuwa teraz cztery przejścia zamiast jednego, w ustalonej kolejności, od wyjścia do
-wejścia (`Diverting` → `Weighing` → `PresenceCheck` → `Infeed`) — dzięki temu paczka może w tym samym
-ticku wejść do strefy dopiero co zwolnionej przez inną paczkę, bez sztucznego opóźnienia, a mimo to
-żadna paczka nigdy nie przesuwa się więcej niż raz w jednym ticku.
+`Plant` otrzymuje cztery pola: `infeed`, `presenceCheck`, `weighing` i `diverting`. Każde może
+przechowywać najwyżej jedną paczkę. Paczka nie może więc wejść do zajętej strefy, a przy dywerterze
+nigdy nie znajdą się dwie paczki naraz.
 
-Wyjście (`OutputLight`/`OutputHeavy`) przestaje być polem `Plant` — staje się zlewem (sink):
-paczka, która wyjeżdża, jest zgłaszana jako `ItemDeparture` i znika z `Plant` w tym samym wywołaniu
-`advance()`, nigdy po cichu.
+Funkcja `advance()` będzie obsługiwać cztery przejścia w stałej kolejności, od wyjścia w stronę
+wejścia: `Diverting` → `Weighing` → `PresenceCheck` → `Infeed`. Dzięki temu kilka paczek może
+przesunąć się w jednym ticku, również do stref zwolnionych chwilę wcześniej. Żadna pojedyncza paczka
+nie przesunie się przy tym więcej niż raz.
+
+Strefy `OutputLight` i `OutputHeavy` nie będą już polami `Plant`. Paczka opuszczająca linię zniknie z
+`Plant`, a `advance()` zwróci informację o jej odjeździe w `ItemDeparture`.
 
 ## Cztery misje
 
-- **Misja 29 — partie i paczki.** Nowy kształt `Item`/`Plant`, `spawnItem(id, mass)`.
-- **Misja 30 — przesuwanie partii.** Pełny algorytm `advance()`, w kolejności od wyjścia do wejścia.
-- **Misja 31 — korelacja dla każdej paczki.** `ControllerState` odchodzi; dwie nowe, rozdzielone
-  funkcje korelacji zajmują jego miejsce.
-- **Misja 32 — silnik z wieloma paczkami.** Pełna integracja w `Engine::step()`, rozszerzony
-  `TickResult`/`describe()`, demonstracja w CLI.
+- **Misja 29: model wielu paczek.** Poznasz nową strukturę `Item` i `Plant` oraz uzupełnisz
+  `spawnItem(id, mass)`.
+- **Misja 30: przesuwanie paczek.** Zaimplementujesz pełny algorytm `advance()`, który obsługuje
+  strefy od wyjścia do wejścia.
+- **Misja 31: powiązanie odczytów z paczkami.** Zastąpisz `ControllerState` dwiema funkcjami, które
+  zapisują wyniki pomiarów w odpowiednich paczkach.
+- **Misja 32: `Engine` z wieloma paczkami.** Połączysz wszystkie elementy w `Engine::step()`,
+  rozszerzysz `TickResult` i `describe()` oraz przygotujesz demonstrację w programie terminalowym.
 
 ## Zanim zaczniesz
 
-Tego modułu nie da się budować przyrostowo tak jak poprzednich — `Engine::step()` z modułu 7 odwołuje
-się do usuniętych pól `Plant::item` i `Item::zone`. Dlatego punkt startowy wygląda inaczej:
-kompiluje się, ale `Engine::step()` nie przesuwa paczek aż do misji 32. Nie jest to błąd szkieletu.
+Tego modułu nie da się budować przyrostowo w taki sam sposób jak poprzednich. `Engine::step()` z
+modułu 7 korzysta z pól `Plant::item` i `Item::zone`, które zostały usunięte. Kod startowy się
+kompiluje, ale do misji 32 metoda `Engine::step()` nie przesuwa paczek. Jest to zamierzone zachowanie,
+a nie błąd przygotowanego projektu.
 
-**Dalej:** [Misja 29: partie i paczki](./01_partie_i_paczki.md).
+**Dalej:** [Misja 29: model wielu paczek](./01_partie_i_paczki.md).
