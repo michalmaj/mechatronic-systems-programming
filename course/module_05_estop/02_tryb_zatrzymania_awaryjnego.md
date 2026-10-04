@@ -2,12 +2,12 @@
 
 # 5.2 Tryb zatrzymania awaryjnego
 
-To najważniejsza teoretycznie misja tego modułu — poświęcimy jej trochę więcej miejsca.
+Ta misja wprowadza najważniejszą zasadę tego modułu, dlatego jej opis jest nieco dłuższy.
 
 ## Problem
 
-`Mode` z modułu 4 nic nie wie o istnieniu przycisku awaryjnego. Musi się dowiedzieć — i musi
-przejmować się nim **bardziej** niż czymkolwiek innym, co dziś sprawdza.
+`Mode` z modułu 4 nie uwzględnia jeszcze przycisku awaryjnego. Jego stan musi mieć pierwszeństwo
+przed wszystkimi dotychczasowymi żądaniami.
 
 ## Nowe elementy C++
 
@@ -23,40 +23,40 @@ Mode modeStep(Mode current, bool startRequested, bool stopRequested,
 Zwróć uwagę na dwie rzeczy:
 
 **Parametr `latch` jest ostatni, nie drugi.** Mógłby logicznie stać zaraz po `current`, ale
-umieszczenie go na końcu, **z wartością domyślną**, ma konkretny cel: każde istniejące wywołanie
-`modeStep` sprzed tego modułu (włącznie z testem Misji 14, `mode_test.cpp`, i z ciałem
-`Engine::step()`) nadal się kompiluje, bez żadnej zmiany, korzystając z domyślnego `Released`. To
-prawdziwy przykład na to, po co w ogóle istnieją wartości domyślne parametrów: pozwalają rozszerzyć
-interfejs funkcji, nie psując nikogo, kto już go używa.
+umieszczenie go na końcu, **z wartością domyślną**, ma konkretny cel. Istniejące wywołania
+`modeStep`, w tym test misji 14 i kod w `Engine::step()`, nadal się kompilują bez zmian, korzystając
+z domyślnego `Released`. Wartość domyślna pozwala więc rozszerzyć interfejs funkcji bez poprawiania
+każdego miejsca, które już jej używa.
 
-**`Mode::EStopped`** — trzecia wartość, obok `Idle` i `Running`.
+**`Mode::EStopped`** jest trzecią wartością, obok `Idle` i `Running`.
 
 ## Bezwzględny priorytet
 
-**E-stop sprawdzany jest jako pierwszy, przed czymkolwiek innym.** Jeśli
-`latch != EStopLatchState::Released`, wynikiem jest `Mode::EStopped` — koniec, żadna inna reguła się
-nie liczy w tym wywołaniu. Nieważne, czy `startRequested` czy `stopRequested` są prawdziwe — latch
-wygrywa zawsze.
+**Stan przycisku awaryjnego jest sprawdzany jako pierwszy.** Jeśli
+`latch != EStopLatchState::Released`, wynikiem jest `Mode::EStopped` i żadna inna reguła nie jest
+już sprawdzana w tym wywołaniu. Wartości `startRequested` i `stopRequested` nie mają wtedy znaczenia.
 
 ## Powrót zawsze przez `Idle`
 
-**Odzyskanie po `EStopped` zawsze ląduje w `Idle`, nigdy automatycznie w `Running`.** W chwili, gdy
-`latch` wreszcie znowu czyta `Released`, `Mode` staje się `Idle` — wznowienie pracy wymaga od
+**Po wyjściu z `EStopped` system zawsze przechodzi do `Idle`, nigdy automatycznie do `Running`.** Gdy
+`latch` ponownie ma wartość `Released`, `Mode` zmienia się na `Idle`. Wznowienie pracy wymaga od
 operatora osobnego `requestStart()`, tak samo jak przy pierwszym uruchomieniu.
 
 **Przypadek brzegowy: `resetRequested` i `startRequested` prawdziwe w tym samym ticku.** Wynikiem
-wciąż jest `Idle`, nigdy `Running`. Sprawdzenie "właśnie wróciłem z `EStopped`" ma pierwszeństwo przed
-sprawdzeniem "`Idle` plus `startRequested`" — `Start` zażądany w tym samym ticku co reset, który
-wyczyścił latch, **nie** zadziała w tym ticku. Operator zobaczy `Idle`, a dopiero **osobne**, kolejne
-`requestStart()` faktycznie wznowi pracę.
+wciąż jest `Idle`, nigdy `Running`. Warunek powrotu z `EStopped` ma pierwszeństwo przed sprawdzeniem
+`startRequested` dla trybu `Idle`. Żądanie uruchomienia zgłoszone w tym samym ticku co reset **nie**
+zostanie wykonane. Operator zobaczy `Idle`, a pracę wznowi dopiero osobne, późniejsze
+`requestStart()`.
 
 ## Co już masz gotowe
 
-[`include/psm/mode.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/include/psm/mode.hpp) — zaktualizowana deklaracja, jak wyżej.
+[`include/psm/mode.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/include/psm/mode.hpp)
+zawiera zaktualizowaną deklarację pokazaną wyżej.
 
-[`src/mode.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/src/mode.cpp) — logika `Idle`/`Running` z modułu 4 zostaje **nietknięta i
-działająca**; dwa nowe komentarze `// TODO` opisują, co dopisać i w którym miejscu (przed resztą
-reguł).
+W pliku
+[`src/mode.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/src/mode.cpp)
+pozostaje działająca logika `Idle` i `Running` z modułu 4. Dwa nowe komentarze `// TODO` wskazują,
+co należy dopisać przed dotychczasowymi regułami.
 
 ## Co masz napisać
 
@@ -71,25 +71,24 @@ Rozszerz ciało `modeStep` o dwa sprawdzenia, w tej kolejności, **przed** istni
 ctest --preset test -L misja-17
 ```
 
-Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test to nowy, dedykowany plik —
-sprawdza priorytet e-stopu z różnych stanów, powrót do `Idle`, oraz przypadek brzegowy
-`resetRequested`+`startRequested` naraz.
+Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test sprawdza priorytet zatrzymania
+awaryjnego w różnych stanach, powrót do `Idle` oraz jednoczesne `resetRequested` i `startRequested`.
 
-Warto też ponownie odpalić `ctest --preset test -L misja-14` — powinien nadal przechodzić, mimo że
+Warto też ponownie uruchomić `ctest --preset test -L misja-14`. Powinien nadal przechodzić, mimo że
 nic w nim nie zmieniłeś.
 
 ## Częste błędy
 
-- **Sprawdzenie `stopRequested`/`startRequested` przed sprawdzeniem `latch`** — e-stop musi wygrywać
-  zawsze, bez wyjątków.
+- **Sprawdzenie `stopRequested` lub `startRequested` przed sprawdzeniem `latch`:** zatrzymanie
+  awaryjne ma zawsze pierwszeństwo.
 - **Zwrócenie `Mode::Running` zamiast `Mode::Idle`** przy powrocie z `EStopped`, gdy `startRequested`
-  jest prawdziwe w tym samym wywołaniu — reguła konfliktu wymaga powrotu do `Idle`.
-- **Umieszczenie nowych sprawdzeń na końcu funkcji** zamiast na początku — kolejność ma znaczenie,
-  e-stop musi być sprawdzony pierwszy.
+  jest prawdziwe w tym samym wywołaniu: reguła wymaga powrotu do `Idle`.
+- **Umieszczenie nowych sprawdzeń na końcu funkcji** zamiast na początku: kolejność ma znaczenie.
+  Stan przycisku awaryjnego trzeba sprawdzić jako pierwszy.
 
 ## Pytanie do zastanowienia
 
-Gdyby `latch` był drugim parametrem `modeStep`, bez wartości domyślnej, co musiałoby się
-zmienić w tym module — i w ilu miejscach?
+Gdyby `latch` był drugim parametrem `modeStep` i nie miał wartości domyślnej, które istniejące
+wywołania tej funkcji należałoby zmienić?
 
 **Dalej:** [Misja 18: dwie niezależne ścieżki](./03_dwie_niezalezne_sciezki.md).

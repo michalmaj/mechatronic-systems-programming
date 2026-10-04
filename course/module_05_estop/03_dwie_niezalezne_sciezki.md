@@ -5,11 +5,11 @@
 ## Problem
 
 `EStopLatchState` i rozszerzony `Mode` istnieją, ale nic jeszcze nie przekłada ich na konkretne
-skutki dla aktuatorów.
+zachowanie elementów wykonawczych.
 
 ## Nowe elementy C++
 
-**Dwie czyste, bezstanowe funkcje decyzyjne:**
+**Dwie czyste funkcje decyzyjne, które nie przechowują stanu:**
 
 ```cpp
 struct SafetyDecision {
@@ -20,32 +20,33 @@ SafetyDecision checkEmergencyOverride(EStopLatchState latch);
 bool diverterMayMove(Mode mode);
 ```
 
-`checkEmergencyOverride` — prawda, gdy `latch` nie jest `Released` (`Engaged` i `Armed` liczą się
-oba). `diverterMayMove` — prawda wyłącznie dla `Mode::Running`. Obie są zwykłymi, testowalnymi
-funkcjami, w duchu `classify`/`toDiverterCommand` z Controllera.
+`checkEmergencyOverride` zwraca `true`, gdy `latch` ma wartość inną niż `Released`. Dotyczy to zarówno
+`Engaged`, jak i `Armed`. `diverterMayMove` zwraca `true` wyłącznie dla `Mode::Running`. Obie są
+zwykłymi, łatwymi do przetestowania funkcjami, podobnie jak `classify` i `toDiverterCommand`.
 
 **`BeltMotor::forceStop()` ma inną rolę.** Jest operacją awaryjną zmieniającą stan. `forceStop()`
-ustawia **jednocześnie** `command_` na `Stop` **i**
-`actual_` na `Stopped`, w tym samym wywołaniu — żądana komenda i fizyczny stan zostają natychmiast
-zgodne, z pominięciem `RampingDown`. To sedno ścieżki awaryjnej: nie czeka na rampę, i nie zostawia
-"chce jechać" jako zaległej komendy, którą kolejny tick mógłby przypadkiem zrealizować.
+ustawia **jednocześnie** `command_` na `Stop` i `actual_` na `Stopped`. W tym uproszczonym modelu stan
+silnika zmienia się natychmiast, z pominięciem `RampingDown`. Zmiana obu pól jest ważna: po
+zatrzymaniu nie może pozostać wcześniejsze polecenie `Run`, które następny tick mógłby ponownie
+wykonać.
 
 ## Dlaczego nie ma tu `filterRoutineBeltCommand`
 
-Mogłoby się wydawać naturalne dodanie funkcji filtrującej "żądaną" komendę pasa według `Mode` —
-podobnie jak `diverterMayMove` filtruje ruch dywertera. Ale jedyna "żądana" wartość, jaka na tym
-etapie istnieje, to `mode == Running ? Run : Stop` — funkcja filtrująca
-porównywałaby wartość z warunkiem, który ją właśnie wyprodukował. To tautologia, nic by nie zmieniała.
-Ścieżką rutynową pozostaje istniejące sterowanie `Mode → BeltMotor` z modułu
-4, bez zmian. Filtrowanie bezpieczeństwa wróci w późniejszym module, gdy pojawi się naprawdę
-niezależne "żądanie", które będzie miało sens filtrować.
+Można byłoby dodać funkcję filtrującą polecenie dla silnika na podstawie `Mode`, podobnie jak
+`diverterMayMove` zezwala na ruch dywertera. Na tym etapie polecenie silnika powstaje jednak
+bezpośrednio z warunku `mode == Running ? Run : Stop`. Dodatkowa funkcja sprawdzałaby więc ten sam
+warunek, który przed chwilą utworzył polecenie, i nie zmieniałaby wyniku. Zwykłe sterowanie
+`Mode → BeltMotor` z modułu 4 pozostaje bez zmian. Osobne filtrowanie przyda się dopiero wtedy, gdy
+pojawi się niezależne żądanie ruchu.
 
 ## Co już masz gotowe
 
-[`include/psm/safety_supervisor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/include/psm/safety_supervisor.hpp) — deklaracje
-kompletne, jak wyżej.
+[`include/psm/safety_supervisor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/include/psm/safety_supervisor.hpp)
+zawiera kompletne deklaracje pokazane wyżej.
 
-[`src/safety_supervisor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/src/safety_supervisor.cpp) — puste szkielety obu funkcji.
+W pliku
+[`src/safety_supervisor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/src/safety_supervisor.cpp)
+znajdziesz puste szkielety obu funkcji.
 
 `BeltMotor::forceStop()` została zadeklarowana w
 [`include/psm/belt_motor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-05-start/include/psm/belt_motor.hpp); jej pusty szkielet czeka w
@@ -53,10 +54,10 @@ kompletne, jak wyżej.
 
 ## Co masz napisać
 
-- `checkEmergencyOverride` i `diverterMayMove` — dwie proste, jednolinijkowe decyzje.
-- `BeltMotor::forceStop()` — dwa przypisania, jak w wymaganym zachowaniu powyżej.
+- `checkEmergencyOverride` i `diverterMayMove`: napisz dwie proste funkcje decyzyjne.
+- `BeltMotor::forceStop()`: wykonaj dwa przypisania opisane wyżej.
 
-Żadna z tych trzech rzeczy jeszcze nie dotyka `Engine` — to Misja 19.
+Żaden z tych elementów nie zmienia jeszcze `Engine`. Zrobisz to w misji 19.
 
 ## Sprawdź się
 
@@ -65,21 +66,21 @@ ctest --preset test -L misja-18
 ```
 
 Oczekiwany wynik: `100% tests passed, 0 tests failed out of 1`. Test sprawdza obie funkcje decyzyjne,
-a także — co ważne — że po `forceStop()` kolejne `resolve()` **nie** zaczyna ponownie rampowania w
-górę (co udowadnia, że `command_` naprawdę zostało zmienione, nie tylko `actual_`).
+a także zachowanie `forceStop()`. Po jego wywołaniu kolejne `resolve()` **nie** może rozpocząć
+ponownego rozruchu. Potwierdza to, że zmieniło się zarówno `command_`, jak i `actual_`.
 
 ## Częste błędy
 
-- **`forceStop()` ustawiające tylko `actual_`**, nie `command_` — wtedy kolejne `resolve()` (wciąż
-  "chcąc" `Run`) natychmiast zacznie `RampingUp` z powrotem, co całkowicie unieważnia sens awaryjnego
-  zatrzymania.
-- **`diverterMayMove` dopuszczające stan inny niż `Mode::Running`** — żadna inna wartość
+- **Ustawienie przez `forceStop()` tylko `actual_`, bez zmiany `command_`:** kolejne `resolve()`,
+  nadal mając polecenie `Run`, natychmiast przejdzie z powrotem do `RampingUp` i unieważni
+  zatrzymanie.
+- **`diverterMayMove` dopuszczające stan inny niż `Mode::Running`:** żadna inna wartość
   `Mode` nie pozwala na ruch dywertera.
 
 ## Pytanie do zastanowienia
 
-`checkEmergencyOverride` i `diverterMayMove` są czyste, natomiast `forceStop()` zmienia stan. Dlaczego to
-rozróżnienie ma znaczenie akurat dla operacji **awaryjnej**, a nie przeszkadzało w żadnej z
-wcześniejszych, "zwykłych" metod klas w tym kursie?
+`checkEmergencyOverride` i `diverterMayMove` tylko zwracają decyzje, natomiast `forceStop()` zmienia
+stan silnika. Dlaczego ścieżka awaryjna potrzebuje operacji, która bezpośrednio wymusza zmianę
+stanu?
 
-**Dalej:** [Misja 19: silnik pod ochroną](./04_silnik_pod_ochrona.md).
+**Dalej:** [Misja 19: obsługa zatrzymania awaryjnego w Engine](./04_silnik_pod_ochrona.md).
