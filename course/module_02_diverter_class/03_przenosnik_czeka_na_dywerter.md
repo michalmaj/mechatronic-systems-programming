@@ -122,5 +122,5 @@ gałęzi `Diverting`? Dlaczego?
 ## Koniec modułu 2
 
 Masz teraz system, w którym fizyczne urządzenie ma własny czas reakcji, a przenośnik musi go
-uwzględnić. W kolejnych modułach dołączą następne elementy: drugi aktuator (silnik przenośnika),
-tryby pracy systemu i bezpieczeństwo.
+uwzględnić. W kolejnych modułach dołączą następne elementy: napęd taśmy, tryby pracy systemu i
+bezpieczeństwo.

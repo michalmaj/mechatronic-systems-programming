@@ -11,7 +11,7 @@ Issues.
 
 **Spis treści:** [0](#0-jak-korzystać-z-podręcznika) · [1](#1-modelowanie-prostego-procesu) ·
 [2](#2-polecenie-to-nie-stan-fizyczny) · [3](#3-koordynacja-systemu) ·
-[4](#4-aktuator-i-tryb-pracy) · [5](#5-niezależna-ścieżka-awaryjnego-stopu) ·
+[4](#4-element-wykonawczy-i-tryb-pracy) · [5](#5-niezależna-ścieżka-awaryjnego-stopu) ·
 [6](#6-czujniki-i-jakość-danych) · [7](#7-usterki-i-zdarzenia-systemowe) ·
 [8](#8-wiele-paczek-i-niezmienniki) · [9](#9-scenariusze-jako-dane) ·
 [10](#10-jak-czytać-i-pisać-test) · [11](#11-projekt-końcowy-jak-podejść-do-nowego-wymagania) ·
@@ -47,8 +47,8 @@ Na początku warto zapamiętać cztery zasady:
 **Moduł 1 · `module-01-start` · misje 1–6**
 
 Zaczynasz od prostej wersji sortowni, w której na linii znajduje się najwyżej jedna paczka. Paczka
-wjeżdża, zostaje sklasyfikowana i przechodzi przez kolejne strefy. Nie ma jeszcze aktuatorów ani
-opóźnień wynikających z ich ruchu.
+wjeżdża, zostaje sklasyfikowana i przechodzi przez kolejne strefy. Nie ma jeszcze elementów
+wykonawczych ani opóźnień wynikających z ich ruchu.
 
 Pierwsza wersja modelu sortowni:
 
@@ -99,7 +99,7 @@ public:
 ```
 
 To pierwsza klasa, którą zbudujesz w tym kursie. `Diverter` przechowuje zarówno wydane polecenie
-(`command`), jak i rzeczywiste położenie (`actualPosition`). Pola prywatne chronią stan aktuatora
+(`command`), jak i rzeczywiste położenie (`actualPosition`). Pola prywatne chronią stan dywertera
 przed bezpośrednią zmianą z zewnątrz. Ten sam podział między poleceniem a wykonaniem wróci przy
 `BeltMotor` w module 4.
 
@@ -142,7 +142,7 @@ kodu w `main()`, teraz pilnuje jej `Engine`, a poprawność sprawdzają testy.
 
 ---
 
-## 4. Aktuator i tryb pracy
+## 4. Element wykonawczy i tryb pracy
 
 **Moduł 4 · `module-04-start` · misje 13–15**
 
@@ -295,9 +295,9 @@ razu skorzystać z miejsca w tym samym ticku (przesunięcie łańcuchowe), a jed
 niezmiennik: żadna paczka nie może poruszyć się dwa razy w tym samym ticku. Wynika to z faktu, że
 każde przejście rozpatrujemy raz, zawsze w tej samej kolejności.
 
-`ItemId` staje się teraz kluczem korelacji dla każdej paczki z osobna, wszędzie tam, gdzie wcześniej
-wystarczał sam fakt „czy coś tu jest”. Ślad (`TickResult`) musi jednoznacznie mówić, której paczki
-dotyczy dany odczyt lub zdarzenie, nawet gdy na linii jest ich kilka naraz.
+`ItemId` pozwala teraz powiązać odczyty i zdarzenia z właściwą paczką. Wcześniej wystarczała sama
+informacja, czy w danym miejscu coś się znajduje. Ślad (`TickResult`) musi jednoznacznie wskazywać,
+której paczki dotyczy dany odczyt lub zdarzenie, nawet gdy na linii jest ich kilka naraz.
 
 ---
 
@@ -419,7 +419,7 @@ czytasz na `main`, a kod startowy bierzesz z tagu `final-project-start-v3`.
 | usterka zadana w scenariuszu | injected fault | `SensorFaultKind`, `DiverterFaultKind` |
 | zdarzenie systemowe | system event | `SystemEventKind` |
 | scenariusz | scenario | `Scenario` |
-| odtwarzacz scenariusza | scenario replayer | `runScenario` |
+| uruchamianie scenariusza | scenario replay | `runScenario` |
 | błąd wykryty przed uruchomieniem | static failure | `isValidScenario(...) == false` |
 | błąd podczas wykonania | dynamic failure | `runScenario(...) == std::nullopt` |
 | misja | mission | `ctest -L misja-N` |
@@ -458,7 +458,7 @@ nagłówkach w `include/psm/` oraz w materiale danego modułu.
 |---|---|---|
 | `Plant` | `plant.hpp` | fizyczny stan linii, pola odpowiadające strefom |
 | `Item` / `ItemId` | `item.hpp` | paczka i jej tożsamość |
-| `Diverter` | `diverter.hpp` | aktuator kierujący paczki na wyjście |
+| `Diverter` | `diverter.hpp` | mechanizm kierujący paczki na wyjście |
 | `BeltMotor` | `belt_motor.hpp` | napęd taśmy, z rampowaniem |
 | `Mode` | `mode.hpp` | tryb pracy całego systemu |
 | `EStopLatchState` | `estop_latch.hpp` | zatrzask bezpieczeństwa |

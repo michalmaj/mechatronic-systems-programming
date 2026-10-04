@@ -87,5 +87,5 @@ do `Engine::step()` zapobiega takiej sytuacji?
 ## Koniec modułu 3
 
 `Engine` jest teraz jedynym miejscem, które zna kolejność operacji w ticku. `main()` wywołuje tylko
-`step()`. W kolejnych modułach rozbudujesz `Engine` o tryby pracy systemu, zabezpieczenia i drugi
-aktuator, czyli silnik przenośnika, którego wprowadzenie odłożyliśmy w module 2.
+`step()`. W kolejnych modułach rozbudujesz `Engine` o tryby pracy systemu, zabezpieczenia i napęd
+taśmy, którego wprowadzenie odłożyliśmy w module 2.
