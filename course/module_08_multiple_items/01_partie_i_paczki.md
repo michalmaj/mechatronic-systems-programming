@@ -1,12 +1,12 @@
 🇵🇱 Polski | [🇬🇧 English](01_partie_i_paczki.en.md)
 
-# 8.1 Partie i paczki
+# 8.1 Model wielu paczek
 
 ## Problem
 
-`Plant` mieścił do tej pory jedną paczkę, a kolejna próba `spawnItem` była odrzucana.
-Żeby modelować kilka paczek naraz, `Plant` potrzebuje osobnego miejsca na każdą strefę — i sposobu,
-żeby jednoznacznie odróżnić od siebie paczki, które są w nim jednocześnie.
+Do tej pory `Plant` przechowywał tylko jedną paczkę, a próba dodania kolejnej kończyła się
+niepowodzeniem. Aby kilka paczek mogło znajdować się w układzie jednocześnie, każda strefa potrzebuje
+własnego miejsca. Paczki muszą też mieć niepowtarzalne identyfikatory.
 
 ## Nowe elementy C++
 
@@ -20,9 +20,9 @@ struct Item {
 };
 ```
 
-`Item` nie ma już pola `zone`. Skoro `Plant` będzie miał osobne pole na każdą strefę, przynależność do
-strefy to fakt wynikający z tego, w którym polu leży dana paczka — trzymanie dodatkowego pola `zone`
-obok tego powielałoby tę samą informację i groziło niespójnością.
+`Item` nie ma już pola `zone`. Położenie paczki wynika z pola `Plant`, w którym jest przechowywana.
+Pozostawienie `zone` oznaczałoby zapisanie tej samej informacji w dwóch miejscach, które mogłyby się
+ze sobą nie zgadzać.
 
 ```cpp
 struct Plant {
@@ -35,43 +35,47 @@ struct Plant {
 bool spawnItem(Plant& plant, ItemId id, Grams mass);
 ```
 
-Każde pole mieści najwyżej jedną paczkę. `spawnItem` przyjmuje teraz tylko `ItemId` i `Grams` — nie
-cały `Item` — i sam konstruuje świeży `Item` wewnątrz. Skoro wywołujący nie ma żadnej możliwości
-przekazać "używanego" `Item` z niezerowym stanem przetwarzania, nie ma też czego zerować.
+Każde pole mieści najwyżej jedną paczkę. `spawnItem()` przyjmuje jej `ItemId` i `Grams`, a następnie
+sam tworzy nowy `Item`. Wywołujący nie może więc przekazać paczki z wynikiem wcześniejszego
+przetwarzania. Pola stanu zawsze otrzymują wartości domyślne.
 
-## Kontrakt: co `spawnItem` musi gwarantować
+## Wymagania wobec `spawnItem()`
 
-`ItemId` musi być unikalne wśród paczek **aktualnie obecnych** w `Plant` — nie wśród wszystkich, które
-kiedykolwiek istniały. Gdy paczka opuszcza system (odjeżdża do `OutputLight`/`OutputHeavy`), jej id
-jest wolne do ponownego użycia. Nie ma globalnego rejestru id i nie jest potrzebny — `spawnItem` sam
-odrzuca kolizję, sprawdzając tylko to, co jest obecne *teraz*.
+`ItemId` musi być unikalny wśród paczek, które obecnie znajdują się w `Plant`. Nie musi być unikalny
+w całej historii programu. Gdy paczka opuści układ przez `OutputLight` albo `OutputHeavy`, jej
+identyfikator można wykorzystać ponownie. Nie jest do tego potrzebny żaden globalny rejestr.
 
-Funkcja musi zwrócić `false` i zostawić `plant` bez żadnej zmiany w dwóch niezależnych przypadkach:
+Funkcja ma zwrócić `false` i nie zmienić `plant` w dwóch przypadkach:
 
-- `infeed` jest już zajęty — nie ma gdzie umieścić nowej paczki,
-- podane `id` koliduje z id dowolnej *innej* paczki obecnej gdziekolwiek w `Plant`, czyli w
-  `presenceCheck`, `weighing` albo `diverting` (kolizja z samym `infeed` jest już pokryta pierwszym
-  warunkiem, więc nie trzeba jej sprawdzać osobno).
+- `infeed` jest zajęty i nie można dodać następnej paczki,
+- podany identyfikator należy już do paczki w `presenceCheck`, `weighing` albo `diverting`.
 
-W każdym innym przypadku funkcja umieszcza w `infeed` świeżo skonstruowany `Item` o podanych `id` i
-`mass` i zwraca `true`. Wywołujący (docelowo `Engine`, a nad nim CLI/testy) odpowiada za ponowną próbę w
-kolejnym ticku i za wybór id, które się nie koliduje — nie ma tu wewnętrznej kolejki ani generatora id.
+Nie musisz osobno sprawdzać identyfikatora paczki w `infeed`, ponieważ zajętość tej strefy już
+powoduje odrzucenie operacji.
+
+W pozostałych przypadkach utwórz w `infeed` nowy `Item` z podanymi `id` i `mass`, a następnie zwróć
+`true`. Po nieudanej próbie to wywołujący, docelowo `Engine` lub program terminalowy, odpowiada za
+ponowienie operacji w kolejnym ticku i wybór wolnego identyfikatora. `Plant` nie ma własnej kolejki
+ani generatora identyfikatorów.
 
 ## Co już masz gotowe
 
-[`include/psm/item.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/item.hpp) — nowy kształt `Item`, kompletny.
+[`include/psm/item.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/item.hpp)
+zawiera kompletną, nową definicję `Item`.
 
-[`include/psm/plant.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/plant.hpp) — nowy kształt `Plant`, `ItemDeparture`,
-`AdvanceResult`, sygnatury `spawnItem`/`advance` — wszystko gotowe.
+W pliku
+[`include/psm/plant.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/plant.hpp)
+znajdziesz nową definicję `Plant`, typy `ItemDeparture` i `AdvanceResult` oraz deklaracje
+`spawnItem()` i `advance()`.
 
-[`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/plant.cpp) — `advance()` zostanie zaimplementowane w misji 30. Do tego czasu
-nie przesuwa paczek. Ciało `spawnItem`
-jest `// TODO`.
+W pliku
+[`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/plant.cpp)
+metoda `advance()` pozostaje na razie pusta. Uzupełnisz ją w misji 30. W tej misji zajmij się
+oznaczonym przez `// TODO` ciałem `spawnItem()`.
 
 ## Co masz napisać
 
-Uzupełnij ciało `spawnItem` w [`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/plant.cpp) tak, by spełniało kontrakt opisany
-wyżej.
+Uzupełnij `spawnItem()` w `src/plant.cpp` zgodnie z wymaganiami opisanymi powyżej.
 
 ## Sprawdź się
 
@@ -79,23 +83,23 @@ wyżej.
 ctest --preset test -L misja-29
 ```
 
-Oczekiwany wynik: `100% tests passed`. Test sprawdza: udany spawn do pustego `infeed`; odrzucenie, gdy
-`infeed` jest zajęty; odrzucenie przy kolizji id z paczką obecną gdziekolwiek indziej w `Plant`; że
-kolejne wywołanie z id, które nie koliduje, udaje się mimo obecności innej paczki.
+Oczekiwany wynik: `100% tests passed`. Test sprawdza dodanie paczki do pustego `infeed`, odrzucenie
+operacji przy zajętej strefie wejściowej oraz wykrywanie powtórzonego identyfikatora w pozostałych
+strefach. Potwierdza też, że przy wolnym `infeed` można dodać paczkę z nowym identyfikatorem, choć w
+układzie znajdują się już inne paczki.
 
 ## Częste błędy
 
-- **Sprawdzanie kolizji id tylko względem `infeed`** — kolizja z paczką w `presenceCheck`/`weighing`/
-  `diverting` musi być odrzucona równie stanowczo.
-- **Ręczne zerowanie `presenceConfirmed`/`classification`/`divertingWaitTicks` po konstrukcji** —
-  niepotrzebne: `Item{id, mass}` już bierze resztę pól z ich domyślnych wartości w klasie.
-- **Próba przyjęcia całego `Item` zamiast `ItemId`/`Grams`** — prowadzi to do niejasności
-  ("co znaczy przekazać 'używany' `Item`?"), której zawężona sygnatura ma unikać.
+- **Sprawdzenie identyfikatora tylko w `infeed`**: taki sam identyfikator w `presenceCheck`,
+  `weighing` albo `diverting` również musi spowodować odrzucenie operacji.
+- **Ręczne zerowanie `presenceConfirmed`, `classification` i `divertingWaitTicks` po utworzeniu
+  paczki**: konstrukcja `Item{id, mass}` korzysta już z wartości domyślnych pozostałych pól.
+- **Zmiana funkcji tak, aby przyjmowała cały `Item`**: przekazanie `ItemId` i `Grams` gwarantuje, że
+  nowa paczka nie zawiera stanu pozostałego po wcześniejszym przetwarzaniu.
 
 ## Pytanie do zastanowienia
 
-`spawnItem` nie ma wewnętrznej kolejki. Po nieudanej próbie wywołujący musi spróbować ponownie.
-Dlaczego jest to właściwa odpowiedzialność dla wywołującego (np. `Engine` albo CLI),
-a nie dla samego `Plant`?
+`spawnItem()` nie przechowuje nieudanych prób we własnej kolejce. Dlaczego za ponowienie operacji
+powinien odpowiadać wywołujący, na przykład `Engine` albo program terminalowy, a nie sam `Plant`?
 
-**Dalej:** [Misja 30: przesuwanie partii](./02_przesuwanie_partii.md).
+**Dalej:** [Misja 30: przesuwanie paczek](./02_przesuwanie_partii.md).

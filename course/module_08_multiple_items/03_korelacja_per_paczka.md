@@ -1,13 +1,13 @@
 🇵🇱 Polski | [🇬🇧 English](03_korelacja_per_paczka.en.md)
 
-# 8.3 Korelacja dla każdej paczki
+# 8.3 Powiązanie odczytów z paczkami
 
 ## Problem
 
-`ControllerState` zakładał, że w danej chwili co najwyżej jedna paczka jest "w trakcie potwierdzania".
-To założenie było prawdziwe, dopóki `Plant` mieścił jedną paczkę. Teraz jest fałszywe: odczyt obecności
-i odczyt wagi w tym samym ticku mogą dotyczyć zupełnie różnych paczek — jednej w `presenceCheck`, innej
-w `weighing`. Jedna, globalna zmienna stanu nie potrafi tego wyrazić poprawnie.
+`ControllerState` zakładał, że w danej chwili przetwarzana jest tylko jedna paczka. Założenie było
+poprawne, dopóki `Plant` przechowywał pojedynczy `Item`. Teraz w jednym ticku czujnik obecności może
+badać paczkę w `presenceCheck`, a czujnik masy inną paczkę w `weighing`. Wspólny stan nie pozwala
+jednoznacznie przypisać obu wyników.
 
 ## Nowe elementy C++
 
@@ -16,52 +16,66 @@ void updatePresenceConfirmation(Item& itemAtPresenceCheck, PresenceReading prese
 void updateClassification(Item& itemAtWeighing, WeightReading weight);
 ```
 
-Dwie funkcje, nie jedna. Odczyt obecności dotyczy zawsze tej paczki, która akurat jest w
-`presenceCheck`. Odczyt wagi dotyczy zawsze tej paczki, która akurat jest w `weighing` — i korzysta z
-**jej własnego** `presenceConfirmed`, nie jakiegoś globalnego. To jest właściwa lekcja tej misji: gdy
-paczek jest kilka, żaden odczyt czujnika nie może po cichu "przeciekać" do niewłaściwej paczki.
+Każda funkcja otrzymuje paczkę znajdującą się przy odpowiednim czujniku. Odczyt obecności zmienia
+stan paczki w `presenceCheck`, a odczyt masy służy do klasyfikacji paczki w `weighing`. Druga funkcja
+korzysta z `presenceConfirmed` zapisanej w tej samej paczce. Dzięki temu wynik pomiaru nie zostanie
+przypisany do innego `ItemId`.
 
-## Dokładna reguła
+## Dokładne reguły
 
-`updatePresenceConfirmation` ustawia `itemAtPresenceCheck.presenceConfirmed` na `true` wtedy i tylko
-wtedy, gdy przekazany odczyt ma jednocześnie `status == ReadingStatus::Ok` i `occupied == true`. W
-każdym innym przypadku — odczyt błędny albo `occupied == false` — pole zostaje bez zmian; funkcja
-nigdy nie resetuje `presenceConfirmed` z powrotem na `false`.
+`updatePresenceConfirmation()` ustawia `itemAtPresenceCheck.presenceConfirmed` na `true` tylko wtedy,
+gdy `status == ReadingStatus::Ok` oraz `occupied == true`. Przy błędnym odczycie albo
+`occupied == false` nie zmienia pola. Raz potwierdzona obecność nie jest przez tę funkcję ponownie
+ustawiana na `false`.
 
-`updateClassification` zapisuje wynik `decideClassification(weight)` do
-`itemAtWeighing.classification` wyłącznie wtedy, gdy jednocześnie: paczka w `weighing` ma już
-`presenceConfirmed == true`, i przekazany odczyt wagi ma `status == ReadingStatus::Ok`. Brak
-któregokolwiek z tych dwóch warunków oznacza brak zapisu — `classification` zostaje takie, jakie
-było wcześniej (dla świeżej paczki: `std::nullopt`).
+`updateClassification()` zapisuje wynik `decideClassification(weight)` w
+`itemAtWeighing.classification` tylko po spełnieniu obu warunków:
 
-`Engine::step()` (misja 32) wywoła każdą z nich tylko wtedy, gdy odpowiednia strefa jest faktycznie
-zajęty — nie ma tu żadnej gałęzi "resetuj przy braku paczki", bo `Item` utworzony przez `spawnItem`
-już zaczyna z domyślnym, czystym stanem (`presenceConfirmed = false`, `classification =
-std::nullopt`) — nie ma nic do zerowania.
+- paczka ma już `presenceConfirmed == true`,
+- odczyt masy ma `status == ReadingStatus::Ok`.
+
+Jeśli którykolwiek warunek nie jest spełniony, `classification` zachowuje poprzednią wartość. Dla
+nowej paczki pozostaje więc `std::nullopt`.
+
+W misji 32 `Engine::step()` wywoła każdą z tych funkcji tylko przy zajętej strefie. Nie potrzebujesz
+osobnej gałęzi zerującej stan przy braku paczki. `Item` utworzony przez `spawnItem()` zaczyna z
+`presenceConfirmed = false` i `classification = std::nullopt`.
 
 ## Uproszczenie czujników
 
-`PresenceSensor::read` i `WeightSensor::read` dostają teraz pole odpowiadające miejscu montażu
-czujnika, więc stan rzeczywisty wyraża `item.has_value()`. Dawne porównanie `item->zone ==
-Zone::PresenceCheck` nie jest już możliwe, ponieważ `Item` nie ma pola `zone`.
-Reszta logiki z modułu 6 zostaje bez zmian, i to jest tu ważne: gdy strefa jest pusta i nie ma usterki,
-sensor nadal zwraca `{Ok, 0}`/`{Ok, false}`, **nie** aktualizując `lastKnownMass_`/`lastKnownOccupied_`.
-Potwierdzony pusty odczyt to prawdziwa, zaufana obserwacja — nigdy nie jest traktowany jako "masa
-wynosi zero" do celów pamięci.
+`PresenceSensor::read()` i `WeightSensor::read()` otrzymują teraz pole odpowiadające strefie, przy
+której zamontowano dany czujnik. Obecność paczki można więc sprawdzić przez `item.has_value()`.
+Porównanie `item->zone == Zone::PresenceCheck` nie jest już możliwe, ponieważ `Item` nie ma pola
+`zone`.
+
+Pozostałe reguły z modułu 6 nie zmieniają się. Jeśli strefa jest pusta i nie wystąpiła usterka,
+czujnik zwraca odpowiednio `{Ok, 0}` albo `{Ok, false}`. Nie aktualizuje przy tym
+`lastKnownMass_` ani `lastKnownOccupied_`. Prawidłowy odczyt pustej strefy informuje o braku paczki,
+ale wartość zero nie jest zapamiętywana jako ostatnia masa paczki.
 
 ## Co już masz gotowe
 
-[`include/psm/controller.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/controller.hpp) — deklaracje obu nowych funkcji,
-gotowe. [`include/psm/presence_sensor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/presence_sensor.hpp)/[`weight_sensor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/weight_sensor.hpp)
-— sygnatury bez zmian.
+W pliku
+[`include/psm/controller.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/controller.hpp)
+znajdziesz deklaracje obu nowych funkcji.
+
+Pliki
+[`include/psm/presence_sensor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/presence_sensor.hpp)
+i
+[`include/psm/weight_sensor.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/weight_sensor.hpp)
+mają już właściwe deklaracje metod `read()`.
 
 ## Co masz napisać
 
-- `updatePresenceConfirmation`/`updateClassification` w [`src/controller.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/controller.cpp)
-  zgodnie z dokładną regułą powyżej.
-- `PresenceSensor::read` w [`src/presence_sensor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/presence_sensor.cpp) i
-  `WeightSensor::read` w [`src/weight_sensor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/weight_sensor.cpp): zamień stan rzeczywisty na
-  `item.has_value()` (i `item->mass` dla wagi), zachowując resztę logiki modułu 6 bez zmian.
+- Zaimplementuj `updatePresenceConfirmation()` i `updateClassification()` w
+  [`src/controller.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/controller.cpp)
+  zgodnie z regułami opisanymi powyżej.
+- W
+  [`src/presence_sensor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/presence_sensor.cpp)
+  oraz
+  [`src/weight_sensor.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/weight_sensor.cpp)
+  określ stan rzeczywisty za pomocą `item.has_value()`, a w przypadku masy także `item->mass`.
+  Pozostałą logikę z modułu 6 pozostaw bez zmian.
 
 ## Sprawdź się
 
@@ -69,24 +83,23 @@ gotowe. [`include/psm/presence_sensor.hpp`](https://github.com/michalmaj/mechatr
 ctest --preset test -L misja-31
 ```
 
-Oczekiwany wynik: `100% tests passed`. Sprawdza: obie funkcje korelacji bezpośrednio na gołych
-`Item`ach, w tym że dwie różne, jednocześnie przetwarzane paczki dostają w pełni niezależną
-klasyfikację; uproszczoną logikę obu czujników, w tym że potwierdzony pusty odczyt nigdy nie zeruje
-pamięci.
+Oczekiwany wynik: `100% tests passed`. Test sprawdza obie funkcje na osobnych obiektach `Item`, w tym
+niezależną klasyfikację dwóch paczek przetwarzanych w tym samym ticku. Sprawdza także uproszczoną
+logikę czujników i potwierdza, że odczyt pustej strefy nie nadpisuje zapamiętanej wartości.
 
 ## Częste błędy
 
-- **Wywołanie `updateClassification` niezależnie od `presenceConfirmed` tej konkretnej paczki** — to
-  właśnie ten global-state bug, którego ta misja uczy unikać.
-- **Powrót do porównania `item->zone`** — niemożliwe do skompilowania, ale warto zauważyć,
-  dlaczego: `Item` nie niesie już tej informacji.
-- **Aktualizowanie `lastKnownMass_`/`lastKnownOccupied_` przy potwierdzonym pustym odczycie** — to
-  właśnie regresja, przed którą ta sekcja explicite ostrzega.
+- **Wywołanie `updateClassification()` bez sprawdzenia `presenceConfirmed` właściwej paczki**:
+  prowadzi do przypisania wyniku bez wcześniejszego potwierdzenia obecności tej paczki.
+- **Ponowne użycie `item->zone`**: kod się nie skompiluje, ponieważ położenie paczki wynika teraz z
+  pola `Plant`, a nie z jej własnego pola.
+- **Aktualizacja `lastKnownMass_` lub `lastKnownOccupied_` po prawidłowym odczycie pustej strefy**:
+  taki odczyt nie zawiera nowej wartości dotyczącej paczki i nie powinien zastępować poprzedniej.
 
 ## Pytanie do zastanowienia
 
-Gdyby `updateClassification` przyjmowała `bool presenceConfirmed` jako osobny parametr zamiast czytać
-je z `itemAtWeighing`, dawałoby obecnie ten sam wynik. Dlaczego mimo to czytanie go
-bezpośrednio z paczki jest tu lepszym wyborem projektowym?
+`updateClassification()` mogłaby otrzymywać `presenceConfirmed` jako osobny parametr. Dlaczego
+odczytanie tej wartości bezpośrednio z `itemAtWeighing` lepiej chroni powiązanie danych z właściwą
+paczką?
 
-**Dalej:** [Misja 32: silnik z wieloma paczkami](./04_silnik_z_wieloma_paczkami.md).
+**Dalej:** [Misja 32: `Engine` z wieloma paczkami](./04_silnik_z_wieloma_paczkami.md).

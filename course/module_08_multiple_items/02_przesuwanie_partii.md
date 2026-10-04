@@ -1,14 +1,15 @@
 🇵🇱 Polski | [🇬🇧 English](02_przesuwanie_partii.en.md)
 
-# 8.2 Przesuwanie partii
+# 8.2 Przesuwanie paczek
 
-To najważniejsza misja tego modułu pod względem teorii. Przeczytaj ją całą, zanim zaczniesz pisać kod.
+W tej misji kolejność operacji ma bezpośredni wpływ na działanie symulacji. Przeczytaj wszystkie
+reguły przed rozpoczęciem implementacji.
 
 ## Problem
 
-Skoro `Plant` może teraz mieścić kilka paczek naraz, `advance()` musi przesunąć wszystkie we
-właściwym porządku — w jednym wywołaniu, bez przesuwania którejkolwiek paczki więcej niż raz, ale też
-bez sztucznego opóźnienia, gdy zwolniona strefa mogłaby od razu przyjąć kolejną paczkę z tyłu.
+`Plant` może teraz przechowywać kilka paczek. Jedno wywołanie `advance()` powinno przesunąć każdą z
+nich najwyżej raz. Jednocześnie paczka może od razu wejść do strefy zwolnionej w tym samym ticku
+przez paczkę znajdującą się przed nią.
 
 ## Nowe elementy C++
 
@@ -26,56 +27,63 @@ struct AdvanceResult {
 AdvanceResult advance(Plant& plant, const Diverter& diverter, bool routingReady = true);
 ```
 
-`event` dotyczy wyłącznie paczki w `diverting`, jeśli nie odjechała w tym ticku. `departure` jest
-ustawiane tylko przy udanym rutowaniu — z konstrukcji obu tych pól nigdy nie ustawia się jednocześnie.
+`event` dotyczy paczki w `diverting`, która nie opuściła układu w bieżącym ticku. `departure` jest
+ustawiane tylko wtedy, gdy paczka została skierowana do wyjścia. Te dwa pola nigdy nie zawierają
+jednocześnie wartości.
 
-## Reguły przejść, w wymaganej kolejności
+## Kolejność przejść
 
-`advance()` musi wykonać cztery przejścia, **każde raz na wywołanie**, w ustalonej
-kolejności — od wyjścia do wejścia:
+`advance()` wykonuje cztery przejścia. Każde z nich wykonaj dokładnie raz, w kolejności od wyjścia
+do wejścia.
 
-**1. Rozstrzygnięcie w `diverting`** (tylko gdy strefa jest zajęta). Obowiązuje reguła terminu
-rutowania z misji 26, ale licznik `divertingWaitTicks` należy teraz do paczki
-(`Item::divertingWaitTicks`), nie gdzieś obok w `Engine`:
-- gdy `routingReady` jest `false`, licznik paczki wraca do zera i na tym przejście się kończy w tym
-  ticku (paczka zostaje w `diverting`, bez zdarzenia);
-- gdy `routingReady` jest `true`, ale dywerter jeszcze nie ustawił się na zadanej pozycji
-  (`!diverter.isSettled()`), licznik paczki rośnie o jeden; zdarzenie w wyniku to
-  `SystemEventKind::DiverterNotReady` przy pierwszym takim ticku licznika, a
-  `SystemEventKind::RoutingDeadlineMissed` przy każdym kolejnym;
-- gdy dywerter jest ustawiony, paczka odjeżdża: `result.departure` dostaje jej id i miejsce docelowe
-  (`Zone::OutputLight` dla pozycji `Straight`, `Zone::OutputHeavy` w przeciwnym razie), a pole
-  `diverting` zostaje zwolniony.
+**1. Obsługa strefy `diverting`.**
 
-**2–4. Trzy przejścia między sąsiednimi strefami** — `weighing`→`diverting`,
-`presenceCheck`→`weighing`, `infeed`→`presenceCheck`, w tej właśnie kolejności. Każde z nich stosuje
-ten sam wzorzec: jeśli strefa docelowa jest teraz pusta (co mogło być efektem przejścia wykonanego
-przed chwilą, w tym samym wywołaniu) i strefa źródłowa jest zajęta, paczka przenosi się do strefy
-docelowej, a strefa źródłowa zostaje zwolniona. Jedyny wyjątek: paczka wchodząca do `diverting`
-zaczyna z wyzerowanym `divertingWaitTicks` — to świeże wejście do strefy, nie kontynuacja czyjegoś
-odliczania.
+Ten krok wykonaj tylko wtedy, gdy strefa jest zajęta. Obowiązuje reguła limitu czasu z misji 26, ale
+licznik `divertingWaitTicks` jest teraz polem konkretnej paczki.
 
-## Dlaczego to gwarantuje "co najwyżej jeden ruch na paczkę na tick"
+- Jeśli `routingReady` ma wartość `false`, wyzeruj licznik paczki. Pozostaw ją w `diverting` i nie
+  zgłaszaj zdarzenia.
+- Jeśli `routingReady` ma wartość `true`, ale `!diverter.isSettled()`, zwiększ licznik o jeden. Przy
+  pierwszym takim ticku ustaw `SystemEventKind::DiverterNotReady`. Przy każdym następnym ustaw
+  `SystemEventKind::RoutingDeadlineMissed`.
+- Jeśli dywerter osiągnął zadane położenie, paczka opuszcza układ. Zapisz w `result.departure` jej
+  identyfikator oraz strefę docelową. Dla położenia `Straight` jest to `Zone::OutputLight`, a w
+  przeciwnym razie `Zone::OutputHeavy`. Następnie zwolnij pole `diverting`.
 
-Nie dlatego, że każde pole jest używane tylko raz — jedno przejście odczytuje je jako źródło, a
-sąsiednie sprawdza jako cel. Gwarancja bierze
-się z tego, że każde z czterech *przejść* (rozstrzygnięcie w `Diverting`, `Weighing`→`Diverting`,
-`PresenceCheck`→`Weighing`, `Infeed`→`PresenceCheck`) jest wykonywane **raz na wywołanie, w
-tej ustalonej kolejności, od wyjścia do wejścia**. Paczka, która trafia do strefy przez jedno
-przejście, nie może zostać podjęta przez *wcześniejsze* przejście w tym samym wywołaniu — bo to
-wcześniejsze przejście już się wykonało. Jednocześnie każde przejście sprawdza zajętość swojego celu w
-chwili, gdy samo się wykonuje — co może już odzwierciedlać efekt wcześniejszego przejścia z tego
-samego ticku — więc zwolnione miejsce jest natychmiast widoczne dla przejścia za nim, pozwalając kilku
-paczkom przesunąć się razem bez sztucznej przerwy.
+**2–4. Przejścia między sąsiednimi strefami.**
 
-## Skąd bierze się polecenie dywertera
+Wykonaj kolejno:
 
-Polecenie dywertera decydowane w danym `Engine::step()` zawsze pochodzi z klasyfikacji paczki, która
-**już jest** w `diverting` — nigdy z paczki właśnie sklasyfikowanej w `weighing` w tym samym ticku, bo
-ta paczka nie może dotrzeć do `diverting` przed wywołaniem `advance()`, a polecenie jest decydowane
-przed tym wywołaniem. Zobacz przykładowy przebieg niżej — dobrze to pokazuje.
+1. `weighing` → `diverting`,
+2. `presenceCheck` → `weighing`,
+3. `infeed` → `presenceCheck`.
 
-## Przykładowy przebieg: trzy paczki, Light/Heavy/Light
+Dla każdego przejścia sprawdź, czy strefa docelowa jest pusta, a źródłowa zajęta. Jeśli tak,
+przenieś paczkę i zwolnij strefę źródłową. Uwzględniaj aktualny stan pól, ponieważ wcześniejszy krok
+tego samego wywołania mógł właśnie zwolnić miejsce.
+
+Przy wejściu paczki do `diverting` wyzeruj jej `divertingWaitTicks`. Jest to początek nowego
+odliczania dla tej paczki.
+
+## Dlaczego paczka przesuwa się najwyżej raz w ticku
+
+Decyduje o tym kolejność od wyjścia do wejścia. Paczka przeniesiona do następnej strefy nie zostanie
+obsłużona przez wcześniejsze przejście, ponieważ ten krok już się zakończył. Przykładowo paczka
+przeniesiona z `weighing` do `diverting` nie może w tym samym wywołaniu opuścić układu, ponieważ
+obsługa `diverting` odbyła się wcześniej.
+
+Jednocześnie każdy krok sprawdza bieżącą zajętość strefy docelowej. Jeżeli wcześniejszy krok zwolnił
+tę strefę, następna paczka może od razu do niej wejść. W jednym ticku może więc przesunąć się kilka
+paczek, ale każda z nich tylko o jedną strefę.
+
+## Która paczka wyznacza polecenie dywertera
+
+W `Engine::step()` polecenie dywertera zawsze wynika z klasyfikacji paczki, która już znajduje się w
+`diverting`. Nie korzystaj z klasyfikacji paczki znajdującej się w `weighing`, nawet jeśli została
+wyznaczona w tym samym ticku. Decyzja o położeniu dywertera zapada przed wywołaniem `advance()`, więc
+ta paczka nie zdążyła jeszcze wejść do `diverting`.
+
+## Przykładowy przebieg: trzy paczki Light/Heavy/Light
 
 ```text
 tick 0: infeed=2 presenceCheck=1 weighing=- diverting=-  cmd=Hold(for -)      event=-                 departure=-
@@ -88,23 +96,25 @@ tick 6: infeed=- presenceCheck=- weighing=- diverting=3  cmd=Hold(for 3)      ev
 tick 7: infeed=- presenceCheck=- weighing=- diverting=-  cmd=Hold(for 3)      event=-                 departure=3->Light
 ```
 
-(Ten ślad pochodzi z gołego `Plant`/`advance()`, wołanego bezpośrednio, bez `Engine` — bez rozruchu
-pasa. Przez prawdziwy `Engine` numery ticków będą inne, bo pas potrzebuje własnego czasu na rozpęd; sam
-wzorzec zdarzeń pozostaje ten sam.)
+Ten przebieg pokazuje bezpośrednie wywołania `advance()` dla samego `Plant`, bez czasu potrzebnego
+na rozpędzenie taśmy przez `Engine`. W pełnej symulacji numery ticków będą inne, ale kolejność zdarzeń
+pozostanie taka sama.
 
-Zwróć uwagę na tick 3: paczka 1 odjeżdża, a paczka 2 w tym samym wywołaniu `advance()` wchodzi do
-właśnie zwolnionego `diverting` — a mimo to polecenie decydowane w tym ticku wciąż dotyczyło paczki 1
-(zdecydowane przed `advance()`). To bezpośrednio widoczna ilustracja reguły z sekcji wyżej.
+W ticku 3 paczka 1 opuszcza układ, a paczka 2 wchodzi do zwolnionego pola `diverting`. Polecenie
+dywertera nadal dotyczy paczki 1, ponieważ zostało wyznaczone przed wywołaniem `advance()`.
 
 ## Co już masz gotowe
 
-[`include/psm/plant.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/plant.hpp) — `ItemDeparture`, `AdvanceResult`, sygnatura
-`advance()` — wszystko gotowe. `spawnItem` z Misji 29 jest już Twoje.
+W pliku
+[`include/psm/plant.hpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/include/psm/plant.hpp)
+znajdziesz typy `ItemDeparture` i `AdvanceResult` oraz deklarację `advance()`. Masz też własną
+implementację `spawnItem()` z misji 29.
 
 ## Co masz napisać
 
-Zaimplementuj ciało `advance()` w [`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/plant.cpp) zgodnie z regułami przejść
-opisanymi wyżej: cztery przejścia, w podanej kolejności, każde wykonane raz na wywołanie.
+Zaimplementuj `advance()` w
+[`src/plant.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/plant.cpp).
+Wykonaj cztery opisane przejścia, każde dokładnie raz i w podanej kolejności.
 
 ## Sprawdź się
 
@@ -112,23 +122,22 @@ opisanymi wyżej: cztery przejścia, w podanej kolejności, każde wykonane raz 
 ctest --preset test -L misja-30
 ```
 
-Oczekiwany wynik: `100% tests passed`. Testy sprawdzają: przejście przez wszystkie cztery strefy z
-poleceniem dywertera zadanym późno (`plant_diverter_test`); pełny termin rutowania na własnym
-`divertingWaitTicks` paczki, w tym reset przy `!routingReady` (`plant_deadline_test`).
+Oczekiwany wynik: `100% tests passed`. `plant_diverter_test` sprawdza przejście paczki przez cztery
+strefy, gdy polecenie dywertera pojawia się z opóźnieniem. `plant_deadline_test` sprawdza licznik
+`divertingWaitTicks`, w tym jego zerowanie przy `!routingReady`.
 
 ## Częste błędy
 
-- **Przetwarzanie stref w kolejności od wejścia do wyjścia** — wtedy paczka mogłaby przesunąć się
-  dwukrotnie w jednym wywołaniu (raz jako "wejście do kolejnej strefy", raz jako "wyjście z niej chwilę
-  później w tym samym przebiegu).
-- **Zapominanie o zerowaniu `divertingWaitTicks` przy wejściu do `diverting`** — kolejna paczka
-  odziedziczyłaby cudzy, częściowo zużyty licznik.
-- **Wnioskowanie polecenia dywertera z paczki w `weighing`** — złam to świadomie w prototypie, żeby
-  zobaczyć, dlaczego test tego nie akceptuje.
+- **Obsługa stref od wejścia do wyjścia**: paczka mogłaby wtedy przejść przez kilka stref podczas
+  jednego wywołania `advance()`.
+- **Brak zerowania `divertingWaitTicks` przy wejściu do `diverting`**: odliczanie dla nowego pobytu w
+  tej strefie nie zaczęłoby się od zera.
+- **Wyznaczenie polecenia dywertera na podstawie paczki w `weighing`**: polecenie ma dotyczyć paczki,
+  która już znajduje się w `diverting`.
 
 ## Pytanie do zastanowienia
 
-Które zachowanie z powyższego przebiegu zepsułoby się, gdyby `advance()` przetwarzał strefy od
-wejścia do wyjścia? Na czym polegałby błąd?
+Co stałoby się z paczkami w pokazanym przebiegu, gdyby `advance()` obsługiwało strefy od wejścia do
+wyjścia? Wskaż tick, w którym wynik zacząłby się różnić.
 
-**Dalej:** [Misja 31: korelacja dla każdej paczki](./03_korelacja_per_paczka.md).
+**Dalej:** [Misja 31: powiązanie odczytów z paczkami](./03_korelacja_per_paczka.md).

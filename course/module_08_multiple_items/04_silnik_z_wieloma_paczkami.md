@@ -1,83 +1,98 @@
 🇵🇱 Polski | [🇬🇧 English](04_silnik_z_wieloma_paczkami.en.md)
 
-# 8.4 Silnik z wieloma paczkami
+# 8.4 `Engine` z wieloma paczkami
 
 ## Problem
 
-Wszystkie kawałki istnieją osobno — nowy `Plant`, `advance()`, dwie funkcje korelacji — ale nic w
-`Engine::step()` jeszcze ich nie łączy. Startowy szkielet kompiluje się, ale nie wywołuje
-`advance()`, więc paczki pozostają w miejscu.
+Nowy `Plant`, funkcja `advance()` i funkcje przypisujące wyniki pomiarów do paczek są już gotowe.
+Nie zostały jednak połączone w `Engine::step()`. Kod startowy się kompiluje, lecz nie wywołuje
+`advance()`, dlatego żadna paczka się nie przesuwa.
 
-## Integracja: odpowiedzialności i ograniczenia
+## Integracja elementów
 
-Zadanie łączy mechanizmy z modułów 6 i 7 z kodem napisanym wcześniej w tym module. Tym razem muszą
-zadziałać razem dla czterech stref w jednym wywołaniu `step()`.
+W tej misji połączysz rozwiązania z modułów 6 i 7 z kodem napisanym w bieżącym module. Wszystkie
+operacje muszą działać razem dla czterech stref podczas jednego wywołania `step()`.
 
-**Czujniki i korelacja dla każdej paczki.** Każdy czujnik nadal odczytuje strefę, do której jest
-fizycznie przypisany (misja 31). Dwie rzeczy muszą się przy tym zdarzyć: stan korelacji paczki
-faktycznie obecnej w danej strefie musi się zaktualizować przez `updatePresenceConfirmation` lub
-`updateClassification` (tylko gdy strefa jest zajęta — wywołanie na pustym `std::optional<Item>` się nie
-skompiluje), a `SensorSnapshot` musi zapisać, której paczki
-(`ItemId`) dotyczył dany odczyt — ale tylko gdy odczyt był `Ok` **i** strefa faktycznie zajęta. Odczyt
-`Stale` nigdy nie jest przypisywany paczce znajdującej się obecnie w tej strefie —
-to powtórzenie wcześniejszej zaufanej wartości, nie świeża obserwacja.
+**Czujniki i przypisanie odczytów do paczek.**
 
-**Polecenie dywertera.** Musi pochodzić **wyłącznie** z paczki, która w tym momencie jest w
-`plant_.diverting` — nigdy z paczki właśnie sklasyfikowanej w `plant_.weighing` w tym samym ticku
-(misja 30 wyjaśniła, dlaczego to jedyny poprawny wybór: taka paczka fizycznie nie może jeszcze być w
-`diverting`). Obowiązuje ten sam warunek co w module 7 (brak wymuszenia,
-`diverterMayMove(modeForTick)`), uzupełniony o dwa wymagania: pole `diverting` musi być zajęte, a
-paczka musi już mieć klasyfikację.
-Ten sam warunek decyduje jednocześnie o tym, czy w ogóle wolno wydać polecenie dywertera, i o wartości
-`routingReady`, którą trzeba przekazać do `advance()` — to jeden warunek, nie dwa niezależne.
+Każdy czujnik odczytuje strefę, przy której jest zamontowany. Jeśli znajduje się w niej paczka,
+zaktualizuj jej stan przez `updatePresenceConfirmation()` albo `updateClassification()`. Najpierw
+sprawdź, czy odpowiedni `std::optional<Item>` zawiera wartość. Bez tego nie można przekazać paczki do
+funkcji.
 
-**Kolejność, która ma znaczenie.** Odczyt czujników, korelacja i decyzja o poleceniu dywertera muszą
-się zdarzyć, zanim `advance()` cokolwiek przesunie — inaczej sprawdzałbyś zajętość stref po ruchu,
-nie przed nim. `advance()` z kolei musi się zdarzyć, zanim policzysz `Mode` po raz drugi — jak w
-module 7, bo ten
-drugi rachunek potrzebuje zdarzenia z `AdvanceResult`, którego `advance()` jeszcze nie zwrócił.
-Wszystko inne (flagi wejściowe, `latch_`, `decision`, pierwsze liczenie `modeForTick`, warunek ruchu
-pasa) pozostaje takie jak w module 7.
+`SensorSnapshot` ma także zapisać `ItemId` paczki, której dotyczył odczyt. Ustaw identyfikator tylko
+wtedy, gdy strefa była zajęta, a odczyt miał status `Ok`. Odczytu `Stale` nie wolno przypisać paczce,
+która znajduje się obecnie przy czujniku. Jest to wcześniej zapamiętana wartość, a nie nowy pomiar tej
+paczki.
 
-**Co musi zawierać `TickResult`.** Kompletny stan wszystkich czterech stref w tym ticku, wynik
-`advance()` (`event`, `departure`), i pełną korelację `ItemId` w `SensorSnapshot` — dokładny format
-opisuje sekcja niżej. To jedyny punkt odniesienia dla testów i CLI; żaden z nich nie sięga do
-wewnętrznego stanu `Engine` w trakcie ticku.
+**Polecenie dywertera.**
+
+Polecenie dywertera wyznacz wyłącznie z klasyfikacji paczki znajdującej się w
+`plant_.diverting`. Nie korzystaj z paczki właśnie sklasyfikowanej w `plant_.weighing`, ponieważ
+przed wywołaniem `advance()` nie znajduje się ona jeszcze przy dywerterze.
+
+Dywerter może otrzymać polecenie, gdy jednocześnie:
+
+- `decision.overrideActive` nie wymusza zatrzymania,
+- `diverterMayMove(modeForTick)` zwraca `true`,
+- `plant_.diverting` zawiera paczkę,
+- ta paczka ma już klasyfikację.
+
+Ten sam warunek określa wartość `routingReady` przekazywaną do `advance()`. Nie wyznaczaj osobno
+gotowości do wydania polecenia i gotowości do skierowania paczki.
+
+**Wymagana kolejność.**
+
+Odczytaj czujniki, przypisz wyniki do paczek i wyznacz polecenie dywertera przed wywołaniem
+`advance()`. W przeciwnym razie sprawdzisz strefy dopiero po przesunięciu paczek.
+
+Następnie wywołaj `advance()` i zachowaj zwrócony `AdvanceResult`. Dopiero po tym wyznacz końcową
+wartość `Mode`, ponieważ `reactToSystemEvent()` potrzebuje zdarzenia z wyniku `advance()`. Flagi
+wejściowe, `latch_`, `decision`, pierwsze wyznaczenie `modeForTick` i warunek ruchu taśmy pozostają
+takie jak w module 7.
+
+**Zawartość `TickResult`.**
+
+Wynik ticku ma zawierać stan wszystkich czterech stref, `event` i `departure` zwrócone przez
+`advance()` oraz identyfikatory paczek przypisane do odczytów w `SensorSnapshot`. Testy i program
+terminalowy korzystają wyłącznie z `TickResult`, bez odczytywania wewnętrznych pól `Engine` w trakcie
+wykonywania ticku.
 
 ## Rozszerzony `TickResult` i `describe()`
 
-`SensorSnapshot` niesie teraz `presenceObservedItemId`/`weightObservedItemId` — ustawiane tylko, gdy
-odczyt jest `Ok` **i** strefa jest faktycznie zajęta. Odczyt `Stale` powtarza *wcześniejszą* zaufaną
-wartość i nigdy nie jest przypisywany paczce znajdującej się obecnie w tej strefie.
+`SensorSnapshot` zawiera teraz pola `presenceObservedItemId` i `weightObservedItemId`. Ustawiaj je
+tylko dla odczytu ze statusem `Ok` wykonanego przy zajętej strefie. `Stale` oznacza powtórzenie
+wcześniej zapamiętanej wartości, dlatego nie wskazuje paczki znajdującej się obecnie przy czujniku.
 
-`describe(TickResult)` określa tekstową postać pełnego wyniku ticku. Jedna linia ma następujący
-format:
+`describe(TickResult)` tworzy jednowierszowy opis wyniku w następującym formacie:
 
 ```text
 tick <N>: mode=<M> belt=<B> latch=<L> diverter=<cmd>/<pos>@<id|-> event=<e|-> infeed=<id|->
 presenceCheck=<id|-> weighing=<id|-> diverting=<id|-> departure=<id->dest|->
 ```
 
-gdzie `<dest>` to `"Light"` dla `Zone::OutputLight` albo `"Heavy"` dla `Zone::OutputHeavy` (nie pełna
-nazwa `Zone`). Test `tick_result_test.cpp` zawiera dokładne przykłady tego formatu — to Twój ostateczny
-kontrakt.
+W miejsce `<dest>` wpisz `"Light"` dla `Zone::OutputLight` albo `"Heavy"` dla
+`Zone::OutputHeavy`. Nie używaj pełnej nazwy wartości `Zone`. Dokładne przykłady formatu znajdziesz w
+`tick_result_test.cpp`.
 
 ## Co już masz gotowe
 
-Wszystkie typy (`Item`, `Plant`, `TickResult`, `SensorSnapshot`, `Engine`) — kompletne kształty, bez
-zmian do wprowadzenia. Cała reszta `Engine`'a poza `step()` (flagi wejściowe, `injectSensorFault`/
-`clearSensorFault`/`injectDiverterFault`/`clearDiverterFault`, `spawnItem`) — gotowa i niezmieniona.
+Typy `Item`, `Plant`, `TickResult`, `SensorSnapshot` i `Engine` mają już docelowe definicje. Nie
+musisz ich zmieniać. Gotowe są również flagi wejściowe, `spawnItem()` oraz metody obsługi usterek
+czujników i dywertera. Do uzupełnienia pozostało `Engine::step()`.
 
 ## Co masz napisać
 
-- `Engine::step()` w [`src/engine.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/engine.cpp) — pełna integracja opisana powyżej.
-- `describe(TickResult)` w [`src/tick_result.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/tick_result.cpp) — format
-  opisany powyżej.
-- [`apps/simulator_cli/main.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/apps/simulator_cli/main.cpp) — demonstracja co najmniej
-  trzech paczek o różnych klasyfikacjach jednocześnie w locie (np. Light/Heavy/Light — zobacz ślad w
-  materiałach misji 30), zawierająca co najmniej jeden tick z widocznym przesunięciem łańcuchowym:
-  odjazd jednej paczki i wejście kolejnej do właśnie zwolnionej strefy w tym samym ticku. Użyj
-  `psm::describe()` do wypisywania każdego ticku.
+- Zintegruj opisane elementy w `Engine::step()` w pliku
+  [`src/engine.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/engine.cpp).
+- Zaimplementuj `describe(TickResult)` w
+  [`src/tick_result.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/src/tick_result.cpp)
+  zgodnie z podanym formatem.
+- W
+  [`apps/simulator_cli/main.cpp`](https://github.com/michalmaj/mechatronic-systems-programming/blob/module-08-start/apps/simulator_cli/main.cpp)
+  pokaż działanie co najmniej trzech paczek o różnych klasyfikacjach, na przykład Light, Heavy i
+  Light. W przebiegu ma wystąpić tick, w którym jedna paczka odjeżdża, a następna wchodzi do
+  zwolnionej strefy. Do wypisywania każdego wyniku użyj `psm::describe()`.
 
 ## Sprawdź się
 
@@ -85,22 +100,22 @@ zmian do wprowadzenia. Cała reszta `Engine`'a poza `step()` (flagi wejściowe, 
 ctest --preset test -L misja-32
 ```
 
-To dedykowany test tej misji (`multiple_items_engine_test`), sprawdzający, że trzy paczki o masach
-100g/800g/150g, utworzone jedna po drugiej przez `spawnItem`, odjeżdżają w tej samej kolejności, każda
-z poprawnym, niezależnym rutowaniem (Light/Heavy/Light) — wykryje powrót do współdzielonej
-klasyfikacji.
+Test `multiple_items_engine_test` sprawdza trzy paczki o masach 100 g, 800 g i 150 g, dodane kolejno
+przez `spawnItem()`. Paczki mają odjechać w tej samej kolejności i trafić odpowiednio do wyjść Light,
+Heavy i Light. Test wykryje między innymi ponowne użycie jednej wspólnej klasyfikacji.
 
-Uzupełnienie `Engine::step()` jednocześnie odblokowuje każdy pozostały test na poziomie `Engine` —
-uruchom też pełny zestaw:
+Uzupełnienie `Engine::step()` umożliwi też wykonanie pozostałych testów dotyczących `Engine`.
+Uruchom pełny zestaw:
 
 ```bash
 ctest --preset test
 ```
 
-Oczekiwany wynik: wszystkie testy zielone (`misja-1`, `misja-3`–`misja-4`, `misja-6`–`misja-22`,
-`misja-24`–`misja-32`).
+Oczekiwany wynik: przechodzą testy `misja-1`, `misja-3`–`misja-4`, `misja-6`–`misja-22` oraz
+`misja-24`–`misja-32`.
 
-Uruchom też program naprawdę:
+Zbuduj i uruchom również program:
+
 ```bash
 cmake --build --preset dev
 ./build/dev/apps/simulator_cli/simulator_cli
@@ -116,20 +131,18 @@ git commit -m "..."
 
 ## Częste błędy
 
-- **Wyliczanie polecenia dywertera z `plant_.weighing`** — przed tą pomyłką ostrzega misja 30
-  i sekcja "Polecenie dywertera" powyżej ostrzegają.
-- **Wołanie `updatePresenceConfirmation`/`updateClassification` bez sprawdzenia `.has_value()`** —
-  wywołanie na pustym `std::optional<Item>` się nie skompiluje (brak czego dereferencjonować) — ale
-  łatwo przeoczyć samą bramkę `if`, jeśli kopiuje się kod bez zastanowienia.
-- **Ustawianie `presenceObservedItemId`/`weightObservedItemId` bez sprawdzenia `.has_value()`** —
-  odczyt może być `Ok`, choć strefa jest pusta; korelacja musi to rozróżniać.
-- **Inny zapis miejsca docelowego w `describe()` niż `"Light"`/`"Heavy"`** — test sprawdza
-  te dwa literały, a nie pełne nazwy `Zone`.
+- **Wyznaczenie polecenia dywertera na podstawie `plant_.weighing`**: właściwa paczka znajduje się w
+  `plant_.diverting`.
+- **Wywołanie `updatePresenceConfirmation()` albo `updateClassification()` bez sprawdzenia
+  `.has_value()`**: pusty `std::optional<Item>` nie zawiera paczki, którą można przekazać do funkcji.
+- **Ustawienie `presenceObservedItemId` lub `weightObservedItemId` bez sprawdzenia zajętości strefy**:
+  czujnik może zwrócić `Ok` także dla pustej strefy, ale taki wynik nie dotyczy żadnej paczki.
+- **Inny zapis miejsca docelowego w `describe()` niż `"Light"` lub `"Heavy"`**: test oczekuje tych
+  dwóch napisów, a nie pełnych nazw wartości `Zone`.
 
 ## Koniec modułu 8
 
-Symulator modeluje teraz to, co robi każda prawdziwa taśma sortująca: kilka paczek naraz, każda na
-swoim etapie, każda ze swoim własnym stanem — a mimo to jeden wspólny dywerter i jeden wspólny pas
-wciąż działają poprawnie, bo ograniczenie "co najwyżej jedna paczka na strefę" i kolejność
-przetwarzania od wyjścia do wejścia eliminują kolizje przez samą konstrukcję, bez żadnej dodatkowej
-logiki arbitrażu.
+Symulator obsługuje teraz kilka paczek znajdujących się na różnych etapach procesu. Każda z nich ma
+własny stan, a wszystkie korzystają ze wspólnej taśmy i jednego dywertera. Ograniczenie do jednej
+paczki w strefie oraz przetwarzanie stref od wyjścia do wejścia zapobiegają kolizjom bez dodatkowego
+mechanizmu rozstrzygania pierwszeństwa.
