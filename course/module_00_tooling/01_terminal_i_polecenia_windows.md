@@ -3,7 +3,7 @@
 # 0.1 Terminal i podstawowe polecenia: Windows
 
 Zanim zainstalujesz narzędzia kursu, oswój się z terminalem. Przez większość Modułu 0 pracujesz w
-IDE, ale od kolejnych modułów terminal będzie potrzebny co tydzień — do pobierania kodu i
+IDE, ale od kolejnych modułów terminal będzie potrzebny co tydzień: do pobierania kodu i
 uruchamiania testów.
 
 ## Otwórz PowerShell
@@ -18,7 +18,7 @@ Powinno otworzyć się okno z tekstem podobnym do:
 PS C:\Users\TwojaNazwa>
 ```
 
-To **prompt** — znak, że PowerShell czeka na Twoją komendę. Nie wpisujesz go sam/a.
+To **prompt**, znak, że PowerShell czeka na Twoją komendę. Nie wpisujesz go samodzielnie.
 
 ## Gdzie jestem?
 
@@ -71,16 +71,16 @@ usuwa plik, znowu pokazuje listę (powinna być pusta), wraca wyżej.
 
 ## Czym są "uprawnienia administratora"?
 
-Czasem Windows pyta, czy zezwolić programowi na zmiany w systemie (okno **UAC** — User Account
-Control). To osobny temat od samego terminala — w tym kroku go nie potrzebujesz. Jeśli pojawi się
-takie okno podczas instalacji Visual Studio, kliknij **Tak**/**Yes** — to normalne. Do pełnego
+Czasem Windows pyta, czy zezwolić programowi na zmiany w systemie (okno **UAC**, czyli User Account
+Control). To osobny temat od samego terminala: w tym kroku go nie potrzebujesz. Jeśli pojawi się
+takie okno podczas instalacji Visual Studio, kliknij **Tak**/**Yes**, to normalne. Do pełnego
 wyjaśnienia (i do PowerShell *jako* administrator) wrócimy w opcjonalnym kroku o Chocolatey.
 
 ## Jeśli coś poszło nie tak
 
 - **Nie widzę PowerShell na liście:** sprawdź literówkę; na nowszych wersjach Windows może się
   nazywać **Terminal** i otwierać zakładkę PowerShell.
-- **"cd: Cannot find path":** jesteś w innym folderze niż myślisz — sprawdź `Get-Location`, a potem
+- **"cd: Cannot find path":** jesteś w innym folderze niż myślisz. Sprawdź `Get-Location`, a potem
   `Get-ChildItem`, żeby zobaczyć, co naprawdę jest dostępne.
 - **Polecenie nie jest rozpoznane:** sprawdź literówki; PowerShell nie rozróżnia wielkości liter w
   nazwach komend, ale spacje i myślniki mają znaczenie.

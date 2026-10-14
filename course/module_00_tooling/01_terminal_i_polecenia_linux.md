@@ -48,9 +48,9 @@ cd ..
 ## Czym jest `sudo`?
 
 W kroku instalacji zobaczysz polecenie `sudo apt install ...`. `sudo` to skrót od "wykonaj jako
-administrator". System poprosi o Twoje hasło — to normalne, to hasło Twojego zwykłego konta, nie
+administrator". System poprosi o Twoje hasło. To normalne, to hasło Twojego zwykłego konta, nie
 jakieś nowe hasło roota. Podczas wpisywania hasła w terminalu **nic się nie wyświetla**, nawet
-gwiazdki — to zamierzone zabezpieczenie, nie błąd. Wpisz hasło i naciśnij Enter.
+gwiazdki. To zamierzone zabezpieczenie, nie błąd. Wpisz hasło i naciśnij Enter.
 
 ## Jeśli coś poszło nie tak
 

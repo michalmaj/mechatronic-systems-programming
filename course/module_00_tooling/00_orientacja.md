@@ -14,7 +14,8 @@ pamięcią, urządzeniami, innymi programami. Wszystko inne, o czym mówimy niż
 ## Terminal (konsola, wiersz poleceń)
 
 Terminal to program, w którym wydajesz polecenia tekstem zamiast wybierać je myszą. W tym module
-większość pracy wykonasz w IDE, ale z czasem terminal będzie pojawiał się coraz częściej.
+poświęcimy mu osobny, spokojny krok, zanim zaczniesz z niego korzystać do pobierania kodu
+i uruchamiania testów, bo od kolejnych modułów terminal będzie potrzebny co tydzień.
 
 ## Kompilator
 

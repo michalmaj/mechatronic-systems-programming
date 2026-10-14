@@ -14,11 +14,19 @@ runs all of them and summarizes the result.
 
 ## Run the tests from the terminal
 
-In the repository folder, run (the same command on Windows, Linux, and macOS):
+In the repository folder (the same commands on Windows, Linux, and macOS). If you've only built
+through the IDE so far (clicking Run), CTest first needs the same configured and built `build/dev`
+folder, so run these in order:
 
 ```bash
+cmake --preset dev
+cmake --build --preset dev
 ctest --preset test
 ```
+
+The first two commands do what the IDE was doing for you with one click of Run. If you already
+built in this repository folder (e.g. in the previous step, in the IDE), you can skip straight to
+`ctest --preset test`.
 
 You'll see a list of tests passing one by one, ending in a summary like:
 
@@ -39,10 +47,19 @@ what stopped working, instead of forcing you to hunt for the bug by eye.
 
 ## Common problems
 
-- **"ctest: command not found":** CTest is installed together with CMake; check `cmake --version`
-  and go back to the installation step if it's missing.
-- **"Preset 'test' is not defined":** you're in a different folder than the repository root (the
-  one containing `CMakePresets.json`); `cd` there and try again.
+- **"No tests were found!!!" (the command doesn't report an error, it just tests nothing):** the
+  `build/dev` folder hasn't been configured and built from the terminal yet. Run `cmake --preset
+  dev`, then `cmake --build --preset dev`, then go back to `ctest --preset test`.
+- **"ctest: command not found" (on Windows, in a regular PowerShell):** CTest is installed together
+  with CMake, but Visual Studio's CMake component ("C++ CMake tools for Windows") isn't added to
+  regular PowerShell. Open **Developer PowerShell for VS 2022** from the Start menu — a special
+  PowerShell window Visual Studio adds to the system, where `cmake`/`ctest` are already available —
+  and try again there.
+- **"ctest: command not found" (on Linux/macOS):** check `cmake --version` and go back to the
+  installation step if it's missing.
+- **"CMake Error: Could not read presets from ...: File not found: .../CMakePresets.json":** you're
+  in a different folder than the repository root (the one that actually contains
+  `CMakePresets.json`); `cd` there and try again.
 - **Some tests show "Failed":** before looking for a bug in your own code, check whether the earlier
   build step (`cmake --build --preset dev`) finished without errors; tests run against the most
   recently built code.

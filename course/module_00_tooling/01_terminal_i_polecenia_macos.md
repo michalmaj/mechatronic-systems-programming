@@ -44,7 +44,7 @@ cd ..
 ## Czym jest prośba o hasło administratora?
 
 Niektóre instalacje (np. `xcode-select --install` w następnym kroku) poproszą o Twoje hasło albo
-pokażą systemowe okno z prośbą o zgodę. To normalne — system chce potwierdzenia, że to Ty instalujesz
+pokażą systemowe okno z prośbą o zgodę. To normalne, system chce potwierdzenia, że to Ty instalujesz
 oprogramowanie, nie jakiś inny program bez Twojej wiedzy.
 
 ## Jeśli coś poszło nie tak

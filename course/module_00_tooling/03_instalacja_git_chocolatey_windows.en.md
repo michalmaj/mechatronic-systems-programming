@@ -50,45 +50,46 @@ don't recognize.
 
 Wait for the command to finish without errors.
 
-## Close and reopen PowerShell
-
-Close the Administrator window. Open a **regular** PowerShell window from the Start menu (it no
-longer needs to be Administrator).
-
-## Verify
-
-```powershell
-choco --version
-```
-
-Should print a version number, e.g. `2.x.x`. If PowerShell doesn't recognize `choco`, close the
-window and open a new one — the session sometimes needs refreshing.
-
 ## Installing Git via Chocolatey
 
-In a regular (non-Administrator) PowerShell window:
+Stay in the same window, **still as Administrator** — Chocolatey installs packages to
+`C:\ProgramData\chocolatey` by default, a folder only an administrator can write to, so
+`choco install` from a regular PowerShell window usually fails with an access error.
 
 ```powershell
 choco install git -y
 ```
 
-The `-y` flag means "automatically agree to all prompts" — Chocolatey usually asks for confirmation
+The `-y` flag means: automatically agree to all prompts. Chocolatey usually asks for confirmation
 during installation.
 
-Close and reopen PowerShell, then check:
+## Close the Administrator window
+
+The installation (Chocolatey and Git) is done, so you no longer need elevated permissions. Close
+the Administrator window. Open a **regular** PowerShell window from the Start menu — checking
+version numbers doesn't need Administrator permissions, only the installation did.
+
+## Verify
+
+In regular PowerShell:
 
 ```powershell
+choco --version
 git --version
 ```
 
-Should print Git's version number.
+Both should print a version number, e.g. `2.x.x`. If PowerShell doesn't recognize `choco` or `git`,
+close the window and open a new one — the session sometimes needs refreshing to notice newly
+installed programs.
 
 ## Common problems
 
-- **"Scripts is disabled on this system":** you didn't use PowerShell as Administrator, or skipped
-  the first part of the install command (`Set-ExecutionPolicy ...`). Open PowerShell as
-  Administrator and try this page again from the start.
-- **"Access is denied":** same cause — you need PowerShell as Administrator.
+- **"Scripts is disabled on this system" (full message: "...running scripts is disabled on this
+  system"):** you didn't use PowerShell as Administrator, or skipped the first part of the install
+  command (`Set-ExecutionPolicy ...`). Open PowerShell as Administrator and try this page again
+  from the start.
+- **"Access is denied" on `choco install`:** you likely closed the Administrator window before
+  installing Git. Open a new PowerShell window as Administrator and repeat `choco install git -y`.
 - **`choco` isn't recognized after installing:** close PowerShell completely and open a new window.
   If that doesn't help, restart your computer.
 - **A school/university computer blocks the install:** some organizations block software
