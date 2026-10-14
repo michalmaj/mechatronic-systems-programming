@@ -47,4 +47,4 @@ swój napis z Kroku 1.
 Ten cykl będzie wracał przez cały kurs: zmiana → błąd → odczytanie komunikatu → poprawka → ponowne
 uruchomienie. Błędy kompilacji są zwykłą częścią pracy nad kodem.
 
-**Dalej:** [podgląd symulatora](./08_podglad_symulatora.md).
+**Dalej:** [pierwsze uruchomienie testów](./07_pierwszy_ctest.md).
