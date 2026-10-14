@@ -36,4 +36,4 @@ We'll come back to Git itself more broadly in a later module.
 Open Visual Studio 2022. From the start screen you should see the **"Open a local folder"**
 option — we'll come back to that in the next step.
 
-**Next:** [downloading the repository](./04_pobranie_repozytorium.en.md).
+**Next:** [installing Git via Chocolatey (optional)](./03_instalacja_git_chocolatey_windows.en.md).

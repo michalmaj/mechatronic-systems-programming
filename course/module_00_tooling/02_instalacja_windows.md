@@ -32,4 +32,4 @@ samego Gita wrócimy szerzej w późniejszym module.
 Otwórz Visual Studio 2022. Na ekranie startowym powinna być widoczna opcja **Open a local folder**
 (**Otwórz folder lokalny**). Skorzystasz z niej w następnym kroku.
 
-**Dalej:** [pobranie repozytorium](./04_pobranie_repozytorium.md).
+**Dalej:** [instalacja Gita przez Chocolatey (opcjonalnie)](./03_instalacja_git_chocolatey_windows.md).
