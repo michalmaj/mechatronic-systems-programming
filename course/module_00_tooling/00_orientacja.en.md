@@ -55,6 +55,6 @@ code doesn't translate)? Is it a CMake error (the files don't link together)? Di
 fine but do something wrong once it's running as a process? In the next steps we'll learn to tell
 these apart on a live example.
 
-**Next:** installing the tools for your system —
-[Windows](./02_instalacja_windows.en.md) · [Linux](./02_instalacja_linux.en.md) ·
-[macOS](./02_instalacja_macos.en.md).
+**Next:** pick the terminal guide for your system —
+[Windows](./01_terminal_i_polecenia_windows.en.md) · [Linux](./01_terminal_i_polecenia_linux.en.md) ·
+[macOS](./01_terminal_i_polecenia_macos.en.md).
