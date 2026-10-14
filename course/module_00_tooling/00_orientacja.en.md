@@ -56,5 +56,5 @@ fine but do something wrong once it's running as a process? In the next steps we
 these apart on a live example.
 
 **Next:** installing the tools for your system —
-[Windows](./01_instalacja_windows.en.md) · [Linux](./01_instalacja_linux.en.md) ·
-[macOS](./01_instalacja_macos.en.md).
+[Windows](./02_instalacja_windows.en.md) · [Linux](./02_instalacja_linux.en.md) ·
+[macOS](./02_instalacja_macos.en.md).

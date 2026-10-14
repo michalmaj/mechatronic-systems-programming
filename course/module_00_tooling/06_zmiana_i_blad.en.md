@@ -1,6 +1,6 @@
-[🇵🇱 Polski](04_zmiana_i_blad.md) | 🇬🇧 English
+[🇵🇱 Polski](06_zmiana_i_blad.md) | 🇬🇧 English
 
-# 0.4 A change and an error
+# 0.6 A change and an error
 
 Your program works. Now let's learn two things at once: what an ordinary code change looks like,
 and what a compiler error looks like — because sooner or later you'll see one, and it's better to
@@ -49,4 +49,4 @@ This is the whole cycle you'll repeat hundreds of times in this course: change �
 → reading the message → fix → success. There's nothing embarrassing about it — compile errors are
 a normal, everyday part of writing code, not a sign that something's wrong with you.
 
-**Next:** [a preview of the simulator](./05_podglad_symulatora.en.md).
+**Next:** [a preview of the simulator](./08_podglad_symulatora.en.md).

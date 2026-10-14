@@ -1,6 +1,6 @@
-🇵🇱 Polski | [🇬🇧 English](05_podglad_symulatora.en.md)
+🇵🇱 Polski | [🇬🇧 English](08_podglad_symulatora.en.md)
 
-# 0.5 Podgląd: dokąd zmierzamy
+# 0.8 Podgląd: dokąd zmierzamy
 
 W ostatnim kroku ponownie zbudujesz i uruchomisz program, tym razem po to, by zobaczyć efekt końcowy
 kursu.

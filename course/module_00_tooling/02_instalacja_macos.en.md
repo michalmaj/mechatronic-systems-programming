@@ -1,6 +1,6 @@
-[🇵🇱 Polski](01_instalacja_macos.md) | 🇬🇧 English
+[🇵🇱 Polski](02_instalacja_macos.md) | 🇬🇧 English
 
-# 0.1 Installation: macOS
+# 0.2 Installation: macOS
 
 You need: Xcode Command Line Tools (compiler + Git), CMake, and CLion.
 
@@ -49,4 +49,4 @@ cmake --version
 
 CLion detects the installed compiler and CMake automatically on first launch.
 
-**Next:** [downloading the repository](./02_pobranie_repozytorium.en.md).
+**Next:** [downloading the repository](./04_pobranie_repozytorium.en.md).

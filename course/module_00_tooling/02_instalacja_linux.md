@@ -1,6 +1,6 @@
-🇵🇱 Polski | [🇬🇧 English](01_instalacja_linux.en.md)
+🇵🇱 Polski | [🇬🇧 English](02_instalacja_linux.en.md)
 
-# 0.1 Instalacja: Linux
+# 0.2 Instalacja: Linux
 
 Potrzebujesz kompilatora z narzędziami do budowania, CMake, Gita oraz CLion.
 
@@ -39,4 +39,4 @@ narzędzia nie udało się zainstalować albo nie ma go w zmiennej `PATH`.
 
 Przy pierwszym uruchomieniu CLion powinien sam wykryć kompilator i CMake.
 
-**Dalej:** [pobranie repozytorium](./02_pobranie_repozytorium.md).
+**Dalej:** [pobranie repozytorium](./04_pobranie_repozytorium.md).

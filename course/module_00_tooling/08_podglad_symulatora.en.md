@@ -1,6 +1,6 @@
-[🇵🇱 Polski](05_podglad_symulatora.md) | 🇬🇧 English
+[🇵🇱 Polski](08_podglad_symulatora.md) | 🇬🇧 English
 
-# 0.5 A preview: where we're heading
+# 0.8 A preview: where we're heading
 
 The last step of this module doesn't teach anything technically new — it's the same building and
 running you already know from `toolchain_check`. We just want to show you where we're heading.

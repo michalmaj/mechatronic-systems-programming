@@ -1,6 +1,6 @@
-🇵🇱 Polski | [🇬🇧 English](01_instalacja_windows.en.md)
+🇵🇱 Polski | [🇬🇧 English](02_instalacja_windows.en.md)
 
-# 0.1 Instalacja: Windows
+# 0.2 Instalacja: Windows
 
 Potrzebujesz Visual Studio 2022 z narzędziami C++ oraz Gita.
 
@@ -32,4 +32,4 @@ samego Gita wrócimy szerzej w późniejszym module.
 Otwórz Visual Studio 2022. Na ekranie startowym powinna być widoczna opcja **Open a local folder**
 (**Otwórz folder lokalny**). Skorzystasz z niej w następnym kroku.
 
-**Dalej:** [pobranie repozytorium](./02_pobranie_repozytorium.md).
+**Dalej:** [pobranie repozytorium](./04_pobranie_repozytorium.md).

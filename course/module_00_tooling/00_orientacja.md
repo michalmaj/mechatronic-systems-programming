@@ -50,5 +50,5 @@ nie kompiluje)? Czy to błąd CMake (pliki się nie łączą)? Czy program się 
 kiedy już działa jako proces? W kolejnych krokach nauczymy się to rozróżniać na żywym przykładzie.
 
 **Dalej:** wybierz instrukcję instalacji dla swojego systemu:
-[Windows](./01_instalacja_windows.md) · [Linux](./01_instalacja_linux.md) ·
-[macOS](./01_instalacja_macos.md).
+[Windows](./02_instalacja_windows.md) · [Linux](./02_instalacja_linux.md) ·
+[macOS](./02_instalacja_macos.md).

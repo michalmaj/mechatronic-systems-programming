@@ -1,6 +1,6 @@
-[🇵🇱 Polski](02_pobranie_repozytorium.md) | 🇬🇧 English
+[🇵🇱 Polski](04_pobranie_repozytorium.md) | 🇬🇧 English
 
-# 0.2 Downloading the repository
+# 0.4 Downloading the repository
 
 In this step, Git serves purely as a way to download the course files to disk. We're not dealing
 with commits, branches, or anything else yet — we'll come back to that in a later module, once you
@@ -33,4 +33,4 @@ Whichever path you chose, you should now have a `mechatronic-systems-programming
 containing, among other things, a `CMakeLists.txt` file in the root directory. That's the signal
 that you have the complete repository, ready to open in an IDE.
 
-**Next:** [the first build](./03_pierwszy_build.en.md).
+**Next:** [the first build](./05_pierwszy_build.en.md).

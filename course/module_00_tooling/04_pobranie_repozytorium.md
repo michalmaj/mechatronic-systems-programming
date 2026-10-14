@@ -1,6 +1,6 @@
-🇵🇱 Polski | [🇬🇧 English](02_pobranie_repozytorium.en.md)
+🇵🇱 Polski | [🇬🇧 English](04_pobranie_repozytorium.en.md)
 
-# 0.2 Pobranie repozytorium
+# 0.4 Pobranie repozytorium
 
 Na razie Git posłuży tylko do pobrania plików kursu. Do commitów i branchy wrócimy, gdy pojawią się
 pierwsze własne zmiany do zapisania.
@@ -32,4 +32,4 @@ Niezależnie od wybranej ścieżki, powinieneś mieć teraz folder `mechatronic-
 zawierający m.in. plik `CMakeLists.txt` w katalogu głównym. To sygnał, że masz kompletne
 repozytorium, gotowe do otwarcia w IDE.
 
-**Dalej:** [pierwsze budowanie projektu](./03_pierwszy_build.md).
+**Dalej:** [pierwsze budowanie projektu](./05_pierwszy_build.md).
