@@ -31,3 +31,6 @@ symulator. W następnych modułach będziesz stopniowo tworzyć logikę tego sym
 
 Jeśli oba programy się uruchomiły i wyświetliły wynik, środowisko jest gotowe, a Ty
 wiesz, jak wygląda podstawowy cykl pracy. To wszystko, czego potrzebujesz, żeby zacząć.
+
+**Dalej (opcjonalnie):** [Git i GitHub: szerszy obraz](./09_git_i_github.md): krótkie, niewymagane
+wyjaśnienie forka, issue i pull requesta. Możesz je przeczytać teraz albo wrócić do niego później.
