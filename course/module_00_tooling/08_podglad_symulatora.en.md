@@ -34,3 +34,7 @@ course is: the same project, growing step by step.
 
 If you made it here and saw both programs' output working — you have your environment set up and
 you know what the basic work cycle looks like. That's everything you need to get started.
+
+**Next (optional):** [Git and GitHub: the bigger picture](./09_git_i_github.en.md) — a short,
+non-required explanation of forks, issues, and pull requests. Read it now, or come back to it
+later.
