@@ -14,9 +14,9 @@ memory, devices, other programs. Everything else discussed below runs *on top of
 ## Terminal (console, command line)
 
 A terminal is a program where you issue commands as text instead of clicking with a mouse. It's
-neither scary nor "for advanced users" — it's simply another way of talking to the computer. We
-will barely use it in this module — we work mostly through the IDE. But the terminal will show up
-more and more often, so let's get comfortable with its existence right away.
+neither scary nor "for advanced users" — it's simply another way of talking to the computer. This
+module gives it its own calm, dedicated step before you start using it to fetch code and run
+tests, because starting with the next modules you'll need it every week.
 
 ## Compiler
 
@@ -55,6 +55,6 @@ code doesn't translate)? Is it a CMake error (the files don't link together)? Di
 fine but do something wrong once it's running as a process? In the next steps we'll learn to tell
 these apart on a live example.
 
-**Next:** installing the tools for your system —
-[Windows](./01_instalacja_windows.en.md) · [Linux](./01_instalacja_linux.en.md) ·
-[macOS](./01_instalacja_macos.en.md).
+**Next:** pick the terminal guide for your system —
+[Windows](./01_terminal_i_polecenia_windows.en.md) · [Linux](./01_terminal_i_polecenia_linux.en.md) ·
+[macOS](./01_terminal_i_polecenia_macos.en.md).

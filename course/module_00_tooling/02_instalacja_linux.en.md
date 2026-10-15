@@ -1,6 +1,6 @@
-[🇵🇱 Polski](01_instalacja_linux.md) | 🇬🇧 English
+[🇵🇱 Polski](02_instalacja_linux.md) | 🇬🇧 English
 
-# 0.1 Installation: Linux
+# 0.2 Installation: Linux
 
 You need: a compiler and build tools, CMake, Git, and CLion.
 
@@ -41,4 +41,4 @@ Each of these three commands should print a version number, not a "command not f
 
 CLion detects the installed compiler and CMake automatically on first launch.
 
-**Next:** [downloading the repository](./02_pobranie_repozytorium.en.md).
+**Next:** [downloading the repository](./04_pobranie_repozytorium.en.md).

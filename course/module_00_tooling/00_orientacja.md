@@ -14,7 +14,8 @@ pamięcią, urządzeniami, innymi programami. Wszystko inne, o czym mówimy niż
 ## Terminal (konsola, wiersz poleceń)
 
 Terminal to program, w którym wydajesz polecenia tekstem zamiast wybierać je myszą. W tym module
-większość pracy wykonasz w IDE, ale z czasem terminal będzie pojawiał się coraz częściej.
+poświęcimy mu osobny, spokojny krok, zanim zaczniesz z niego korzystać do pobierania kodu
+i uruchamiania testów, bo od kolejnych modułów terminal będzie potrzebny co tydzień.
 
 ## Kompilator
 
@@ -49,6 +50,6 @@ Kiedy coś „nie działa”, pierwsze pytanie brzmi: na którym etapie? Czy to 
 nie kompiluje)? Czy to błąd CMake (pliki się nie łączą)? Czy program się zbudował, ale coś robi źle,
 kiedy już działa jako proces? W kolejnych krokach nauczymy się to rozróżniać na żywym przykładzie.
 
-**Dalej:** wybierz instrukcję instalacji dla swojego systemu:
-[Windows](./01_instalacja_windows.md) · [Linux](./01_instalacja_linux.md) ·
-[macOS](./01_instalacja_macos.md).
+**Dalej:** wybierz terminal dla swojego systemu:
+[Windows](./01_terminal_i_polecenia_windows.md) · [Linux](./01_terminal_i_polecenia_linux.md) ·
+[macOS](./01_terminal_i_polecenia_macos.md).

@@ -1,6 +1,6 @@
-[🇵🇱 Polski](03_pierwszy_build.md) | 🇬🇧 English
+[🇵🇱 Polski](05_pierwszy_build.md) | 🇬🇧 English
 
-# 0.3 The first build
+# 0.5 The first build
 
 You have the tools installed and the repository downloaded. Time to build the first program.
 
@@ -50,4 +50,4 @@ Most common causes:
 - **An error during CMake configuration** — check whether the compiler actually got installed (go
   back to the installation step for your system and run the version-check commands).
 
-**Next:** [a change and an error](./04_zmiana_i_blad.en.md).
+**Next:** [a change and an error](./06_zmiana_i_blad.en.md).

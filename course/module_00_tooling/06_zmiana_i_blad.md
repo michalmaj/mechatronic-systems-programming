@@ -1,6 +1,6 @@
-🇵🇱 Polski | [🇬🇧 English](04_zmiana_i_blad.en.md)
+🇵🇱 Polski | [🇬🇧 English](06_zmiana_i_blad.en.md)
 
-# 0.4 Zmiana i błąd
+# 0.6 Zmiana i błąd
 
 Program już działa. Teraz wprowadzisz prostą zmianę, a następnie świadomie wywołasz błąd kompilacji.
 Najlepiej pierwszy raz zobaczyć taki błąd w małym programie, który łatwo naprawić.
@@ -47,4 +47,4 @@ swój napis z Kroku 1.
 Ten cykl będzie wracał przez cały kurs: zmiana → błąd → odczytanie komunikatu → poprawka → ponowne
 uruchomienie. Błędy kompilacji są zwykłą częścią pracy nad kodem.
 
-**Dalej:** [podgląd symulatora](./05_podglad_symulatora.md).
+**Dalej:** [pierwsze uruchomienie testów](./07_pierwszy_ctest.md).

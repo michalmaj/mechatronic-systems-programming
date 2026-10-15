@@ -1,6 +1,6 @@
-🇵🇱 Polski | [🇬🇧 English](03_pierwszy_build.en.md)
+🇵🇱 Polski | [🇬🇧 English](05_pierwszy_build.en.md)
 
-# 0.3 Pierwsze budowanie projektu
+# 0.5 Pierwsze budowanie projektu
 
 Masz zainstalowane narzędzia i pobrane repozytorium. Czas zbudować pierwszy program.
 
@@ -48,4 +48,4 @@ Najczęstsze przyczyny problemów:
 - **Błąd podczas konfiguracji CMake:** sprawdź, czy kompilator faktycznie się zainstalował
   (wróć do kroku instalacji dla swojego systemu i uruchom komendy sprawdzające wersję).
 
-**Dalej:** [zmiana i błąd](./04_zmiana_i_blad.md).
+**Dalej:** [zmiana i błąd](./06_zmiana_i_blad.md).

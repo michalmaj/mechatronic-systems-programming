@@ -1,6 +1,6 @@
-[🇵🇱 Polski](01_instalacja_windows.md) | 🇬🇧 English
+[🇵🇱 Polski](02_instalacja_windows.md) | 🇬🇧 English
 
-# 0.1 Installation: Windows
+# 0.2 Installation: Windows
 
 You need two things: Visual Studio 2022 (with the right set of components) and Git.
 
@@ -36,4 +36,4 @@ We'll come back to Git itself more broadly in a later module.
 Open Visual Studio 2022. From the start screen you should see the **"Open a local folder"**
 option — we'll come back to that in the next step.
 
-**Next:** [downloading the repository](./02_pobranie_repozytorium.en.md).
+**Next:** [installing Git via Chocolatey (optional)](./03_instalacja_git_chocolatey_windows.en.md).
