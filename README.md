@@ -4,6 +4,14 @@
 
 [![CI](https://github.com/michalmaj/mechatronic-systems-programming/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/michalmaj/mechatronic-systems-programming/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/github/license/michalmaj/mechatronic-systems-programming)](LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/michalmaj/mechatronic-systems-programming)](https://github.com/michalmaj/mechatronic-systems-programming/commits/main)
+[![Open issues](https://img.shields.io/github/issues/michalmaj/mechatronic-systems-programming)](https://github.com/michalmaj/mechatronic-systems-programming/issues)
+
+![Beginner friendly](https://img.shields.io/badge/level-beginner%20friendly-0969da)
+![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=cplusplus&logoColor=white)
+![Windows](https://img.shields.io/badge/Windows-11-0078d4?logo=windows11)
+![Linux](https://img.shields.io/badge/Linux-supported-fcc624?logo=linux&logoColor=000)
+![macOS](https://img.shields.io/badge/macOS-supported-000?logo=apple)
 
 Praktyczny kurs C++ dla studentów mechatroniki. W 35 misjach krok po kroku powstaje symulator
 przemysłowej sortowni: od pierwszego `enum class` aż po samodzielny projekt końcowy.
@@ -37,6 +45,11 @@ komputerze; do wykonania ćwiczeń nie potrzeba sprzętu laboratoryjnego.
 - Na koniec samodzielnie rozbudujesz ukończony w trakcie kursu symulator.
 
 ## Szybki start
+
+Zaczynasz od [Modułu 0](course/module_00_tooling/00_orientacja.md): orientacja, terminal,
+instalacja narzędzi. Poniższy skrypt to skrócone podsumowanie dla kogoś, kto już ma gotowe
+środowisko i wie, jak działa terminal. Jeśli nie, przejdź Moduł 0 krok po kroku, od strony
+`00_orientacja.md`.
 
 ```bash
 git clone https://github.com/michalmaj/mechatronic-systems-programming.git

@@ -4,6 +4,14 @@
 
 [![CI](https://github.com/michalmaj/mechatronic-systems-programming/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/michalmaj/mechatronic-systems-programming/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/github/license/michalmaj/mechatronic-systems-programming)](LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/michalmaj/mechatronic-systems-programming)](https://github.com/michalmaj/mechatronic-systems-programming/commits/main)
+[![Open issues](https://img.shields.io/github/issues/michalmaj/mechatronic-systems-programming)](https://github.com/michalmaj/mechatronic-systems-programming/issues)
+
+![Beginner friendly](https://img.shields.io/badge/level-beginner%20friendly-0969da)
+![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=cplusplus&logoColor=white)
+![Windows](https://img.shields.io/badge/Windows-11-0078d4?logo=windows11)
+![Linux](https://img.shields.io/badge/Linux-supported-fcc624?logo=linux&logoColor=000)
+![macOS](https://img.shields.io/badge/macOS-supported-000?logo=apple)
 
 A hands-on C++ course for mechatronics. Across 35 missions you build, test, and extend one
 deterministic industrial sorting-cell simulator — from your first `enum class` to your own final
@@ -40,6 +48,11 @@ required.
 - The course ends with an independent project, built on top of what you already have.
 
 ## Quick start
+
+Start with [Module 0](course/module_00_tooling/00_orientacja.md): orientation, terminal, and tool
+installation. The script below is a condensed summary for someone who already has a working
+environment and is comfortable with a terminal — if that's not you yet, go through Module 0 step
+by step, starting at `00_orientacja.md`.
 
 ```bash
 git clone https://github.com/michalmaj/mechatronic-systems-programming.git
